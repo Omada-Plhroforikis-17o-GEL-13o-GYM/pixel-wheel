@@ -1,1 +1,3 @@
-# 2d-robot-sim
+# 2d Car Racer
+
+It's a 2D Racing game.
