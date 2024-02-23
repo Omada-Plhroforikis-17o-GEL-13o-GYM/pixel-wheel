@@ -1,6 +1,6 @@
-# 2d Car Racer
+# PixelWheel: Thessaloniki Edition
 
-It's a 2D Racing game.
+It's a 2D Racing game. 
 
 Work In Progress.
 
