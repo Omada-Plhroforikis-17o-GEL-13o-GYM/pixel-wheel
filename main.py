@@ -7,7 +7,7 @@ from tleng2.utils.debug import DebugTags
 from tleng2.utils.colors import RED, BLACK
 pygame.init()
 
-DebugTags.import_tags()
+# DebugTags.import_tags()
 
 GlobalSettings.update_bresolution((1280,720))
 GlobalProperties.load_display()

@@ -46,6 +46,7 @@ class Player(pg.sprite.Sprite):
         self.angle = 0
 
     def handle_event(self, event):
+        print(event)
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_w:
                 self.accel_forw = True
@@ -102,7 +103,7 @@ class Wall(pg.sprite.Sprite):
         # so that they fit to the image vertices.
         verts2 = [(x, -y) for x, y in verts]
         self.shape = pm.Poly(self.body, verts2, radius=2)
-        self.shape.friction = 1.0
+        self.shape.friction = .9
         self.shape.elasticity = .52
         self.body.position = flipy(pos)
         self.space = space
