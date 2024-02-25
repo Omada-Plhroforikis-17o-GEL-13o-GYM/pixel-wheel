@@ -111,7 +111,6 @@ class SceneManager:
 
 
     def render_current_scene(self) -> None:
-        # try:
         for scene in SceneCatcher.scenes[self.current_scene]:
             keys_pressed = pygame.key.get_pressed()
             scene.event_handling(keys_pressed)
@@ -121,10 +120,6 @@ class SceneManager:
             GlobalProperties.clock_tick_GP_dt(GlobalSettings._fps)
             pygame.display.flip()
             debug_print("Successfull scene render from SceneManager from SceneCatcher", tags=["Rendering"])
-        # except Exception as e: 
-        #     print('An error occured: \n',e)
-            # for scene in self.scenes[self.current_scene]:
-            #     SceneManager.rendering_scene(scene=scene)
 
 
 class SceneHandler:

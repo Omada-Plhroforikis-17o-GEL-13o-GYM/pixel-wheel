@@ -1,7 +1,7 @@
 from os import path 
 import pygame
 # from tleng2.utils.annotations import Coordinate
-from tleng2.utils.settings import GlobalSettings
+# from ..utils.settings import GlobalSettings
 
 
 class ImageService:

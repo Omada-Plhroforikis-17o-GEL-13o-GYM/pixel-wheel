@@ -1,5 +1,6 @@
-from tleng2.engine.area import *
-from tleng2.utils.colors import *
+from ..engine.area import Area
+from ..utils.colors import LIGHT_GREY
+import pygame
 import os  # better performance?
 # ______________________________________________________________UI FUNCTIONS _______________________________________________________________________________________
 

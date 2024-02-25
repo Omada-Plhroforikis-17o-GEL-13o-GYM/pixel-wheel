@@ -2,7 +2,6 @@ import sys
 import pygame
 from .scene import SceneManager
 
-# _______________________________________________________ Game Engine __________________________________________________________
 
 class Game: 
     def __init__(self,scenes):
