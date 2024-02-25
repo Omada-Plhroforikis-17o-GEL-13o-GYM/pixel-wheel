@@ -15,6 +15,7 @@ from .engine.entity import Entity
 from .engine.scene import Scene, SceneCatcher, SceneManager
 from .engine.camera import Camera
 from .engine.scene import Scene, SceneManager
+from .engine.game import Game
 
 from .ui_elements.label import Label
 # from .ui_manager import 
@@ -37,6 +38,7 @@ __all__ = [
 'Scene', 
 'Camera', 
 'Scene', 'SceneManager', 'SceneCatcher',
+"Game",
 'Label', 
 'Object', 
 'Projectile', 'Particles', 

@@ -1,22 +1,48 @@
 '''
-Offsets the objects so the objects and their hitboxes would show right in the currently displayed game, and for easier debugging
+Offsets the objects so the objects and their hitboxes would show right in the currently displayed game, easier debugging
 '''
 from ..utils import GlobalSettings, GlobalProperties
 import pygame
 
-#test
-from ..utils.subpixel import SubPixelSurface
 
+class CameraCatcher:
+    camera = {}
 
-class Camera: 
+    def __init__(self, camera_key):
+        if camera_key != None:
+            self.camera.update({camera_key: self})
+        else:
+            self.camera.update({f"camera{len(self.camera)}": self})
+
+class Camera(CameraCatcher): 
     '''
     Handles how the Surfaces are rendered to the screen. While keeping the world positions.
     '''
-    def __init__(self) -> None:
+    def __init__(
+            self,
+            width: int = GlobalSettings._disp_res[0],
+            height: int = GlobalSettings._disp_res[1],
+            camera_name: str | None = None
+        ) -> None:
+        """
+        self.offset_pos: the coordinates of the camera as a Vector
+        self.angle: is measured in radians
+        """
+        CameraCatcher.__init__(self,camera_key=camera_name)
+
+        self.width = width
+        self.height = height
         self.directions = pygame.math.Vector2(0,0)
         self.offset_pos = pygame.math.Vector2(0,0)
-        self.rect = pygame.FRect(0,0,GlobalSettings._disp_res[0],GlobalSettings._disp_res[1])
+        self.rect = pygame.FRect(0,0,self.width,self.height)
         self.display = GlobalProperties._display 
+
+        self.vertices = [pygame.math.Vector2(-self.width/2, -self.height/2),
+                         pygame.math.Vector2(self.width/2 , -self.height/2),
+                         pygame.math.Vector2(self.width/2 , self.height/2),
+                         pygame.math.Vector2(-self.width/2, self.height/2)]
+        self.angle = 0
+
         # if you want to have multiple cameras. You might also want for them to render in different displays, which then get rendered to the window
 
     
@@ -26,81 +52,20 @@ class Camera:
     def set_target(self) -> None: ...
 
 
-    def render(self,
-            object: pygame.Surface,
-            game_pos: pygame.math.Vector2 | tuple[float,float], 
-            area = None,
-            special_flags: int = 0 
+    def rotate_v(
+            self,
+            new_angle
         ) -> None:
+        """
+        Also rotates the vertices of the camera.
+        :param new_angle: Must be in radians
+        """
+        
+        self.angle = new_angle
+        temp_vertices = []
+        for vertex in self.vertices:
+            temp_vertices += [vertex.rotate_rad(new_angle)]
 
-        self.rect.x, self.rect.y = self.offset_pos[0], self.offset_pos[1]
-
-        # GlobalSettings._display.blit(object,
-        #                              (game_pos[0]-self.offset_pos[0], 
-        #                               game_pos[1]-self.offset_pos[1]),
-        #                               area,
-        #                               special_flags=special_flags
-        #                             )
-        GlobalProperties._display.blit(object,
-                                     (game_pos[0], 
-                                      game_pos[1]),
-                                      self.rect,
-                                      special_flags=special_flags
-                                    )
-        # self.draw_rect((255,0,0),self.rect,5) # debug
-
-    def render_exp(self,
-            object: SubPixelSurface,
-            game_pos: pygame.math.Vector2 | tuple[float,float], 
-            area = None,
-            special_flags: int = 0 
-        ) -> None:
-
-        self.rect.x, self.rect.y = self.offset_pos[0], self.offset_pos[1]
-
-        # GlobalSettings._display.blit(object,
-        #                              (game_pos[0]-self.offset_pos[0], 
-        #                               game_pos[1]-self.offset_pos[1]),
-        #                               area,
-        #                               special_flags=special_flags
-        #                             )
-        GlobalProperties._display.blit(object.at(game_pos[0], game_pos[1]),
-                                     (game_pos[0], 
-                                      game_pos[1]),
-                                      self.rect,
-                                      special_flags=special_flags
-                                    )
-
-
-    def draw_rect(self,
-            color: tuple[int,int,int],
-            rect: pygame.Rect,
-            width: int,
-            border_radius: int = -1,
-            border_top_left_radius: int = -1,
-            border_top_right_radius: int = -1,
-            border_bottom_left_radius: int = -1,
-            border_bottom_right_radius: int = -1,
-        ) -> None:
-        '''
-        Renders the rectangle into the window, with the camera offset.
-        '''
-        dummy_rect = rect.copy()
-        dummy_rect.x -= int(self.offset_pos[0])
-        dummy_rect.y -= int(self.offset_pos[1])
-        pygame.draw.rect(GlobalProperties._display, 
-                        color,
-                        dummy_rect,
-                        width,
-                        border_radius,
-                        border_top_left_radius,
-                        border_top_right_radius,
-                        border_bottom_left_radius,
-                        border_bottom_right_radius
-                        )
-
-class Camera_sprite_stacking: 
-    def __init__(self) -> None: ...
 
 class Camera_3d: 
     def __init__(self) -> None: ...

@@ -40,7 +40,7 @@ class SceneCatcher:
     scenes = {}
 
     def __init__(self, scene_key):
-        self.scenes.update({scene_key:[self]})
+        self.scenes.update({scene_key: self})
 
 
 class Scene(SceneCatcher, ABC):
@@ -49,7 +49,7 @@ class Scene(SceneCatcher, ABC):
         self.scene_name = scene_name
 
     @abstractmethod
-    def event_handling(self):
+    def event_handling(self, keys_pressed):
         '''
         To handle the events of mouse and other
         
@@ -71,18 +71,26 @@ class Scene(SceneCatcher, ABC):
         what to render to the screen
         '''
 
+class SceneManagerCatcher:
+    """
+    Useful for split-screen gameplay were multiple scenemanagers might need to be used
+    """
+    ...
+
 
 class SceneManager:
     """
     Manages like the animation service, scenes how they are getting rendered. 
     """
+    current_scene = ''
+
     def __init__(self, ) -> None: 
         """
         :param scenes: The dictionary should have Scene classes, or classes that have the structure of a scene class.
         :return: None
         """
         self.scenes = None
-        self.current_scene = ''
+        # self.current_scene = ''
         self.layers = []
 
 
@@ -101,6 +109,7 @@ class SceneManager:
 
     @staticmethod
     def rendering_scene(scene):
+        pygame.event.pump()
         keys_pressed = pygame.key.get_pressed()
         scene.event_handling(keys_pressed)
         scene.update()
@@ -111,15 +120,17 @@ class SceneManager:
 
 
     def render_current_scene(self) -> None:
-        for scene in SceneCatcher.scenes[self.current_scene]:
-            keys_pressed = pygame.key.get_pressed()
-            scene.event_handling(keys_pressed)
-            scene.update()
-            scene.render()
-            GlobalProperties.update_window()
-            GlobalProperties.clock_tick_GP_dt(GlobalSettings._fps)
-            pygame.display.flip()
-            debug_print("Successfull scene render from SceneManager from SceneCatcher", tags=["Rendering"])
+        # for scene in SceneCatcher.scenes[self.current_scene]:
+        scene = SceneCatcher.scenes[self.current_scene]
+        print(scene)
+        keys_pressed = pygame.key.get_pressed()
+        scene.event_handling(keys_pressed)
+        scene.update()
+        scene.render()
+        GlobalProperties.update_window()
+        GlobalProperties.clock_tick_GP_dt(GlobalSettings._fps)
+        pygame.display.flip()
+        debug_print("Successfull scene render from SceneManager from SceneCatcher", tags=["Rendering"])
 
 
 class SceneHandler:

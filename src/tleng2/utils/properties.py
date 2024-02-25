@@ -34,13 +34,34 @@ class GlobalProperties:
     # animation_database = {} # probably not to use
 
     @staticmethod
-    def load_display( bg_color: tuple[int, int, int] = (200, 200, 255) ) -> None:
+    def load_displays() -> None:
+        """
+        Initialize the displays quickly.
+        """
+        GlobalProperties._display = pygame.Surface(GlobalSettings._disp_res) 
+        GlobalProperties._window = pygame.display.set_mode(GlobalSettings._win_res)
+
+
+    @staticmethod
+    def load_display() -> None:
         """
         Initialize the display.
         """
         GlobalProperties._display = pygame.Surface(GlobalSettings._disp_res) 
-        GlobalProperties._window = pygame.display.set_mode(GlobalSettings._win_res)
-        GlobalProperties._display.fill(bg_color)
+
+
+    @staticmethod
+    def load_window(
+            flags: int = 0,
+            depth: int = 0,
+            display: int = 0,
+            vsync: int = 0
+        ) -> None:
+        """
+        Initialize the window, with added parameters.
+        """
+        GlobalProperties._window = pygame.display.set_mode(GlobalSettings._win_res, flags, depth, display, vsync) 
+
 
     @staticmethod
     def set_caption(caption: str) -> None:
@@ -48,7 +69,7 @@ class GlobalProperties:
 
 
     @staticmethod
-    def lazy_upscale_display(new_res:tuple[int,int] = GlobalSettings._win_res):
+    def lazy_upscale_display(new_res: tuple[int,int] = GlobalSettings._win_res) -> None:
         """
         Scaling the display to the size of the window.
         And updates the window with the upscale.
@@ -67,20 +88,20 @@ class GlobalProperties:
 
 
     @staticmethod
-    def fill_display(color: tuple[int, int, int]):
+    def fill_display(color: tuple[int, int, int]) -> None:
         """
         Fill the display with color.
         """
         GlobalProperties._display.fill(color)
     
     @staticmethod
-    def clock_tick_dt(target_fps:int) -> float:
+    def clock_tick_dt(target_fps: int) -> float:
         return GlobalProperties._clock.tick(target_fps) / 1000
         # return 1
     
 
     @staticmethod
-    def clock_tick_GP_dt(target_fps:int) -> float:
+    def clock_tick_GP_dt(target_fps: int) -> None:
         """
         Stores the dt value in GlobalProperties.
         """
@@ -89,7 +110,7 @@ class GlobalProperties:
 
     # micro optimization
     @staticmethod
-    def lazy_clock_tick_GP_dt(target_fps:int) -> float:
+    def lazy_clock_tick_GP_dt(target_fps: int) -> None:
         """
         Stores the dt value in GlobalProperties.
         """

@@ -12,3 +12,8 @@ We need to make main.py work something like reference.py.
     - other game related scripts
     - /tleng2/ 
         - game framework scripts
+
+### TODO
+
+- Camera
+- Renderer

@@ -10,7 +10,7 @@ pygame.init()
 # DebugTags.import_tags()
 
 GlobalSettings.update_bresolution((1280,720))
-GlobalProperties.load_display()
+GlobalProperties.load_displays()
 GlobalProperties.set_caption("PixelWheel")
 
 GlobalSettings._debug = True
@@ -27,32 +27,24 @@ class TestEnviroment(Scene):
     def __init__(self,scene_name)->None:
         super().__init__(scene_name)
 
-        self.space = pymunk.Space()
+        # self.space = pymunk.Space()
 
 
-    def event_handling(self, keys_pressed) -> None:
-        if keys_pressed[pygame.QUIT]:
-            print("smt")
-            # pygame.quit()
-            sys.exit()
+    def event_handling(self, keys_pressed) -> None:                    
+        if keys_pressed[pygame.K_w]:
+            print("pressed w")
     
 
     def update(self) -> None:
-        ...
+        pass
     
 
     def render(self) -> None:
-        self.space.step(0.02) # 1/50 = 0.02, better pu the deltatime
-
+        # self.space.step(0.02) # 1/50 = 0.02, better pu the deltatime
+        pass
 
 if __name__ == '__main__':
     menu = TestEnviroment('Test_Enviroment')
-    SM = SceneManager()
-    SM.current_scene = 'Test_Enviroment'
-    while True:
-        SM.render_current_scene()
-        debug_print(SceneCatcher.scenes, tags=["Rendering"])
-
-    """
-    Game.run()
-    """
+    game = Game()
+    SceneManager.current_scene = "Test_Enviroment"
+    game.run()
