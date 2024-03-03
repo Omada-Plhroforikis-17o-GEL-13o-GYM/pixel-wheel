@@ -13,9 +13,9 @@ We need to make main.py work something like reference.py.
     - /tleng2/ 
         - game framework scripts
 ## Running reference.py
-You can move with `WASD`
-You can turn on the debug mode, that shows the hitboxes with `B`
-You can toggle the clarity of the car model with `V` 
+- You can move with `WASD` 
+- You can turn on the debug mode, that shows the hitboxes with `B`
+- You can toggle the clarity of the car model with `V` 
 
 ### TODO
 
