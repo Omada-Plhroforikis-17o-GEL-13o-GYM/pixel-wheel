@@ -14,19 +14,20 @@ def flipy(p):
 
 class Player(pg.sprite.Sprite):
 
-    def __init__(self, pos, space, mass=0.3):
+    def __init__(self, pos, space, mass=0.3, width=52, height=72):
         super().__init__()
-        self.image = pg.Surface((52, 72), pg.SRCALPHA)
+        self.image = pg.Surface((width, height), pg.SRCALPHA)
         #pg.draw.polygon(self.image, pg.Color('steelblue2'),
         #                [(1, 72), (26, 1), (51, 72)])
         pg.draw.polygon(self.image, pg.Color('steelblue2'),
-                        [(1, 72), (1,1),(51,1) ,(51, 72)])
+                        [(1, height), (1,1),(width,1) ,(width, height)])
         self.rect = self.image.get_rect(center=pos)
         self.orig_image = self.image
         # The verts for the Pymunk shape in relation
         # to the sprite's center.
         # vertices = [(0, 36), (26, -36), (-26, -36)]
-        vertices = [(-26, 36),(26,36), (26, -36), (-26, -36)]
+        # vertices = [(-26, 36),(26,36), (26, -36), (-26, -36)]
+        vertices = [(-width/2, height/2),(width/2,height/2), (width/2, -height/2), (-width/2, -height/2)]
 
         # Create the physics body and shape of this object.
         moment = pm.moment_for_poly(mass, vertices)
@@ -70,7 +71,7 @@ class Player(pg.sprite.Sprite):
     def update(self, dt):
         # Accelerate the pymunk body of this sprite.
         if self.accel_forw and self.body.velocity.length < self.topspeed:
-            self.body.apply_force_at_local_point(Vec2d(0, 624), Vec2d(0, 0))
+            self.body.apply_force_at_local_point(Vec2d(0, 1624), Vec2d(0, 0))
         if self.accel_back and self.body.velocity.length < self.topspeed:
             self.body.apply_force_at_local_point(Vec2d(0, -514), Vec2d(0, 0))
         if self.turn_left and self.body.velocity.length < self.topspeed:
@@ -110,23 +111,36 @@ class Wall(pg.sprite.Sprite):
         self.space = space
         self.space.add(self.body, self.shape)
 
-dir = "assets/tile_car2/"
+dir = "assets/formula2/"
 images = None
 
 def load_images():
     list_dir = os.listdir(dir)
     list_dir.sort()
     images = [pg.image.load(dir + img) for img in list_dir]
+    print(images[0].get_width(), images[0].get_height())
     temp_images = []
     for i in images:
-        temp_images += [pg.transform.scale(i.convert_alpha(),(52,72))]
+        temp_images += [i.convert_alpha()]
 
     images = temp_images
 
     return images
 
+def load_bimages(width, height):
+    list_dir = os.listdir(dir)
+    list_dir.sort()
+    images = [pg.image.load(dir + img) for img in list_dir]
+    print(images[0].get_width(), images[0].get_height())
+    temp_images = []
+    for i in images:
+        temp_images += [pg.transform.scale(i.convert_alpha(),(width,height))]
 
-def spritestack(surf, pos, images, rotation, spread=4):
+    images = temp_images
+
+    return images
+
+def spritestack(surf, pos, images, rotation, spread=1):
     for i, img in enumerate(images):
         rotated_img = pg.transform.rotate(img, rotation)
 
@@ -140,6 +154,7 @@ class Game:
     def __init__(self):
         self.done = False
         self.screen = pg.display.set_mode((800, 600))
+        self.pixel = pg.surface.Surface((800/4, 600/4))
         self.clock = pg.time.Clock()
         self.bg_color = pg.Color(60, 60, 60)
 
@@ -148,11 +163,15 @@ class Game:
         self.space.damping = .01
 
         self.all_sprites = pg.sprite.Group()
-
-        self.player = Player((100, 300), self.space)
+        self.images = load_images()
+        self.big_images = load_bimages(width=self.images[0].get_width()*4,height=self.images[0].get_height()*4)
+        self.player = Player((100, 300), self.space, width=self.images[0].get_width()*4-10, height=self.images[0].get_height()*4-10)
         self.all_sprites.add(self.player)
 
-        self.images = load_images()
+        self.pixel_r = False
+        self.debug = False
+
+        
         # Position-vertices tuples for the walls.
         vertices = [
             ([80, 120], ((0, 0), (100, 0), (70, 100), (0, 100))),
@@ -175,6 +194,11 @@ class Game:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.done = True
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_b:
+                    self.debug = False if self.debug else True         
+                if event.key == pg.K_v:
+                    self.pixel_r = False if self.pixel_r else True      
 
             self.player.handle_event(event)
 
@@ -184,19 +208,28 @@ class Game:
 
     def draw(self):
         self.screen.fill(self.bg_color)
+        self.pixel.fill((1,0,0))
         self.all_sprites.draw(self.screen)
         # Debug draw - Pymunk shapes are green, pygame rects are blue.
-        for obj in self.all_sprites:
-            shape = obj.shape
-            ps = [flipy(pos.rotated(shape.body.angle) + shape.body.position)
-                  for pos in shape.get_vertices()]
-            ps.append(ps[0])
-            pg.draw.rect(self.screen, pg.Color('blue'), obj.rect, 2)
-            pg.draw.lines(self.screen, (90, 200, 50), False, ps, 2)
-
+        if self.debug:
+            for obj in self.all_sprites:
+                shape = obj.shape
+                ps = [flipy(pos.rotated(shape.body.angle) + shape.body.position)
+                      for pos in shape.get_vertices()]
+                ps.append(ps[0])
+                pg.draw.rect(self.screen, pg.Color('blue'), obj.rect, 2)
+                pg.draw.lines(self.screen, (90, 200, 50), False, ps, 2)
         
-        print(self.player.body._get_angle())
-        spritestack(self.screen, flipy(self.player.body._get_position()), self.images, convert_rad_to_deg(self.player.body._get_angle()))
+        if self.pixel_r:
+            # print(self.player.body._get_angle())
+            print(self.player.body._get_angle()) if self.debug else None
+            spritestack(self.screen, flipy(self.player.body._get_position()), self.big_images, convert_rad_to_deg(self.player.body._get_angle()),spread=4)
+        else:
+            self.pixel.set_colorkey((1,0,0))
+            pos = flipy(self.player.body._get_position()) # (self.player.body._get_position()[0]/4, self.player.body._get_position()[1]/4)
+            spritestack(self.pixel, (pos[0]/4, pos[1]/4) , self.images, convert_rad_to_deg(self.player.body._get_angle()))
+            self.screen.blit(pg.transform.scale(self.pixel,(800,600)),(0,0))
+        
         pg.display.flip()
 
 

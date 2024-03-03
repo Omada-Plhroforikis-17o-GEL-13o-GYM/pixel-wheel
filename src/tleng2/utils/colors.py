@@ -1,6 +1,7 @@
 # legacy file
 # tleng2 special colors
 TLENG2_BLUE = (95,205,228)
+COLOR_KEY = (1,0,0)
 
 # RGB = Red, Green, Blue, Alpha
 LIGHT_GREY = (192,192,192)
