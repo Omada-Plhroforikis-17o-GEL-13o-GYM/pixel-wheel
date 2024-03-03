@@ -1,6 +1,6 @@
 from ..utils import GlobalSettings, GlobalProperties
 from ..utils.subpixel import SubPixelSurface
-from camera import Camera, CameraCatcher
+from .camera import Camera, CameraCatcher
 from abc import ABC
 import pygame
 
@@ -92,3 +92,19 @@ class Renderer(ABC):
                         border_bottom_left_radius,
                         border_bottom_right_radius)
                         
+    def render_tiles(self, layer, camera) -> None:
+        """
+        It will render every single tile in the level that is provided.
+        """
+        if self.layers == []:
+            ...
+        else:
+            # usage of layer
+            ...
+
+    
+    def lazy_render_tiles(self, layer, camera) -> None:
+        """
+        Will only render where the camera is hovering at from the chunks that are provided (Even if it is rotated).
+        """
+        # Require the tilemap to be broken up into chunks

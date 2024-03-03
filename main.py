@@ -1,11 +1,12 @@
 import pygame
 import pymunk
 import sys
+# import src.tleng2 as tl
 from src.tleng2 import *
-# from tleng2.utils.debug import debug_print
+from src.tleng2.engine.camera import CameraCatcher
+# from src.tleng2.utils.debug import debug_print
 # from src.tleng2.utils.debug import DebugTags
-# from src.tleng2.utils.colors import RED, BLACK
-pygame.init()
+from src.tleng2.utils.colors import WHITE, BLACK 
 
 # DebugTags.import_tags()
 
@@ -13,10 +14,11 @@ GlobalSettings.update_bresolution((1280,720))
 GlobalProperties.load_displays()
 GlobalProperties.set_caption("PixelWheel")
 
-GlobalSettings._debug = True
+GlobalSettings._debug = False
 # GlobalSettings.load_settings_json()
 
-camera = Camera()
+
+camera = Camera(default_camera=True)
 
 class CarPlayer:
     def __init__(self) -> None:
@@ -43,8 +45,10 @@ class TestEnviroment(Scene):
         # self.space.step(0.02) # 1/50 = 0.02, better pu the deltatime
         pass
 
+
 if __name__ == '__main__':
+    pygame.init()
     menu = TestEnviroment('Test_Enviroment')
     game = Game()
-    SceneManager.current_scene = "Test_Enviroment"
+    GlobalProperties.change_current_scene("Test_Enviroment")
     game.run()

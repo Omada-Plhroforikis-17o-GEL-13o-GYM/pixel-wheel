@@ -1,0 +1,3 @@
+"""
+Credits scene class
+"""

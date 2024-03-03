@@ -1,0 +1,3 @@
+"""
+Menu scene class
+"""

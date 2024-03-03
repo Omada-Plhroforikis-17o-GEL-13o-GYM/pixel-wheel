@@ -71,16 +71,10 @@ class Scene(SceneCatcher, ABC):
         what to render to the screen
         '''
 
-class SceneManagerCatcher:
-    """
-    Useful for split-screen gameplay were multiple scenemanagers might need to be used
-    """
-    ...
-
 
 class SceneManager:
     """
-    Manages like the animation service, scenes how they are getting rendered. 
+    Manages like the animation service, scenes how they are getting rendered. Game Engine Backend function.
     """
     current_scene = ''
 
@@ -120,17 +114,28 @@ class SceneManager:
 
 
     def render_current_scene(self) -> None:
+        """
+        Renders the current scene that is assigned.
+        """
         # for scene in SceneCatcher.scenes[self.current_scene]:
         scene = SceneCatcher.scenes[self.current_scene]
-        print(scene)
         keys_pressed = pygame.key.get_pressed()
         scene.event_handling(keys_pressed)
         scene.update()
         scene.render()
-        GlobalProperties.update_window()
-        GlobalProperties.clock_tick_GP_dt(GlobalSettings._fps)
         pygame.display.flip()
         debug_print("Successfull scene render from SceneManager from SceneCatcher", tags=["Rendering"])
+
+
+class SubSceneManagerCatcher:
+    """
+    Useful for split-screen gameplay were multiple scenemanagers might need to be used
+    """
+    ...
+
+
+class SubSceneManager:
+    ...
 
 
 class SceneHandler:

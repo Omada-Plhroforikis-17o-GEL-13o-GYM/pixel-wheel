@@ -1,5 +1,6 @@
 import sys
 import math
+import os
 
 import pygame as pg
 import pymunk as pm
@@ -46,7 +47,7 @@ class Player(pg.sprite.Sprite):
         self.angle = 0
 
     def handle_event(self, event):
-        print(event)
+        # print(event)
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_w:
                 self.accel_forw = True
@@ -109,6 +110,30 @@ class Wall(pg.sprite.Sprite):
         self.space = space
         self.space.add(self.body, self.shape)
 
+dir = "assets/tile_car2/"
+images = None
+
+def load_images():
+    list_dir = os.listdir(dir)
+    list_dir.sort()
+    images = [pg.image.load(dir + img) for img in list_dir]
+    temp_images = []
+    for i in images:
+        temp_images += [pg.transform.scale(i.convert_alpha(),(52,72))]
+
+    images = temp_images
+
+    return images
+
+
+def spritestack(surf, pos, images, rotation, spread=4):
+    for i, img in enumerate(images):
+        rotated_img = pg.transform.rotate(img, rotation)
+
+        surf.blit(rotated_img, (pos[0] - rotated_img.get_width() // 2, pos[1] - rotated_img.get_height() // 2 - i * spread))
+
+def convert_rad_to_deg(rad) -> float:
+    return (rad*180)/math.pi
 
 class Game:
 
@@ -126,6 +151,8 @@ class Game:
 
         self.player = Player((100, 300), self.space)
         self.all_sprites.add(self.player)
+
+        self.images = load_images()
         # Position-vertices tuples for the walls.
         vertices = [
             ([80, 120], ((0, 0), (100, 0), (70, 100), (0, 100))),
@@ -167,7 +194,11 @@ class Game:
             pg.draw.rect(self.screen, pg.Color('blue'), obj.rect, 2)
             pg.draw.lines(self.screen, (90, 200, 50), False, ps, 2)
 
+        
+        print(self.player.body._get_angle())
+        spritestack(self.screen, flipy(self.player.body._get_position()), self.images, convert_rad_to_deg(self.player.body._get_angle()))
         pg.display.flip()
+
 
 
 if __name__ == '__main__':

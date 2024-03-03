@@ -160,3 +160,5 @@ cython_debug/
 #.idea/
 
 test.py
+test2.py
+test3.py

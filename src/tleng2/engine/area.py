@@ -5,12 +5,17 @@ from ..utils import GlobalSettings, GlobalProperties
 from ..utils.annotations import Color
 from ..utils.debug import debug_print
 
+class AreaCatcher:
+    entity_in_scene: dict = {}
+
+    def __init__(self, taint):
+        if taint is not False:
+            self.entity_in_scene.update({f"area{len(self.camera)}" : [self]})        
 
 
-class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
+class Area(AreaCatcher): # Move area to the entities and stuff
     '''
-    Class for area, acts as an area that is dedicated to the entity or the class that inherits this, also can be used for "static" hitboxes
-    (depracated)
+    Class for area, acts as an area that is dedicated to the entity or the class that inherits this, also can be used for "static" hitboxes.
 
     Class variables:
         self.rect: the rectangle class from pygame (created for the group sprite object, and as the main hitbox of the Area)
@@ -28,6 +33,7 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
             width: float = 10.0,
             height: float = 10.0,
             color: Color = WHITE,
+            tainted_area: bool = False
         ) -> None:
         '''
         Initialising the Area
@@ -37,9 +43,9 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
         :param width: The width of the area (float)
         :param height: The height of the area (float)
         :param color: The color of the Area (tuple)
-        :param polygon: Not implemented yet
-        :param poly_polygon: Not implemented yet
+        :param tainted_area: if the area should be catched in the AreaCatcher (bool)
         '''
+        super().__init__(tainted_area)
         self.image = pygame.Surface([width,height])
         debug_print(float(x), float(y), float(width) , float(height), type(x), type(y), type(width) , type(height), tags=["EngineAreaInit"])
         self.rect = pygame.FRect(float(x), float(y), float(width) , float(height)) # screen coordinates
@@ -152,7 +158,7 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
             # self.frame_rect.width = self.core_width
             # self.frame_rect.height = self.core_height
     
-    def round_update(self) -> None:
+    def rounded_update(self) -> None:
         self.rect.x = round(self.core_x)
         self.rect.y = round(self.core_y)
         self.rect.width = round(self.core_width)
@@ -169,11 +175,11 @@ class LazyArea():
     """
     ...
 
-class PolyArea(Area):
+
+class VertArea(Area):
     """
-    Not just a Rectangle
+    Not just a Rectangle, an area that is mostly controlled by vertices.
     """
     def __init__(self, 
-        polygon: list | None = None,
-        poly_polygon: list | None = None,
+        vertices: list | None = None
     ) -> None: ...

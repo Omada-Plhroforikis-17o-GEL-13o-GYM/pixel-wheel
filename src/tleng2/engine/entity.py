@@ -10,8 +10,8 @@ import pygame
 class EntityCatcher:
     entity_in_scene: dict = {}
 
-    def __init__(self, scene_key):
-        self.entity_in_scene.update({scene_key:[self]})
+    def __init__(self, entity_key):
+        self.entity_in_scene.update({entity_key:[self]})
 
 
 
@@ -100,7 +100,7 @@ class Entity:
         # self.hitbox.round_update()
         self.hitbox.update()
     
-    #abstraction for this mouthful "koutsoumara"
+    #abstraction for this mouthful "koutsoumara" ______________________________________________
     def get_hitbox_x(self) -> float | int:
         return self.hitbox.rect.x
     

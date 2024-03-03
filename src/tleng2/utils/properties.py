@@ -10,7 +10,7 @@ class LocalProperties:
         Put the local specific properties that you want the scene/enviroment/object to have
         e.x. (pseudo code)
 
-        self.clock = 30
+        self.fps = 30
         self.font = comic_sans
         self.disp = True
         self.in-game-keyboard = False
@@ -28,6 +28,7 @@ class GlobalProperties:
     _display = None # the inner display of the window
     _clock = pygame.time.Clock()
     _dt = 0
+    _current_scene = 'default'
 
     # _index_event = 1
 
@@ -115,3 +116,11 @@ class GlobalProperties:
         Stores the dt value in GlobalProperties.
         """
         GlobalProperties._dt = GlobalProperties._clock.tick(target_fps) >> 10 # bit shift, clock.tick / 1024
+    
+
+    @staticmethod
+    def change_current_scene(new_scene: str) -> None:
+        """
+        Changes the value of the SceneManager in tleng2/core_engine/scene_manager.py
+        """
+        GlobalProperties._current_scene = new_scene

@@ -1,4 +1,8 @@
 # legacy file
+# tleng2 special colors
+TLENG2_BLUE = (95,205,228)
+
+# RGB = Red, Green, Blue, Alpha
 LIGHT_GREY = (192,192,192)
 YELLOW = (255,255,0)
 ORANGE = (255,165,0)

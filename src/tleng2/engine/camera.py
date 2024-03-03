@@ -6,13 +6,24 @@ import pygame
 
 
 class CameraCatcher:
-    camera = {}
+    cameras = {}
+    default_camera_key = ''
+    default_camera = None
 
-    def __init__(self, camera_key):
+    def __init__(self, camera_key, default_camera):
         if camera_key != None:
-            self.camera.update({camera_key: self})
+            self.cameras.update({camera_key: self})
         else:
-            self.camera.update({f"camera{len(self.camera)}": self})
+            self.cameras.update({f"camera{len(self.cameras)}": self})
+
+        if default_camera and camera_key != None:
+            self.default_camera_key = camera_key
+            self.default_camera = self
+        else:
+            self.default_camera_key = f"camera{len(self.cameras)}"
+            self.default_camera = self
+
+
 
 class Camera(CameraCatcher): 
     '''
@@ -22,7 +33,8 @@ class Camera(CameraCatcher):
             self,
             width: int = GlobalSettings._disp_res[0],
             height: int = GlobalSettings._disp_res[1],
-            camera_name: str | None = None
+            camera_name: str | None = None,
+            default_camera: bool = False
         ) -> None:
         """
         self.offset_pos: the coordinates of the camera as a Vector

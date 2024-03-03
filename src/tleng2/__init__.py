@@ -1,35 +1,44 @@
 from os import environ, path, getcwd
 import json
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
-# print(environ.get('PYGAME_HIDE_SUPPORT_PROMPT')) # debug
 
+
+# core_engine Directory
+from .core_engine.scene_manager import SceneManager
+
+# utils Directory
 from .utils.colors import *
 from .utils.settings import GlobalSettings, LocalSettings
-
 from .utils.properties import GlobalProperties, LocalProperties
 from .utils.debug import debug_print
+from .utils.subpixel import SubPixelSurface
 
 
+# engine Directory
 from .engine.area import Area
 from .engine.entity import Entity
 from .engine.scene import Scene, SceneCatcher, SceneManager
 from .engine.camera import Camera
-from .engine.scene import Scene, SceneManager
 from .engine.game import Game
 
+
+# ui_elemetns Directory
 from .ui_elements.label import Label
 # from .ui_manager import 
 
+
+# physics Directory
 from .physics.object import Object
 from .physics.projectile import Projectile, Particles
 
+
+# services Directory
 from .services.animation import LazyAnimationService
 from .services.image import ImageService
 from .services.sound import SoundService
 from .services.font import FontService
 from .services.tilemap import TileMap, TileSet
 
-from .utils.subpixel import SubPixelSurface
 
 
 __all__ = [
@@ -37,7 +46,7 @@ __all__ = [
 'Entity', 
 'Scene', 
 'Camera', 
-'Scene', 'SceneManager', 'SceneCatcher',
+'Scene', 'SceneCatcher',
 "Game",
 'Label', 
 'Object', 
@@ -55,7 +64,7 @@ __all__ = [
 
 
 __author__ = "TheooKing/Theolaos"
-__version__ = "v2.2.04-exp"
+__version__ = "v2.2.05-exp"
 
 __name__ = "tleng2"
 __doc__ = f'''TLeng2.py is a python 2d game engine
@@ -86,7 +95,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 '''
 
-# Report:
+# Engine Report:
 # TODO: Settings Json support.
 # TODO: Animation Json Support.
 # TODO: Redo the Label system in update 2.2 and add:
