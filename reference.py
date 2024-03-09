@@ -6,6 +6,9 @@ import pygame as pg
 import pymunk as pm
 from pymunk import Vec2d
 
+from pygame.locals import *
+flags = DOUBLEBUF
+
 
 def flipy(p):
     """Convert chipmunk coordinates to pygame coordinates."""
@@ -71,7 +74,7 @@ class Player(pg.sprite.Sprite):
     def update(self, dt):
         # Accelerate the pymunk body of this sprite.
         if self.accel_forw and self.body.velocity.length < self.topspeed:
-            self.body.apply_force_at_local_point(Vec2d(0, 1624), Vec2d(0, 0))
+            self.body.apply_force_at_local_point(Vec2d(0, 1624/2), Vec2d(0, 0))
         if self.accel_back and self.body.velocity.length < self.topspeed:
             self.body.apply_force_at_local_point(Vec2d(0, -514), Vec2d(0, 0))
         if self.turn_left and self.body.velocity.length < self.topspeed:
@@ -86,6 +89,9 @@ class Player(pg.sprite.Sprite):
         self.image = pg.transform.rotozoom(
             self.orig_image, math.degrees(self.body.angle), 1)
         self.rect = self.image.get_rect(center=self.rect.center)
+    
+    def __del__(self,):
+        self.space.remove(self.body, self.shape)
 
 
 class Wall(pg.sprite.Sprite):
@@ -126,6 +132,7 @@ def load_images():
     images = temp_images
 
     return images
+    
 
 def load_bimages(width, height):
     list_dir = os.listdir(dir)
@@ -140,10 +147,15 @@ def load_bimages(width, height):
 
     return images
 
-def spritestack(surf, pos, images, rotation, spread=1):
+
+def spritestack(surf, pos, images, rotation, spread=1, fill=False):
     for i, img in enumerate(images):
         rotated_img = pg.transform.rotate(img, rotation)
 
+        if fill:
+            for j in range(spread):
+                surf.blit(rotated_img, (pos[0] - rotated_img.get_width() // 2, pos[1] - rotated_img.get_height() // 2 -i*spread -j))
+        
         surf.blit(rotated_img, (pos[0] - rotated_img.get_width() // 2, pos[1] - rotated_img.get_height() // 2 - i * spread))
 
 def convert_rad_to_deg(rad) -> float:
@@ -153,8 +165,10 @@ class Game:
 
     def __init__(self):
         self.done = False
-        self.screen = pg.display.set_mode((800, 600))
+        self.screen = pg.display.set_mode((800, 600),flags)
         self.pixel = pg.surface.Surface((800/4, 600/4))
+        self.pixel2 = pg.surface.Surface((800/2, 600/2))
+        self.pixel3 = pg.surface.Surface((800/1.5, 600/1.5))
         self.clock = pg.time.Clock()
         self.bg_color = pg.Color(60, 60, 60)
 
@@ -164,7 +178,10 @@ class Game:
 
         self.all_sprites = pg.sprite.Group()
         self.images = load_images()
-        self.big_images = load_bimages(width=self.images[0].get_width()*4,height=self.images[0].get_height()*4)
+        self.mid_images = load_bimages(width=self.images[0].get_width()*2 , height=self.images[0].get_height()*2)
+        self.big_images = load_bimages(width=self.images[0].get_width()*4 , height=self.images[0].get_height()*4)
+        self.low_images = load_bimages(width=self.images[0].get_width()*1.5,height=self.images[0].get_height()*1.5)
+        print(self.low_images[0].get_height()),self.big_images[0].get_height()
         self.player = Player((100, 300), self.space, width=self.images[0].get_width()*4-10, height=self.images[0].get_height()*4-10)
         self.all_sprites.add(self.player)
 
@@ -186,19 +203,27 @@ class Game:
     def run(self):
         while not self.done:
             self.dt = self.clock.tick(60) / 1000
+            pg.display.set_caption(f"{self.clock.get_fps():.2f} : FPS")
             self.handle_events()
             self.run_logic()
             self.draw()
 
     def handle_events(self):
         for event in pg.event.get():
+            # print(event)
             if event.type == pg.QUIT:
                 self.done = True
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_b:
                     self.debug = False if self.debug else True         
                 if event.key == pg.K_v:
-                    self.pixel_r = False if self.pixel_r else True      
+                    self.pixel_r += 1 if self.pixel_r < 4 else -3      
+                    print(self.pixel_r)
+                if event.key == pg.K_ESCAPE:
+                    self.all_sprites.remove(self.player)
+                    del self.player
+                    self.player = Player((100, 300), self.space, width=self.images[0].get_width()*4-10, height=self.images[0].get_height()*4-10)
+                    self.all_sprites.add(self.player)
 
             self.player.handle_event(event)
 
@@ -209,6 +234,9 @@ class Game:
     def draw(self):
         self.screen.fill(self.bg_color)
         self.pixel.fill((1,0,0))
+        self.pixel2.fill((1,0,0))
+        self.pixel3.fill((1,0,0))
+
         self.all_sprites.draw(self.screen)
         # Debug draw - Pymunk shapes are green, pygame rects are blue.
         if self.debug:
@@ -219,14 +247,24 @@ class Game:
                 ps.append(ps[0])
                 pg.draw.rect(self.screen, pg.Color('blue'), obj.rect, 2)
                 pg.draw.lines(self.screen, (90, 200, 50), False, ps, 2)
+
+        print(self.pixel2.get_height())
         
-        if self.pixel_r:
+        pos = flipy(self.player.body._get_position()) 
+        if self.pixel_r == 1:
             # print(self.player.body._get_angle())
             print(self.player.body._get_angle()) if self.debug else None
-            spritestack(self.screen, flipy(self.player.body._get_position()), self.big_images, convert_rad_to_deg(self.player.body._get_angle()),spread=4)
+            spritestack(self.screen, flipy(self.player.body._get_position()), self.big_images, convert_rad_to_deg(self.player.body._get_angle()),spread=4, fill=True)
+        elif self.pixel_r == 2:
+            self.pixel2.set_colorkey((1,0,0))
+            spritestack(self.pixel2, (pos[0]/2, pos[1]/2), self.mid_images, convert_rad_to_deg(self.player.body._get_angle()),spread=2, fill=True)
+            self.screen.blit(pg.transform.scale(self.pixel2,(800,600)),(0,0))
+        elif self.pixel_r == 3:
+            self.pixel3.set_colorkey((1,0,0))
+            spritestack(self.pixel3, (pos[0]/1.5, pos[1]/1.5), self.low_images, convert_rad_to_deg(self.player.body._get_angle()),spread=1.5)
+            self.screen.blit(pg.transform.scale(self.pixel3,(800,600)),(0,0))            
         else:
             self.pixel.set_colorkey((1,0,0))
-            pos = flipy(self.player.body._get_position()) # (self.player.body._get_position()[0]/4, self.player.body._get_position()[1]/4)
             spritestack(self.pixel, (pos[0]/4, pos[1]/4) , self.images, convert_rad_to_deg(self.player.body._get_angle()))
             self.screen.blit(pg.transform.scale(self.pixel,(800,600)),(0,0))
         
@@ -236,6 +274,7 @@ class Game:
 
 if __name__ == '__main__':
     pg.init()
+    pg.event.set_allowed([QUIT, KEYDOWN, KEYUP])
     Game().run()
     pg.quit()
     sys.exit()

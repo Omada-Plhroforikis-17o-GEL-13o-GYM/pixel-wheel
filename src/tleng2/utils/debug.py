@@ -1,5 +1,4 @@
 from .settings import GlobalSettings
-from ..ui_elements.label import Label
 from .colors import WHITE
 import pygame
 
@@ -27,53 +26,5 @@ class DebugTags:
     def import_tags(tags:list) -> None:
         DebugTags.debug_tags += tags  
 
-class ScreenDebug(Label):
-    def __init__(self, 
-                 window: pygame.Surface, 
-                 x: int |float, 
-                 y: int | float, 
-                 width: int | float, 
-                 height: int | float, 
-                 debug_text: str | list,  
-                 debug_text_font: pygame.font.Font = 'verdana', 
-                 debug_text_size: int | float = 12, 
-                 debug_text_color: str | list = WHITE, 
-                 debug_text_bold: bool = False, 
-                 debug_text_antialias: bool = True, 
-                 rect_color: tuple = WHITE, 
-                 debug_escape_text: bool = False, 
-                 debug_dynamic_text: str | None = None
-        ) -> None:
-        
-        Label.__init__(self, 
-                       window, 
-                       debug_text, 
-                       x, 
-                       y, 
-                       width, 
-                       height, 
-                       rect_color,
-                       debug_text_font, 
-                       debug_text_size, 
-                       debug_text_color, 
-                       debug_text_antialias, 
-                       debug_text_bold, 
-                       debug_escape_text,
-                       debug_dynamic_text)
-        
-        self.set_Label(debug_text, 
-                       debug_text_size,
-                       debug_text_color, 
-                       debug_text_bold)
-
-    def update(self, 
-               x, 
-               y, 
-               shift_x: int | float = 0, 
-               shift_y: int | float = 0, 
-               text: str | None = None
-        ) -> None:
-        self.rect.x, self.rect.y  = x, y
-        super().update(shift_x, shift_y, text)
-
-
+# ScreenDebug is a UI element 
+#        go find it in ui_elements/label.py 

@@ -40,7 +40,7 @@ class Camera(CameraCatcher):
         self.offset_pos: the coordinates of the camera as a Vector
         self.angle: is measured in radians
         """
-        CameraCatcher.__init__(self,camera_key=camera_name)
+        CameraCatcher.__init__(self,camera_key=camera_name, default_camera=default_camera)
 
         self.width = width
         self.height = height
