@@ -47,15 +47,16 @@ class Camera(CameraCatcher):
         self.directions = pygame.math.Vector2(0,0)
         self.offset_pos = pygame.math.Vector2(0,0)
         self.rect = pygame.FRect(0,0,self.width,self.height)
-        self.display = GlobalProperties._display 
+        
 
         self.vertices = [pygame.math.Vector2(-self.width/2, -self.height/2),
-                         pygame.math.Vector2(self.width/2 , -self.height/2),
-                         pygame.math.Vector2(self.width/2 , self.height/2),
-                         pygame.math.Vector2(-self.width/2, self.height/2)]
-        self.angle = 0
+                         pygame.math.Vector2( self.width/2, -self.height/2),
+                         pygame.math.Vector2( self.width/2,  self.height/2),
+                         pygame.math.Vector2(-self.width/2,  self.height/2)]
+        self.angle = 0 # in radians
 
         # if you want to have multiple cameras. You might also want for them to render in different displays, which then get rendered to the window
+        self.display = GlobalProperties._display
 
     
     def update(self) -> None: ...
@@ -70,6 +71,7 @@ class Camera(CameraCatcher):
         ) -> None:
         """
         Also rotates the vertices of the camera.
+        rotates around the center
         :param new_angle: Must be in radians
         """
         
@@ -77,6 +79,20 @@ class Camera(CameraCatcher):
         temp_vertices = []
         for vertex in self.vertices:
             temp_vertices += [vertex.rotate_rad(new_angle)]
+    
+
+    def rotate_ac_v(
+            self,
+            new_angle,
+            point,
+        ) -> None:
+        """
+        Also rotates the vertices of the camera.
+        rotates around around a given point
+        :param new_angle: Must be in radians
+        """
+        ...
+        
 
 
 class Camera_3d: 

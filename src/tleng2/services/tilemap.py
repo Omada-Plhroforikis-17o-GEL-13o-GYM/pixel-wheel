@@ -1,5 +1,5 @@
 # import pygame
-from ..engine.renderer import Renderer
+from ..core_engine.renderer import Renderer
 from ..utils.properties import GlobalProperties
 
 class TileSet:
@@ -54,10 +54,9 @@ class TileMap:
 
     def render(self) -> None:
         # Renderer.render_tiles()
-        for y in range(len(self.tiles)):
-            for x in range(len(self.tiles[y])):
-                GlobalProperties._display.blit(self.tileset[self.tiles[y][x]], (x*self.width, y*self.height) )
-    
+        for y, y_tiles in enumerate(self.tiles):
+            for x, tile_name in enumerate(y_tiles):
+                GlobalProperties._display.blit(self.tileset[tile_name], (x*self.width, y*self.height) )
 
     def update(self) -> None:
         pass

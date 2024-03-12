@@ -1,17 +1,87 @@
 from ..utils import GlobalSettings, GlobalProperties
 from ..utils.subpixel import SubPixelSurface
-from .camera import Camera, CameraCatcher
+from ..engine import Camera, CameraCatcher
+from ..utils import debug_print
 from abc import ABC
 import pygame
 
 
 class Renderer(ABC):
+    # TODO 
+    _window = None # the window that you see
+    _display = None # the inner display of the window
+
     def __init__(self) -> None:
         self.layers = []
+        self.layers_order = None
+
+    @staticmethod
+    def load_displays() -> None:
+        """
+        Initialize the displays quickly.
+        """
+        GlobalProperties._display = pygame.Surface(GlobalSettings._disp_res) 
+        GlobalProperties._window = pygame.display.set_mode(GlobalSettings._win_res)
 
 
-    def add_layer(self) -> None:
-        self.layers += [pygame.Surface()]
+    @staticmethod
+    def load_display() -> None:
+        """
+        Initialize the display.
+        """
+        GlobalProperties._display = pygame.Surface(GlobalSettings._disp_res) 
+
+
+    @staticmethod
+    def load_window(
+            flags: int = 0,
+            depth: int = 0,
+            display: int = 0,
+            vsync: int = 0
+        ) -> None:
+        """
+        Initialize the window, with added parameters.
+        """
+        GlobalProperties._window = pygame.display.set_mode(GlobalSettings._win_res, flags, depth, display, vsync) 
+
+
+    @staticmethod
+    def set_caption(caption: str) -> None:
+        pygame.display.set_caption(caption)
+
+    
+    def fill_display(self, color: tuple[int, int, int]) -> None:
+        """
+        Fill the display with color.
+        """
+        self._display.fill(color)
+
+    # _________________________-
+
+    def add_layer(
+            self,
+            width: int | None = None,
+            height: int | None = None
+        ) -> None:
+        """
+        Either you input the width and the height, or leave it blank.
+        """
+        if width == None and height == None:
+            self.layers += [pygame.Surface(GlobalSettings._disp_res)]
+        else:
+            self.layers += [pygame.Surface((width, height))]
+
+    def add_layers(
+            self,
+            layers: list
+        ) -> None:
+        """
+        Adds multiple layers at once.
+        """
+        self.layers += layers
+
+
+    def change_layers_order(self) -> None: ...
 
 
     def render_surface(self,
@@ -40,6 +110,7 @@ class Renderer(ABC):
                                           special_flags=special_flags
                                         )
         # self.draw_rect((255,0,0),self.rect,5) # debug
+
 
     def render_sub_exp(self,
             object: SubPixelSurface,
@@ -91,7 +162,8 @@ class Renderer(ABC):
                         border_top_right_radius,
                         border_bottom_left_radius,
                         border_bottom_right_radius)
-                        
+
+
     def render_tiles(self, layer, camera) -> None:
         """
         It will render every single tile in the level that is provided.

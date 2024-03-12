@@ -1,9 +1,12 @@
 # have every not setting related variable stored here
+# this file will be kept for legacy reasons, and for this module to be able to work as a framework, before it transitions into an engine
+# TODO maybe we are going to move some functionality from here to their respective categories
+
 import pygame
 from .settings import GlobalSettings
 from abc import abstractmethod, ABC
 
-class LocalProperties:
+class LocalProperties(ABC):
     @abstractmethod
     def __init__(self):
         """
@@ -18,7 +21,7 @@ class LocalProperties:
 
 class GlobalProperties:
     """
-    Global properties, needed across the game.
+    Global properties, needed across the framework/game.
     """
     
     # Temporary display variables
