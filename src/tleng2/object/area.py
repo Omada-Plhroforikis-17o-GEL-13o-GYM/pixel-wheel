@@ -1,9 +1,12 @@
 import pygame
 from warnings import warn
+from ..utils.annotations import Color, VertRect
 from ..utils.colors import WHITE, BLACK
-from ..utils import GlobalSettings, GlobalProperties
-from ..utils.annotations import Color
+from ..utils.settings import GlobalSettings
+from ..utils.properties import  GlobalProperties
 from ..utils.debug import debug_print
+
+
 
 class AreaCatcher:
     entity_in_scene: dict = {}
@@ -51,9 +54,11 @@ class Area(AreaCatcher): # Move area to the entities and stuff
         self.rect = pygame.FRect(float(x), float(y), float(width) , float(height)) # screen coordinates
         self.core_x = x # actual x coordinate
         self.core_y = y # actual y coordinate
-        self.core_width = width
-        self.core_height = height
+        self.width = width
+        self.height = height
         self.color = color  
+
+        self.renderer = ...
 
         self.thickness = 0
 
@@ -93,7 +98,6 @@ class Area(AreaCatcher): # Move area to the entities and stuff
         pygame.draw.rect(GlobalProperties._display, self.color, self.rect)
         if self.thickness != 0:            
             pygame.draw.rect(GlobalProperties._display, self.color, self.frame_rect, abs(self.thickness))
-
 
     def render_outline(self) -> None:
         '''
@@ -176,10 +180,60 @@ class LazyArea():
     ...
 
 
+
 class VertArea(Area):
     """
-    Not just a Rectangle, an area that is mostly controlled by vertices.
+    A Rectangle with vertices.
+    The vertices must be 2d not 3d. And there must be 4 vertices not more or less.
+    The area is not a polygon, for that you must use PolyArea.
     """
-    def __init__(self, 
-        vertices: list | None = None
-    ) -> None: ...
+    def __init__(self,
+                  x: float = 0, 
+                  y: float = 0, 
+                  width: float = 10, 
+                  height: float = 10
+                ) -> None:
+        """
+        :param vertices: a list of vectors, must be in a list of 4 elements.
+        """
+        
+        Area.__init__(self, x, y, width, height)
+        self.vertices = [pygame.math.Vector2(-self.width/2, -self.height/2),
+                         pygame.math.Vector2( self.width/2, -self.height/2),
+                         pygame.math.Vector2( self.width/2,  self.height/2),
+                         pygame.math.Vector2(-self.width/2,  self.height/2)]
+        self.angle = 0 # measured in radians
+
+    def rotate_verts(
+            self,
+            new_angle
+        ) -> None:
+        """
+        Rotates the vertices of the camera.
+        rotates around the center
+        :param new_angle: Must be in radians
+        """
+        
+        self.angle = new_angle
+        temp_vertices = []
+        for vertex in self.vertices:
+            temp_vertices += [vertex.rotate_rad(new_angle)]
+    
+
+    def rotate_point_verts(
+            self,
+            new_angle,
+            point,
+        ) -> None:
+        """
+        Rotates the vertices of the camera.
+        rotates around around a given point
+        :param new_angle: Must be in radians
+        """
+        ...
+
+class PolyArea:
+    """
+    Not implemented yet.
+    """
+    pass

@@ -1,8 +1,14 @@
 '''
 Offsets the objects so the objects and their hitboxes would show right in the currently displayed game, easier debugging
 '''
-from ..utils import GlobalSettings, GlobalProperties
 import pygame
+
+from ..utils.settings import GlobalSettings
+from ..utils.properties import GlobalProperties
+from ..object.area import VertArea
+from ..object.sprite import Entity
+from ..core_engine.engine import GameEngine
+
 
 
 class CameraCatcher:
@@ -42,56 +48,22 @@ class Camera(CameraCatcher):
         """
         CameraCatcher.__init__(self,camera_key=camera_name, default_camera=default_camera)
 
-        self.width = width
-        self.height = height
+        self.vert_area = VertArea(width=width, height=height)
+
         self.directions = pygame.math.Vector2(0,0)
         self.offset_pos = pygame.math.Vector2(0,0)
-        self.rect = pygame.FRect(0,0,self.width,self.height)
+        self.rect = pygame.FRect(0, 0, self.vert_area.width, self.vert_area.height)
+
+        self.target_entity = None
         
 
-        self.vertices = [pygame.math.Vector2(-self.width/2, -self.height/2),
-                         pygame.math.Vector2( self.width/2, -self.height/2),
-                         pygame.math.Vector2( self.width/2,  self.height/2),
-                         pygame.math.Vector2(-self.width/2,  self.height/2)]
-        self.angle = 0 # in radians
-
-        # if you want to have multiple cameras. You might also want for them to render in different displays, which then get rendered to the window
-        self.display = GlobalProperties._display
 
     
     def update(self) -> None: ...
 
 
-    def set_target(self) -> None: ...
-
-
-    def rotate_v(
-            self,
-            new_angle
-        ) -> None:
-        """
-        Also rotates the vertices of the camera.
-        rotates around the center
-        :param new_angle: Must be in radians
-        """
-        
-        self.angle = new_angle
-        temp_vertices = []
-        for vertex in self.vertices:
-            temp_vertices += [vertex.rotate_rad(new_angle)]
-    
-
-    def rotate_ac_v(
-            self,
-            new_angle,
-            point,
-        ) -> None:
-        """
-        Also rotates the vertices of the camera.
-        rotates around around a given point
-        :param new_angle: Must be in radians
-        """
-        ...
+    def set_target(self, new_target_entity: Entity) -> None: 
+        self.target_entity = new_target_entity
         
 
 

@@ -4,7 +4,12 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
 
 
 # core_engine Directory
-from .core_engine.scene_manager import SceneManager
+#from .core_engine.scene_manager import SceneManager
+
+
+# core_engine Directory
+# from .core_engine.scene_manager import SceneManager
+from .core_engine.engine import GameEngine, GameEngine_exp, EngineProperties
 
 # utils Directory
 from .utils.colors import *
@@ -14,9 +19,11 @@ from .utils.debug import debug_print
 from .utils.subpixel import SubPixelSurface
 
 
-# engine Directory
-from .engine.area import Area
-from .engine.entity import Entity
+# object Directory
+from .object.area import Area
+from .object.sprite import Entity
+
+# object Directory
 from .engine.scene import Scene, SceneCatcher, SceneManager
 from .engine.camera import Camera
 from .engine.game import Game
@@ -40,8 +47,8 @@ from .services.font import FontService
 from .services.tilemap import TileMap, TileSet
 
 
-
 __all__ = [
+'GameEngine', 'GameEngine_exp', 'EngineProperties',
 'Area', 
 'Entity', 
 'Scene', 
@@ -64,7 +71,7 @@ __all__ = [
 
 
 __author__ = "TheooKing/Theolaos"
-__version__ = "v2.2.05-exp"
+__version__ = "v2.2.8-exp"
 
 __name__ = "tleng2"
 __doc__ = f'''TLeng2.py is a python 2d game engine

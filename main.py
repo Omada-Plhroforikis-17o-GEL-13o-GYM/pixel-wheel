@@ -1,20 +1,18 @@
 import pygame
 import pymunk
 import sys
-# import src.tleng2 as tl
+
 from src.tleng2 import *
-from src.tleng2.engine.camera import CameraCatcher
-# from src.tleng2.utils.debug import debug_print
-# from src.tleng2.utils.debug import DebugTags
-from src.tleng2.utils.colors import WHITE, BLACK 
+# from src.tleng2.engine import EngineProperties
+
 
 # DebugTags.import_tags()
 
 GlobalSettings.update_bresolution((1280,720))
 GlobalProperties.load_displays()
-GlobalProperties.set_caption("PixelWheel")
+EngineProperties.set_caption("PixelWheel")
 
-GlobalSettings._debug = False
+EngineProperties._debug = False
 # GlobalSettings.load_settings_json()
 
 

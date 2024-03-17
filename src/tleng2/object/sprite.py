@@ -13,7 +13,7 @@ class EntityCatcher:
     def __init__(self, entity_key):
         self.entity_in_scene.update({entity_key:[self]})
 
-
+# TODO entity has a new meaning now
 
 class Entity:
     def __init__(

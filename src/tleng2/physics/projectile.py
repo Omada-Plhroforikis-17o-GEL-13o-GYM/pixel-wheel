@@ -1,4 +1,4 @@
-from ..engine.area import Area
+from ..object.area import Area
 # import pygame
 
 class Projectile(Area):

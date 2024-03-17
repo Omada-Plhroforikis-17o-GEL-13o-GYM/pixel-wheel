@@ -1,6 +1,6 @@
 import sys
 import pygame
-from .scene import SceneCatcher
+from ..engine.scene import SceneCatcher
 from ..utils.debug import debug_print
 from ..utils.properties import GlobalProperties
 from ..utils.settings import GlobalSettings
@@ -17,6 +17,7 @@ class Game:
         '''
         to play the game
         '''
+        
 
         if tleng2_intro:
             pass

@@ -138,20 +138,6 @@ class SubSceneManager:
     ...
 
 
-class SceneHandler:
-    """
-    Depracated, use Scene Manager instead!
-    """
-    def __init__(self):
-        self.current_scene = ''
-
-    def load_scenes(self, scenes):
-        self.scenes = scenes
-    
-    def render_current_scene(self):
-        for scene in SceneCatcher.scenes[self.current_scene]:
-            scene.update_stuff()
-            scene.render_stuff()
 # the general idea that the scene can be controlled by the scene itself is kinda stupid.
 
 

@@ -6,7 +6,7 @@ import pygame
 
 class SceneManager:
     """
-    Manages like the animation service, scenes how they are getting rendered. Game Engine Backend function.
+    Manages the animation service, scenes how they are getting rendered. Game Engine Backend function.
     """
 
     def __init__(self, ) -> None: 
@@ -15,9 +15,9 @@ class SceneManager:
         :return: None
         """
         self.scenes = None
-        # self.current_scene = ''
-        self.layers = []
+        self.scene_layers = [] # future support for having a scene render on top of another scene, 
 
+        # self.current_scene = ''
 
     def return_scene_phase(self, key:str) -> Scene:
         """

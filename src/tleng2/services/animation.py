@@ -1,4 +1,5 @@
-from ..utils import GlobalSettings, GlobalProperties
+from ..utils.settings import GlobalSettings
+from ..utils.properties import GlobalProperties
 import pygame
 
 class FancyAnimationService:

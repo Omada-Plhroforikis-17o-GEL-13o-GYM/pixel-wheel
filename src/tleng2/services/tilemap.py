@@ -1,5 +1,5 @@
 # import pygame
-from ..core_engine.renderer import Renderer
+from ..engine.renderer import Renderer
 from ..utils.properties import GlobalProperties
 
 class TileSet:

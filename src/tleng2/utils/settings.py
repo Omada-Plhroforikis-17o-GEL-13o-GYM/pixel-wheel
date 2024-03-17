@@ -29,13 +29,14 @@ class GlobalSettings:
     _scalable_window = False
     _display_ratio_lock = True #if the game only supports 500x500 then the window will ony scale to that ration
     _fps = 60
-    _target_fps = 60
+    _physics_target_fps = 60 # for dt dependant values (delta-time)
 
     _font = None # global font for the whole game.
     _debug = False
 
-    # _platform = 'pc' # on what platform is the game for, if for mobile then the display should be changed
+    _jsettings = {}
 
+    # _platform = 'pc' # on what platform is the game for, if for mobile then the display should be changed
     @staticmethod
     def update_bresolution(new_res:tuple[int,int]) -> None:
         """

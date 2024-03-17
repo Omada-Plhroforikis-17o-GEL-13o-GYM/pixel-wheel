@@ -1,4 +1,4 @@
-from ..engine.area import Area
+from ..object.area import Area
 from ..utils.colors import LIGHT_GREY
 import pygame
 import os  # better performance?
