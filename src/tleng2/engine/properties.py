@@ -3,8 +3,10 @@
 # TODO maybe we are going to move some functionality from here to their respective categories
 
 import pygame
-from ..utils.settings import GlobalSettings
+from .settings import GlobalSettings
 from abc import abstractmethod, ABC
+from .renderer import Renderer
+from .scene_manager import SceneManager
 
 class LocalProperties(ABC):
     @abstractmethod
@@ -32,6 +34,9 @@ class EngineProperties:
     _clock = pygame.time.Clock()
     _dt = 0
     _current_scene = 'default'
+
+    d_renderer = Renderer()
+    scene_manager = SceneManager()
 
     # _index_event = 1
 

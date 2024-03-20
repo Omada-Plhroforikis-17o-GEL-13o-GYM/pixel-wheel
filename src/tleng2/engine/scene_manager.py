@@ -1,7 +1,7 @@
-from ..engine.scene import Scene, SceneCatcher
-from ..utils.settings import GlobalSettings
-from ..utils.properties import GlobalProperties
+from ..components.scene import Scene, SceneCatcher
+from .settings import GlobalSettings
 from ..utils.debug import debug_print
+from .properties import EngineProperties
 import pygame
 
 class SceneManager:
@@ -39,17 +39,17 @@ class SceneManager:
         scene.event_handling(keys_pressed)
         scene.update()
         scene.render()
-        GlobalProperties.update_window()
-        GlobalProperties.clock_tick_GP_dt(GlobalSettings._fps)
+        EngineProperties.update_window()
+        EngineProperties.clock_tick_GP_dt(GlobalSettings._fps)
         pygame.display.flip()
 
-
-    def render_current_scene(self) -> None:
+    @staticmethod
+    def render_current_scene() -> None:
         """
         Renders the current scene that is assigned.
         """
         # for scene in SceneCatcher.scenes[self.current_scene]:
-        scene = SceneCatcher.scenes[GlobalProperties._current_scene]
+        scene = SceneCatcher.scenes[EngineProperties._current_scene]
         keys_pressed = pygame.key.get_pressed()
         scene.event_handling(keys_pressed)
         scene.update()

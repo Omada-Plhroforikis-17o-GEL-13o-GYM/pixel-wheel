@@ -9,12 +9,12 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
 
 # core_engine Directory
 # from .core_engine.scene_manager import SceneManager
-from .core_engine.engine import GameEngine, GameEngine_exp, EngineProperties
+from .engine.engine import GameEngine, GameEngine_exp, EngineProperties
 
 # utils Directory
 from .utils.colors import *
-from .utils.settings import GlobalSettings, LocalSettings
-from .utils.properties import GlobalProperties, LocalProperties
+from .engine.settings import GlobalSettings, LocalSettings
+# from .utils.properties import GlobalProperties, LocalProperties
 from .utils.debug import debug_print
 from .utils.subpixel import SubPixelSurface
 
@@ -24,8 +24,8 @@ from .object.area import Area
 from .object.sprite import Entity
 
 # object Directory
-from .engine.scene import Scene, SceneCatcher, SceneManager
-from .engine.camera import Camera
+from .components.scene import Scene, SceneCatcher, SceneManager
+from .components.camera import Camera
 from .engine.game import Game
 
 

@@ -31,8 +31,9 @@ fn scene_phase:
 """
 import pygame
 from abc import ABC, abstractmethod
-from ..utils.properties import GlobalProperties
-from ..utils.settings import GlobalSettings
+from ..engine.properties import EngineProperties
+from ..engine.renderer import Renderer
+from ..engine.settings import GlobalSettings
 from ..utils.debug import debug_print
 
 
@@ -41,6 +42,8 @@ class SceneCatcher:
 
     def __init__(self, scene_key):
         self.scenes.update({scene_key: self})
+        Renderer.scene_parameters.update({scene_key:self.scene_renderer_params()})
+
 
 
 class Scene(SceneCatcher, ABC):
@@ -48,8 +51,16 @@ class Scene(SceneCatcher, ABC):
         SceneCatcher.__init__(self,scene_key=scene_name)
         self.scene_name = scene_name
 
+
     @abstractmethod
-    def event_handling(self, keys_pressed):
+    def scene_renderer_params(self) -> dict:
+        """
+        This method needs to return a dictionary with certain parameters for the renderer
+        """
+
+
+    @abstractmethod
+    def event_handling(self, keys_pressed) -> None:
         '''
         To handle the events of mouse and other
         
@@ -60,13 +71,13 @@ class Scene(SceneCatcher, ABC):
         '''
 
     @abstractmethod
-    def update(self):
+    def update(self) -> None:
         '''
         game logic
         '''
 
     @abstractmethod
-    def render(self):
+    def render(self) -> None:
         '''
         what to render to the screen
         '''

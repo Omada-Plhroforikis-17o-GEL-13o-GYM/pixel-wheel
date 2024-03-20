@@ -2,10 +2,9 @@ import pygame
 from warnings import warn
 from ..utils.annotations import Color, VertRect
 from ..utils.colors import WHITE, BLACK
-from ..utils.settings import GlobalSettings
-from ..utils.properties import  GlobalProperties
+from ..engine.settings import GlobalSettings
 from ..utils.debug import debug_print
-
+from ..engine.properties import EngineProperties
 
 
 class AreaCatcher:
@@ -22,10 +21,10 @@ class Area(AreaCatcher): # Move area to the entities and stuff
 
     Class variables:
         self.rect: the rectangle class from pygame (created for the group sprite object, and as the main hitbox of the Area)
-        self.core_x: the core x coordinate of the rect (it doesn't store the top left coordinate) (float)
-        self.core_y: the core y coordinta of the rect (it doesn't store the top left coordinate) (float)
-        self.core_width: the width of the rectangle (int)
-        self.core_height: the height of the rectangle (int)
+        self.x: the core x coordinate of the rect (it doesn't store the top left coordinate) (float)
+        self.y: the core y coordinta of the rect (it doesn't store the top left coordinate) (float)
+        self.width: the width of the rectangle (int)
+        self.height: the height of the rectangle (int)
         self.image: image (i don't know what it can be used for) (created for the group sprite object) (pygame.Surface)
         self.color: the color of the rectangle (tuple)
     '''
@@ -52,8 +51,8 @@ class Area(AreaCatcher): # Move area to the entities and stuff
         self.image = pygame.Surface([width,height])
         debug_print(float(x), float(y), float(width) , float(height), type(x), type(y), type(width) , type(height), tags=["EngineAreaInit"])
         self.rect = pygame.FRect(float(x), float(y), float(width) , float(height)) # screen coordinates
-        self.core_x = x # actual x coordinate
-        self.core_y = y # actual y coordinate
+        self.x = x # actual x coordinate
+        self.y = y # actual y coordinate
         self.width = width
         self.height = height
         self.color = color  
@@ -95,7 +94,7 @@ class Area(AreaCatcher): # Move area to the entities and stuff
         If there the outline has been set to anything than 0, then it will be rendered
         :return: It returns nothing
         '''
-        pygame.draw.rect(GlobalProperties._display, self.color, self.rect)
+        pygame.draw.rect(EngineProperties._display, self.color, self.rect)
         if self.thickness != 0:            
             pygame.draw.rect(GlobalProperties._display, self.color, self.frame_rect, abs(self.thickness))
 
@@ -135,15 +134,15 @@ class Area(AreaCatcher): # Move area to the entities and stuff
             width,
             height,
     ) -> None:
-        self.core_x = x
-        self.core_y = y
-        self.core_width = width
-        self.core_height = height
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
 
-        self.rect.x = self.core_x
-        self.rect.y = self.core_y
-        self.rect.width = self.core_width
-        self.rect.height = self.core_height 
+        self.rect.x = self.x
+        self.rect.y = self.y
+        self.rect.width = self.width
+        self.rect.height = self.height 
 
 
     def update(self) -> None:
@@ -151,26 +150,26 @@ class Area(AreaCatcher): # Move area to the entities and stuff
         Function for the sprite group updating
         '''
 
-        self.rect.x = self.core_x
-        self.rect.y = self.core_y
-        self.rect.width = self.core_width
-        self.rect.height = self.core_height
+        self.rect.x = self.x
+        self.rect.y = self.y
+        self.rect.width = self.width
+        self.rect.height = self.height
 
         if self.frame_rect != None:
-            self.frame_rect.x = self.core_x - self.thickness
-            self.frame_rect.y = self.core_y - self.thickness
-            # self.frame_rect.width = self.core_width
-            # self.frame_rect.height = self.core_height
+            self.frame_rect.x = self.x - self.thickness
+            self.frame_rect.y = self.y - self.thickness
+            # self.frame_rect.width = self.width
+            # self.frame_rect.height = self.height
     
     def rounded_update(self) -> None:
-        self.rect.x = round(self.core_x)
-        self.rect.y = round(self.core_y)
-        self.rect.width = round(self.core_width)
-        self.rect.height = round(self.core_height)
+        self.rect.x = round(self.x)
+        self.rect.y = round(self.y)
+        self.rect.width = round(self.width)
+        self.rect.height = round(self.height)
 
         if self.frame_rect != None:
-            self.frame_rect.x = round(self.core_x - self.thickness)
-            self.frame_rect.y = round(self.core_y - self.thickness)
+            self.frame_rect.x = round(self.x - self.thickness)
+            self.frame_rect.y = round(self.y - self.thickness)
 
 
 class LazyArea():

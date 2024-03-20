@@ -1,10 +1,10 @@
 import sys
 import pygame
-from ..engine.scene import SceneCatcher
+from ..components.scene import SceneCatcher
 from ..utils.debug import debug_print
-from ..utils.properties import GlobalProperties
-from ..utils.settings import GlobalSettings
-from ..core_engine.scene_manager import SceneManager
+from ..utils import GlobalProperties
+from .settings import GlobalSettings
+from .scene_manager import SceneManager
 
 
 class Game: 

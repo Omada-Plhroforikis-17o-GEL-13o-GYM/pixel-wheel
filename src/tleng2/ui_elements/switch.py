@@ -1,4 +1,4 @@
-from tleng2.engine.area import Area
+from tleng2.components.area import Area
 from tleng2.utils.colors import WHITE
 import pygame, os
 

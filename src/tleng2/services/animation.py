@@ -1,4 +1,4 @@
-from ..utils.settings import GlobalSettings
+from ..engine.settings import GlobalSettings
 from ..utils.properties import GlobalProperties
 import pygame
 

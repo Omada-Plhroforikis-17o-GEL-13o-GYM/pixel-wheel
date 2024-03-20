@@ -2,7 +2,7 @@ from .area import Area
 from ..services.animation import LazyAnimationService
 from ..services.image import ImageService
 from ..services.sound import SoundService
-from ..utils.settings import GlobalSettings
+from ..engine.settings import GlobalSettings
 from ..utils.colors import RED
 import pygame
 

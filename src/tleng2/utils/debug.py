@@ -1,4 +1,4 @@
-from .settings import GlobalSettings
+from ..engine.settings import GlobalSettings
 from .colors import WHITE
 import pygame
 

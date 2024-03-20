@@ -3,11 +3,10 @@ Offsets the objects so the objects and their hitboxes would show right in the cu
 '''
 import pygame
 
-from ..utils.settings import GlobalSettings
-from ..utils.properties import GlobalProperties
+from ..engine.settings import GlobalSettings
 from ..object.area import VertArea
 from ..object.sprite import Entity
-from ..core_engine.engine import GameEngine
+from ..engine.properties import EngineProperties
 
 
 

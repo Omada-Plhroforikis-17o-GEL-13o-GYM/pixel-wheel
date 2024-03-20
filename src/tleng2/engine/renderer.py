@@ -1,20 +1,20 @@
-from ..utils.properties import GlobalProperties
-from ..utils.properties import GlobalSettings
-from ..core_engine.engine import EngineProperties
 from ..utils.subpixel import SubPixelSurface
-from ..utils.debug import debug_print
-from .camera import Camera, CameraCatcher
-
-from abc import ABC
+from .settings import GlobalSettings
 import pygame
 
+# The other renderer is a sub-renderer
+# that in the end render using this renderer
 
-class Renderer(ABC):
+class Renderer:
+    scene_parameters = {}
+
     def __init__(self) -> None:
         self.layers = []
         self.layers_order = None
         self.target_surf = None # defalut is EngineProperties._display
 
+        self._display = None
+        self._window = None
 
     def add_layer(
             self,
@@ -28,6 +28,7 @@ class Renderer(ABC):
             self.layers += [pygame.Surface(GlobalSettings._disp_res)]
         else:
             self.layers += [pygame.Surface((width, height))]
+
 
     def add_layers(
             self,
@@ -54,19 +55,19 @@ class Renderer(ABC):
         self.rect.x, self.rect.y = self.offset_pos[0], self.offset_pos[1]
         
         if area != None:
-            GlobalSettings._display.blit(object,
-                                         (game_pos[0]-self.offset_pos[0], 
-                                          game_pos[1]-self.offset_pos[1]),
-                                          area,
-                                          special_flags=special_flags
-                                        )
+            self._display.blit(object,
+                               (game_pos[0]-self.offset_pos[0], 
+                                game_pos[1]-self.offset_pos[1]),
+                                area,
+                                special_flags=special_flags
+                              )
         else:
-            GlobalProperties._display.blit(object,
-                                         (game_pos[0], 
-                                          game_pos[1]),
-                                          self.rect,
-                                          special_flags=special_flags
-                                        )
+            self._display.blit(object,
+                               (game_pos[0], 
+                                game_pos[1]),
+                                self.rect,
+                                special_flags=special_flags
+                              )
         # self.draw_rect((255,0,0),self.rect,5) # debug
 
 
@@ -87,7 +88,7 @@ class Renderer(ABC):
         #                               area,
         #                               special_flags=special_flags
         #                             )
-        GlobalProperties._display.blit(object.at(game_pos[0], game_pos[1]),
+        self._display.blit(object.at(game_pos[0], game_pos[1]),
                                      (game_pos[0], 
                                       game_pos[1]),
                                       self.rect,
@@ -111,7 +112,7 @@ class Renderer(ABC):
         dummy_rect = rect.copy()
         dummy_rect.x -= int(self.offset_pos[0])
         dummy_rect.y -= int(self.offset_pos[1])
-        pygame.draw.rect(GlobalProperties._display, 
+        pygame.draw.rect(self._display, 
                         color,
                         dummy_rect,
                         width,
