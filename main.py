@@ -9,10 +9,10 @@ from src.tleng2 import *
 # DebugTags.import_tags()
 
 GlobalSettings.update_bresolution((1280,720))
-GlobalProperties.load_displays()
-EngineProperties.set_caption("PixelWheel")
+EngineMethods.load_displays()
+EngineMethods.set_caption("PixelWheel")
 
-EngineProperties._debug = False
+GlobalSettings._debug = False
 # GlobalSettings.load_settings_json()
 
 
@@ -48,5 +48,5 @@ if __name__ == '__main__':
     pygame.init()
     menu = TestEnviroment('Test_Enviroment')
     game = Game()
-    GlobalProperties.change_current_scene("Test_Enviroment")
+    SceneManagerMethods.change_current_scene("Test_Enviroment")
     game.run()

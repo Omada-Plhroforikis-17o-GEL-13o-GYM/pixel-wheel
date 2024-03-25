@@ -1,6 +1,6 @@
 # import pygame
-from ..components.renderer import Renderer
-from ..utils.properties import GlobalProperties
+from ..engine.renderer import Renderer
+from ..engine.properties import EngineProperties
 
 class TileSet:
     def __init__(self, 
@@ -56,7 +56,7 @@ class TileMap:
         # Renderer.render_tiles()
         for y, y_tiles in enumerate(self.tiles):
             for x, tile_name in enumerate(y_tiles):
-                GlobalProperties._display.blit(self.tileset[tile_name], (x*self.width, y*self.height) )
+                EngineProperties._display.blit(self.tileset[tile_name], (x*self.width, y*self.height) )
 
     def update(self) -> None:
         pass

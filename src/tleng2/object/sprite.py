@@ -15,14 +15,14 @@ class EntityCatcher:
 
 # TODO entity has a new meaning now
 
-class Entity:
+class Sprite:
     def __init__(
             self,
             x: int | float, 
             y: int | float,  
             width: int | float, 
             height: int | float, 
-            entity_type: str, 
+            sprite_type: str, 
             anim_service_name: str = "LAS"
         ) -> None:
 
@@ -37,11 +37,12 @@ class Entity:
         
         :return: It returns Nothing (None)
         """
-
-        self.core_x = x
-        self.core_y = y
-        self.core_width = width
-        self.core_height = height
+        # these coordinates reference the center of the sprite.
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.rect = pygame.FRect(0,0,width,height)
         self.hitbox = Area(x=x, y=y, width=width, height=height)
         #self.set_outline(1,RED)
 
@@ -55,7 +56,7 @@ class Entity:
                                             {"default_surf": pygame.Surface((50,50))}
                                             })
         # self.sound_service = SoundService('')
-        self.entity_type = entity_type
+        self.entity_type = sprite_type
 
     def load_animation(self, 
             anim_dict: dict
@@ -79,10 +80,16 @@ class Entity:
 
     def update(self) -> None:
         '''
-        It updates everything without the need of the programmer to type out every function of the entity.
+        Updates the logic of sprite.
         '''
-        self.anim_service.update()
-        self.hitbox.update()
+        params = {
+            "x":self.x,
+            "y":self.y,
+            "width":self.width,
+            "height":self.height
+        }
+        self.anim_service.update(params)
+        self.hitbox.update(params)
     
 
     def render(self) -> None:
@@ -91,15 +98,19 @@ class Entity:
 
         self.anim_service.render()
 
+
     def update_area(self) -> None:
-        self.hitbox.core_x = self.core_x
-        self.hitbox.core_y = self.core_y
-        self.hitbox.core_width = self.core_width
-        self.hitbox.core_height = self.core_height
+        """
+        Dirty way of updating the area
+        """
+        self.hitbox.rect.center = (self.x, self.y)
+        self.hitbox.width = self.width
+        self.hitbox.height = self.height
 
         # self.hitbox.round_update()
         self.hitbox.update()
     
+
     #abstraction for this mouthful "koutsoumara" ______________________________________________
     def get_hitbox_x(self) -> float | int:
         return self.hitbox.rect.x
@@ -117,7 +128,7 @@ class Entity:
         return self.hitbox.rect.height
     
 
-    #avstraction for changing the x, y, width, height values    
+    #abstraction for changing the x, y, width, height values    
     def new_hitbox_x(
             self,
             new_x: int | float

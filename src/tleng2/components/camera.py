@@ -5,7 +5,7 @@ import pygame
 
 from ..engine.settings import GlobalSettings
 from ..object.area import VertArea
-from ..object.sprite import Entity
+from ..object.sprite import Sprite
 from ..engine.properties import EngineProperties
 
 
@@ -61,7 +61,7 @@ class Camera(CameraCatcher):
     def update(self) -> None: ...
 
 
-    def set_target(self, new_target_entity: Entity) -> None: 
+    def set_target(self, new_target_entity: Sprite) -> None: 
         self.target_entity = new_target_entity
         
 

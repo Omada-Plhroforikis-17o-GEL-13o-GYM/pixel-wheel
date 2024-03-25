@@ -1,21 +1,23 @@
 import pygame
 from warnings import warn
+from .point import Point
 from ..utils.annotations import Color, VertRect
 from ..utils.colors import WHITE, BLACK
 from ..engine.settings import GlobalSettings
 from ..utils.debug import debug_print
-from ..engine.properties import EngineProperties
+from ..components.renderable import Renderable
 
 
+# I dont remmember the usage of this
 class AreaCatcher:
-    entity_in_scene: dict = {}
+    area_in_scene: dict = {}
 
     def __init__(self, taint):
         if taint is not False:
             self.entity_in_scene.update({f"area{len(self.camera)}" : [self]})        
 
 
-class Area(AreaCatcher): # Move area to the entities and stuff
+class Area(AreaCatcher):
     '''
     Class for area, acts as an area that is dedicated to the entity or the class that inherits this, also can be used for "static" hitboxes.
 
@@ -35,6 +37,7 @@ class Area(AreaCatcher): # Move area to the entities and stuff
             width: float = 10.0,
             height: float = 10.0,
             color: Color = WHITE,
+            border_radius: int = 0,
             tainted_area: bool = False
         ) -> None:
         '''
@@ -49,23 +52,29 @@ class Area(AreaCatcher): # Move area to the entities and stuff
         '''
         super().__init__(tainted_area)
         self.image = pygame.Surface([width,height])
-        debug_print(float(x), float(y), float(width) , float(height), type(x), type(y), type(width) , type(height), tags=["EngineAreaInit"])
+
         self.rect = pygame.FRect(float(x), float(y), float(width) , float(height)) # screen coordinates
-        self.x = x # actual x coordinate
-        self.y = y # actual y coordinate
+        self.x = x # center of the area
+        self.y = y # center of the area
         self.width = width
         self.height = height
         self.color = color  
+        self.border_radius = border_radius
 
-        self.renderer = ...
+        self.renderable_rect = Renderable()
+        self.renderable_rect.update_surf(Renderable.rect(self.rect, color, 0, border_radius))
 
+        self.renderable_outline = Renderable()
         self.thickness = 0
 
+        self.frame_color = None
+        self.frame_rect = None
+        # debug stuff
+        debug_print(float(x), float(y), float(width) , float(height), type(x), type(y), type(width) , type(height), tags=["EngineAreaInit"])
+
+
     def __repr__(self) -> str:
-        if hasattr(self, 'frame_rect') and hasattr(self, 'frame_color'):
-            return f"{self.rect} color:{self.color} frame_rect:{self.frame_rect} frame_color:{self.frame_color}"
-        else:
-            return f"{self.rect} color:{self.color}"
+        return f"{self.rect} color:{self.color}"
 
 
     def collide_area(
@@ -94,21 +103,24 @@ class Area(AreaCatcher): # Move area to the entities and stuff
         If there the outline has been set to anything than 0, then it will be rendered
         :return: It returns nothing
         '''
-        pygame.draw.rect(EngineProperties._display, self.color, self.rect)
+        self.renderable_rect.render()
         if self.thickness != 0:            
-            pygame.draw.rect(GlobalProperties._display, self.color, self.frame_rect, abs(self.thickness))
+            self.renderable_outline.render()
+
 
     def render_outline(self) -> None:
         '''
         Only renders the outline of the area, the outline needs to be set before it gets rendered.
         :return: It returns nothing
         '''
-        pygame.draw.rect(GlobalProperties._display, self.frame_color, self.frame_rect, abs(self.thickness))
+        self.renderable_outline.render()
+
 
 
     def set_outline(self, 
-            thic: float = 1, 
-            frame_color: Color = BLACK
+            thic: int = 1, 
+            frame_color: Color = BLACK,
+            radius: int = 1
         ) -> None:
         '''
         It draws the outline of the area by creating another rect object
@@ -119,57 +131,54 @@ class Area(AreaCatcher): # Move area to the entities and stuff
         '''
         self.thickness = thic
         self.frame_color = frame_color
-        if thic > 0:
-            self.frame_rect = pygame.Rect(self.rect.x - thic, self.rect.y - thic, self.rect.width + thic*2 , self.rect.height + thic*2) #outside outline (*performnce issue)
-        elif thic <= 0:
-            self.frame_color = self.rect
-            if thic == 0:
-                warn("the thickness of the outline is zero, you can not see it") #giving a "warning" that the thickness of the outline is zero (for performance reasons we could remove it in production)
+        self.border_radius = radius
+        
+        new_frame_surface = Renderable.rect(self.rect, frame_color, thic, radius)
+        self.renderable_outline.update_surf(new_frame_surface)
+        self.frame_rect = new_frame_surface.get_frect()
+            
+        if thic == 0:
+            warn("the thickness of the outline is zero, you can not see it") # giving a "warning" that the thickness of the outline is zero (for performance reasons we could remove it in production)
 
 
-    def update_entity(
-            self,
-            x,
-            y,
-            width,
-            height,
-    ) -> None:
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-
-        self.rect.x = self.x
-        self.rect.y = self.y
-        self.rect.width = self.width
-        self.rect.height = self.height 
-
-
-    def update(self) -> None:
+    def update(self, params: dict={}) -> None:
         '''
         Function for the sprite group updating
         '''
-
-        self.rect.x = self.x
-        self.rect.y = self.y
+        if params is not {}:
+            self.x = params["x"]
+            self.y = params["y"]
+            # self.width = params["width"]
+            # self.height = params["height"]
+        
+        self.rect.center = (self.x, self.y)
         self.rect.width = self.width
         self.rect.height = self.height
+
+        self.renderable_rect.update_cords_rect(self.rect)
 
         if self.frame_rect != None:
             self.frame_rect.x = self.x - self.thickness
             self.frame_rect.y = self.y - self.thickness
+
+            self.renderable_outline.update_cords_rect(self.frame_rect)
             # self.frame_rect.width = self.width
             # self.frame_rect.height = self.height
     
     def rounded_update(self) -> None:
+        """
+        Updates the self.rect with rounded values
+        """
         self.rect.x = round(self.x)
         self.rect.y = round(self.y)
         self.rect.width = round(self.width)
         self.rect.height = round(self.height)
+        self.renderable_rect.update_cords_rect(self.rect)
 
         if self.frame_rect != None:
             self.frame_rect.x = round(self.x - self.thickness)
             self.frame_rect.y = round(self.y - self.thickness)
+            self.renderable_outline.update_cords_rect(self.frame_rect)
 
 
 class LazyArea():
@@ -180,10 +189,10 @@ class LazyArea():
 
 
 
-class VertArea(Area):
+class VertArea(Point):
     """
     A Rectangle with vertices.
-    The vertices must be 2d not 3d. And there must be 4 vertices not more or less.
+    The vertices must be 2d not 3d. And there must be 4 vertices no more, no less.
     The area is not a polygon, for that you must use PolyArea.
     """
     def __init__(self,
@@ -196,7 +205,9 @@ class VertArea(Area):
         :param vertices: a list of vectors, must be in a list of 4 elements.
         """
         
-        Area.__init__(self, x, y, width, height)
+        Point.__init__(self, x ,y)
+        self.width = width
+        self.height = height
         self.vertices = [pygame.math.Vector2(-self.width/2, -self.height/2),
                          pygame.math.Vector2( self.width/2, -self.height/2),
                          pygame.math.Vector2( self.width/2,  self.height/2),

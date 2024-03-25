@@ -1,7 +1,7 @@
 from ..object.area import Area
 from ..utils.colors import WHITE, BLACK
 from ..engine.settings import GlobalSettings
-from ..utils.properties import GlobalProperties
+from ..engine.properties import EngineProperties
 from warnings import warn
 import pygame
 

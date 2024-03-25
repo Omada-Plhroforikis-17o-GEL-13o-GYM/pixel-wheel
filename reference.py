@@ -78,10 +78,10 @@ class Player(pg.sprite.Sprite):
         if self.accel_back and self.body.velocity.length < self.topspeed:
             self.body.apply_force_at_local_point(Vec2d(0, -514), Vec2d(0, 0))
         if self.turn_left and self.body.velocity.length < self.topspeed:
-            self.body.angle += .1
+            self.body.angle += .08
             self.body.angular_velocity = 0
         if self.turn_right and self.body.velocity.length < self.topspeed:
-            self.body.angle -= .1
+            self.body.angle -= .08
             self.body.angular_velocity = 0
         # Rotate the image of the sprite.
         self.angle = self.body.angle
@@ -155,10 +155,10 @@ def spritestack(surf, pos, images, rotation, spread=1, fill=False):
         if fill:
             for j in range(spread):
                 surf.blit(rotated_img, (pos[0] - rotated_img.get_width() // 2, pos[1] - rotated_img.get_height() // 2 -i*spread -j))
-        
-        surf.blit(rotated_img, (pos[0] - rotated_img.get_width() // 2, pos[1] - rotated_img.get_height() // 2 - i * spread))
+        else:
+            surf.blit(rotated_img, (pos[0] - rotated_img.get_width() // 2, pos[1] - rotated_img.get_height() // 2 - i * spread))
 
-def convert_rad_to_deg(rad) -> float:
+def convert_rad_to_deg(rad:float) -> float:
     return (rad*180)/math.pi
 
 class Game:

@@ -1,23 +1,52 @@
 from ..utils.subpixel import SubPixelSurface
+from ..utils.annotations import Color
 from .settings import GlobalSettings
+from .properties import RendererProperties
 import pygame
 
 # The other renderer is a sub-renderer
 # that in the end render using this renderer
 
+# Scene parameters
+# layers
+# layers_order (sparse list)
+# target_surf
+
+
 class Renderer:
-    scene_parameters = {}
-
+    """
+    Experimental Renderer
+    """
     def __init__(self) -> None:
-        self.layers = []
-        self.layers_order = None
-        self.target_surf = None # defalut is EngineProperties._display
+        ...
 
-        self._display = None
-        self._window = None
 
+    def render(self) -> None:
+        for call in RendererProperties.render_calls:
+            renderable = call
+            # .blit
+            RendererProperties._display.blit(renderable.surface, (renderable.x, renderable.y))
+
+
+class Renderer_dep:
+    """
+    Depracated renderer
+    """
+    layers = []
+    layers_order = None
+    camera = None
+    target_surf = None # defalut is Renderer._dis
+    _display = None
+    _window = None
+
+
+    @staticmethod
+    def pass_scene_parameters() -> None:
+        ...
+
+
+    @staticmethod
     def add_layer(
-            self,
             width: int | None = None,
             height: int | None = None
         ) -> None:
@@ -25,25 +54,27 @@ class Renderer:
         Either you input the width and the height, or leave it blank.
         """
         if width == None and height == None:
-            self.layers += [pygame.Surface(GlobalSettings._disp_res)]
+            Renderer.layers += [pygame.Surface(GlobalSettings._disp_res)]
         else:
-            self.layers += [pygame.Surface((width, height))]
+            Renderer.layers += [pygame.Surface((width, height))]
 
 
+    @staticmethod
     def add_layers(
-            self,
             layers: list[pygame.SurfaceType]
         ) -> None:
         """
         Adds multiple layers at once.
         """
-        self.layers += layers
+        Renderer.layers += layers
 
 
-    def change_layers_order(self) -> None: ...
+    @staticmethod
+    def change_layers_order() -> None: ...
 
 
-    def render_surface(self,
+    @staticmethod
+    def render_surface(
             object: pygame.Surface,
             game_pos: pygame.math.Vector2 | tuple[float,float], 
             area: pygame.Rect = None,
@@ -52,26 +83,26 @@ class Renderer:
             camera: str = None
         ) -> None:
 
-        self.rect.x, self.rect.y = self.offset_pos[0], self.offset_pos[1]
+        Renderer.rect.x, Renderer.rect.y = Renderer.offset_pos[0], Renderer.offset_pos[1]
         
         if area != None:
-            self._display.blit(object,
-                               (game_pos[0]-self.offset_pos[0], 
-                                game_pos[1]-self.offset_pos[1]),
+            Renderer._display.blit(object,
+                               (game_pos[0]-Renderer.offset_pos[0], 
+                                game_pos[1]-Renderer.offset_pos[1]),
                                 area,
                                 special_flags=special_flags
                               )
         else:
-            self._display.blit(object,
+            Renderer._display.blit(object,
                                (game_pos[0], 
                                 game_pos[1]),
-                                self.rect,
+                                Renderer.rect,
                                 special_flags=special_flags
                               )
-        # self.draw_rect((255,0,0),self.rect,5) # debug
+        # Renderer.draw_rect((255,0,0),Renderer.rect,5) # debug
 
-
-    def render_sub_exp(self,
+    @staticmethod
+    def render_sub_exp(
             object: SubPixelSurface,
             game_pos: pygame.math.Vector2 | tuple[float,float], 
             area: pygame.Rect = None,
@@ -80,23 +111,23 @@ class Renderer:
         """
         experimental renderer
         """
-        self.rect.x, self.rect.y = self.offset_pos[0], self.offset_pos[1]
+        Renderer.rect.x, Renderer.rect.y = Renderer.offset_pos[0], Renderer.offset_pos[1]
 
         # GlobalSettings._display.blit(object,
-        #                              (game_pos[0]-self.offset_pos[0], 
-        #                               game_pos[1]-self.offset_pos[1]),
+        #                              (game_pos[0]-Renderer.offset_pos[0], 
+        #                               game_pos[1]-Renderer.offset_pos[1]),
         #                               area,
         #                               special_flags=special_flags
         #                             )
-        self._display.blit(object.at(game_pos[0], game_pos[1]),
+        Renderer._display.blit(object.at(game_pos[0], game_pos[1]),
                                      (game_pos[0], 
                                       game_pos[1]),
-                                      self.rect,
+                                      Renderer.rect,
                                       special_flags=special_flags
                                     )
 
-
-    def draw_rect(self,
+    @staticmethod
+    def draw_rect(
             color: tuple[int,int,int],
             rect: pygame.Rect,
             width: int,
@@ -110,9 +141,9 @@ class Renderer:
         Renders the rectangle into the window, with the camera offset.
         '''
         dummy_rect = rect.copy()
-        dummy_rect.x -= int(self.offset_pos[0])
-        dummy_rect.y -= int(self.offset_pos[1])
-        pygame.draw.rect(self._display, 
+        dummy_rect.x -= int(Renderer.offset_pos[0])
+        dummy_rect.y -= int(Renderer.offset_pos[1])
+        pygame.draw.rect(Renderer._display, 
                         color,
                         dummy_rect,
                         width,
@@ -122,19 +153,19 @@ class Renderer:
                         border_bottom_left_radius,
                         border_bottom_right_radius)
 
-
-    def render_tiles(self, layer, camera) -> None:
+    @staticmethod
+    def render_tiles( layer, camera) -> None:
         """
         It will render every single tile in the level that is provided.
         """
-        if self.layers == []:
+        if Renderer.layers == []:
             ...
         else:
             # usage of layer
             ...
 
-    
-    def lazy_render_tiles(self, layer, camera) -> None:
+    @staticmethod
+    def lazy_render_tiles(layer, camera) -> None:
         """
         Will only render where the camera is hovering at from the chunks that are provided (Even if it is rotated).
         """

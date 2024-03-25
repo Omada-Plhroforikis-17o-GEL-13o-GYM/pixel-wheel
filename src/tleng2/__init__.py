@@ -9,7 +9,10 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
 
 # core_engine Directory
 # from .core_engine.scene_manager import SceneManager
-from .engine.engine import GameEngine, GameEngine_exp, EngineProperties
+from .engine.game import Game
+from .engine.properties import EngineProperties, EngineMethods, SceneManagerMethods, SceneManagerProperties, RendererMethods, RendererProperties
+from .engine.settings import GlobalSettings
+# from .engine.ui_manager
 
 # utils Directory
 from .utils.colors import *
@@ -21,13 +24,12 @@ from .utils.subpixel import SubPixelSurface
 
 # object Directory
 from .object.area import Area
-from .object.sprite import Entity
+from .object.sprite import Sprite
 
 # object Directory
-from .components.scene import Scene, SceneCatcher, SceneManager
+from .components.scene import Scene, SceneCatcher
 from .components.camera import Camera
-from .engine.game import Game
-
+from .components.renderable import Renderable
 
 # ui_elemetns Directory
 from .ui_elements.label import Label
@@ -46,32 +48,33 @@ from .services.sound import SoundService
 from .services.font import FontService
 from .services.tilemap import TileMap, TileSet
 
-
-__all__ = [
-'GameEngine', 'GameEngine_exp', 'EngineProperties',
-'Area', 
-'Entity', 
-'Scene', 
-'Camera', 
-'Scene', 'SceneCatcher',
-"Game",
-'Label', 
-'Object', 
-'Projectile', 'Particles', 
-'LazyAnimationService', 
-'SoundService',
-'ImageService', 
-'FontService', 
-'TileMap', 'TileSet', 
-'GlobalSettings', 'LocalSettings',
-'GlobalProperties', 'LocalProperties',
-'debug_print',
-'SubPixelSurface'
-]
+# TODO Error in __all__ preventing * import 
+# __all__ = [
+# 'EngineMethods', 'SceneManagerMethods', 'SceneManagerProperties', 'RendererMethods', 'RendererProperties', 'EngineProperties',
+# 'Renderable',
+# 'Area', 
+# 'Sprite', 
+# 'Scene', 
+# 'Camera', 
+# 'Scene', 'SceneCatcher',
+# "Game",
+# 'Label', 
+# 'Object', 
+# 'Projectile', 'Particles', 
+# 'LazyAnimationService', 
+# 'SoundService',
+# 'ImageService', 
+# 'FontService', 
+# 'TileMap', 'TileSet', 
+# 'GlobalSettings', 'LocalSettings',
+# 'GlobalProperties', 'LocalProperties',
+# 'debug_print',
+# 'SubPixelSurface'
+# ]
 
 
 __author__ = "TheooKing/Theolaos"
-__version__ = "v2.2.8-exp"
+__version__ = "v2.2.10-exp"
 
 __name__ = "tleng2"
 __doc__ = f'''TLeng2.py is a python 2d game engine

@@ -1,5 +1,7 @@
 from ..engine.settings import GlobalSettings
-from ..utils.properties import GlobalProperties
+from ..engine.properties import EngineProperties, RendererProperties
+from ..components.renderable import Renderable
+
 import pygame
 
 class FancyAnimationService:
@@ -14,19 +16,22 @@ class LazyAnimationService:
     Animation that imports image files immedietly.
     """
     def __init__(self, LocalSettings: None = None):
-        self.anim_x = 0
-        self.anim_y = 0
+        """
+        An implementation of Local Settings has not been done yet.
+        """
+        self.rect = pygame.FRect(0,0,10,10)
         self.anim_dict = {}
         self.current_anim = ''
         self.current_image_anim = ''
         self.anim_frame_data = 0
+        self.renderable = Renderable()
 
 
     def load_animation(self,
             anim_dict:dict
             ) -> None:
         '''
-        Load the animation.
+        Load the animation. The animation must have consistent widths and heights!
 
         {"%name_anim1%" : {"anim":[str,str,...], "anim_fps" : int}, "%name_anim2%" : {"anim":[str,str,...], "frames" : int}, ...}
         '''
@@ -56,7 +61,7 @@ class LazyAnimationService:
             temp_anim_dict += [self.new_image]
 
 
-    def update(self) -> None:
+    def animate(self) -> None:
         '''
         Updating the current animation
 
@@ -72,7 +77,7 @@ class LazyAnimationService:
         # self.window.blit(self.animDict[self.currentAnim][int(self.anim_frame_data)],(self.imageX,self.imageY))
         #(e.x.: 12/60=0.2, every frame its going to be incremented by 0.2, if it is more than the lenght of the animation (4)
         #    then the next image of the animation will play and anim_frame_data will reset)
-        current_fps = GlobalProperties._clock.get_fps()
+        current_fps = EngineProperties._clock.get_fps()
         target_fps = GlobalSettings._fps
         anim_dict_length = len(self.anim_dict[self.current_anim])
 
@@ -89,8 +94,26 @@ class LazyAnimationService:
             self.anim_frame_data = 0
 
 
+    def update(self, params: dict = {}) -> None:
+        """
+        Updates the animation, and the coordinates.
+        """
+        
+        if params is not {}:
+            self.rect.center = (params["x"],params["y"])
+        
+        self.animate()
+        self.renderable.update_cords(self.rect.x, self.rect.y)
+
+
     def render(self) -> None:
+        """
+        Makes a call for the renderer to render.
+        """
+        
         if self.current_anim == "images":
-            GlobalProperties._display.blit(self.anim_dict[self.current_anim][self.current_image_anim], (self.anim_x, self.anim_y))
+            self.renderable.update_surf(self.anim_dict[self.current_anim][self.current_image_anim])
         else:
-            GlobalProperties._display.blit(self.anim_dict[self.current_anim]["anim"][int(self.anim_frame_data)], (self.anim_x, self.anim_y))
+            self.renderable.update_surf(self.anim_dict[self.current_anim]["anim"][int(self.anim_frame_data)])
+
+        self.renderable.render()

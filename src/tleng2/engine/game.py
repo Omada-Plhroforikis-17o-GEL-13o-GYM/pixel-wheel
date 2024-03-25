@@ -1,8 +1,10 @@
 import sys
 import pygame
+
+from ..engine.properties import EngineProperties, EngineMethods, RendererMethods
+from ..engine.renderer import Renderer
 from ..components.scene import SceneCatcher
 from ..utils.debug import debug_print
-from ..utils import GlobalProperties
 from .settings import GlobalSettings
 from .scene_manager import SceneManager
 
@@ -11,6 +13,7 @@ class Game:
     def __init__(self):
         # pygame.init()
         self.scene_manager = SceneManager()
+        self.renderer = Renderer()
 
 
     def run(self, tleng2_intro: bool = True):
@@ -18,7 +21,6 @@ class Game:
         to play the game
         '''
         
-
         if tleng2_intro:
             pass
 
@@ -30,8 +32,10 @@ class Game:
                     pygame.quit()
                     sys.exit()
             self.scene_manager.render_current_scene()
-            GlobalProperties.update_window()
-            GlobalProperties.clock_tick_GP_dt(GlobalSettings._fps)
+            self.renderer.render()
+            RendererMethods.clear_render_calls()
+            RendererMethods.update_window()
+            EngineMethods.clock_tick_GP_dt(GlobalSettings._fps)
             debug_print(SceneCatcher.scenes, tags=["Rendering"])
 
         pygame.quit()
