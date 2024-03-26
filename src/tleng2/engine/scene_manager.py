@@ -1,7 +1,7 @@
 from ..components.scene import Scene, SceneCatcher
 from .settings import GlobalSettings
 from ..utils.debug import debug_print
-from .properties import EngineProperties
+from .properties import EngineProperties, SceneManagerProperties
 import pygame
 
 class SceneManager:
@@ -49,7 +49,7 @@ class SceneManager:
         Renders the current scene that is assigned.
         """
         # for scene in SceneCatcher.scenes[self.current_scene]:
-        scene = SceneCatcher.scenes[EngineProperties._current_scene]
+        scene = SceneCatcher.scenes[SceneManagerProperties._current_scene]
         keys_pressed = pygame.key.get_pressed()
         scene.event_handling(keys_pressed)
         scene.update()

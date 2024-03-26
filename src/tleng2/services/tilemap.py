@@ -1,6 +1,8 @@
-# import pygame
-from ..engine.renderer import Renderer
+from ..components.renderable import Renderable
 from ..engine.properties import EngineProperties
+
+import pygame
+
 
 class TileSet:
     def __init__(self, 
@@ -24,6 +26,7 @@ class TileMap:
     def __init__(self, name):
         self.tiles = []
         self.tileset = {}
+        self.renderable = Renderable()
 
 
     def load_tilemap(self, 
@@ -56,7 +59,8 @@ class TileMap:
         # Renderer.render_tiles()
         for y, y_tiles in enumerate(self.tiles):
             for x, tile_name in enumerate(y_tiles):
-                EngineProperties._display.blit(self.tileset[tile_name], (x*self.width, y*self.height) )
+                self.renderable.update(x*self.width, y*self.height, self.tileset[tile_name])
+                self.renderable.render()
 
     def update(self) -> None:
         pass

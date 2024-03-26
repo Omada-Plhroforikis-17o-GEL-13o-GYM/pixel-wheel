@@ -1,5 +1,7 @@
 from ..object.area import Area
 from ..utils.colors import LIGHT_GREY
+from ..engine.properties import RendererProperties, EngineProperties
+from ..utils.debug import debug_print
 import pygame
 import os  # better performance?
 # ______________________________________________________________UI FUNCTIONS _______________________________________________________________________________________
@@ -36,7 +38,6 @@ class Button(Area):
         If pressed and released button, then instead of capturing the true false, it will create an event
     '''
     def __init__(self, 
-            window: pygame.Surface, 
             x:float, 
             y:float, 
             button_type:str, 
@@ -49,7 +50,7 @@ class Button(Area):
             callback = None):
         #json implemantation for buttons, for TlengUtilities
 
-        Area.__init__(self, window, x, y, width, height, color)
+        Area.__init__(self, x, y, width, height, color)
 
         self.state_img = []
         for path in button_states_path:
@@ -74,40 +75,37 @@ class Button(Area):
         # what will happen when the button is pressed
         self.pressed = False
 
-        global indexEvent
-        self.BUTTONPRESSED = pygame.USEREVENT + indexEvent # pygame.event.post(pygame.event.Event(YELLOW_HIT)) <= how to call it in your code
-        indexEvent += 1
-
         # the fucntion that the user wants to be executed when the button is pressed
         self.callback = callback
 
-    def handle_event(self, event):
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                if self.rect.collidepoint(event.pos):
-                    self.image = self.img_clicked
-                    self.pressed = True
+    def handle_event(self):
+        for event in EngineProperties._events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    if self.rect.collidepoint(event.pos):
+                        self.image = self.img_clicked
+                        self.pressed = True
 
-        elif event.type == pygame.MOUSEBUTTONUP:
-            # If the rect collides with the mouse pos.
-            if self.rect.collidepoint(event.pos) and self.pressed:
-                self.callback()
-                self.image = self.img_hover
-            self.pressed = False
+            elif event.type == pygame.MOUSEBUTTONUP:
+                # If the rect collides with the mouse pos.
+                if self.rect.collidepoint(event.pos) and self.pressed:
+                    self.callback()
+                    self.image = self.img_hover
+                self.pressed = False
 
-        elif event.type == pygame.MOUSEMOTION:
-            collided = self.rect.collidepoint(event.pos)
-            if collided and not self.pressed:
-                self.image = self.img_hover
-            elif not collided:
-                self.image = self.img_normal
+            elif event.type == pygame.MOUSEMOTION:
+                collided = self.rect.collidepoint(event.pos)
+                if collided and not self.pressed:
+                    self.image = self.img_hover
+                elif not collided:
+                    self.image = self.img_normal
 
     def simple_draw(self):
         '''
         Simply just drawing the state of the button
         '''
-        print(self.pressed)
-        self.window.blit(self.image, (self.X,self.Y))
+        debug_print(self.pressed)
+        RendererProperties._display.blit(self.image, (self.X,self.Y))
 
     def design(self):
         '''

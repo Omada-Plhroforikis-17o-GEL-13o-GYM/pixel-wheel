@@ -1,3 +1,5 @@
+import os
+
 from math import pi
 from time import time
 from .debug import debug_print
@@ -39,3 +41,10 @@ def timer_func_debug(func):
         debug_print(f'Function {func.__name__!r} executed in {(t2-t1):.4f}s') 
         return result 
     return wrap_func 
+
+
+def get_parent_dir(path, directories=1):
+	path_result = None
+	for i in range(directories):
+		path_result = get_parent_dir(path.rpartition(os.sep)[0], i)
+	return path_result or path

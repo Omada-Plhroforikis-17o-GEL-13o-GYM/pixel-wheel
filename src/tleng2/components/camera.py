@@ -6,7 +6,6 @@ import pygame
 from ..engine.settings import GlobalSettings
 from ..object.area import VertArea
 from ..object.sprite import Sprite
-from ..engine.properties import EngineProperties
 
 
 
@@ -16,17 +15,21 @@ class CameraCatcher:
     default_camera = None
 
     def __init__(self, camera_key, default_camera):
+        default_key = f"camera{len(self.cameras)}"
         if camera_key != None:
             self.cameras.update({camera_key: self})
         else:
-            self.cameras.update({f"camera{len(self.cameras)}": self})
+            self.cameras.update({default_key: self})
 
         if default_camera and camera_key != None:
             self.default_camera_key = camera_key
             self.default_camera = self
         else:
-            self.default_camera_key = f"camera{len(self.cameras)}"
+            self.default_camera_key = default_key
             self.default_camera = self
+
+        self.name = camera_key if camera_key != None else default_key
+        print(self.cameras)
 
 
 

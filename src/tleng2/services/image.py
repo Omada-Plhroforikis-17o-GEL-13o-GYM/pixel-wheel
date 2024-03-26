@@ -1,4 +1,5 @@
-from os import path 
+from ..components.renderable import Renderable
+
 import pygame
 # from tleng2.utils.annotations import Coordinate
 # from ..utils.settings import GlobalSettings
@@ -8,8 +9,7 @@ class ImageService:
     def __init__(self):
         self.rotation = 0
         self.image = None
-        self.image_x = 0
-        self.image_y = 0
+        self.renderable = Renderable()
 
 
     def load_image(self,
@@ -20,13 +20,21 @@ class ImageService:
         
         self.image = pygame.image.load(img_filename).convert_alpha() #setting the idle image 
         self.image = pygame.transform.rotate(pygame.transform.scale(self.image, (width,height)), self.rotation) #transforming the idle image
-        self.image_x = self.image.get_width() 
-        self.image_y = self.image.get_height()
+        self.rect = pygame.FRect(0,0,self.image.get_width(),self.image.get_height())
     
 
     def render_surface(self)-> pygame.Surface:
         return self.image
     
+    def update(self,params: dict = {}):
+        if params != {}:
+            ...
+        else:
+            self.renderable.update_cords_rect(self.rect)
+
+    def render(self) -> None:
+        self.renderable.update_surf(self.render_surface())
+        self.renderable.render()
     
     def rotate_img_deg(self,
             rotate: float

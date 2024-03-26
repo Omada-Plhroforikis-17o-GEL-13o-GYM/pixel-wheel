@@ -29,12 +29,8 @@ fn scene_phase:
 
 
 """
-import pygame
 from abc import ABC, abstractmethod
-from ..engine.properties import EngineProperties
-from ..engine.renderer import Renderer
-from ..engine.settings import GlobalSettings
-from ..utils.debug import debug_print
+from ..engine.properties import RendererProperties
 
 
 class SceneCatcher:
@@ -42,7 +38,7 @@ class SceneCatcher:
 
     def __init__(self, scene_key):
         self.scenes.update({scene_key: self})
-        Renderer.scene_parameters.update({scene_key:self.scene_renderer_params()})
+        RendererProperties.scene_parameters.update({scene_key:self.scene_renderer_params()})
 
 
 
@@ -52,11 +48,11 @@ class Scene(SceneCatcher, ABC):
         self.scene_name = scene_name
 
 
-    @abstractmethod
     def scene_renderer_params(self) -> dict:
         """
         This method needs to return a dictionary with certain parameters for the renderer
         """
+        return {}
 
 
     @abstractmethod

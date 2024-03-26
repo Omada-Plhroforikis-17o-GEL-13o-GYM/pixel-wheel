@@ -26,7 +26,8 @@ class EngineProperties:
     """
     _clock = pygame.time.Clock()
     _dt = 0
-    _current_scene = 'default'
+    _events = None
+    GAME_RUNNING = True
 
     # _index_event = 1
 
@@ -43,6 +44,7 @@ class RendererProperties:
     __temp_disp = None
 
     _display = None
+    _local_display = None
     _window = None
 
     # when you call to render a sprite, it's renderable attr will be passed 
@@ -101,6 +103,26 @@ class RendererMethods:
 
 
     @staticmethod
+    def load_displays( bg_color: tuple[int, int, int] = (200, 200, 255) ) -> None:
+        """
+        Initialize the display.
+        """
+        RendererProperties._display = pygame.Surface(GlobalSettings._disp_res) 
+        RendererProperties._window = pygame.display.set_mode(GlobalSettings._win_res)
+        RendererProperties._display.fill(bg_color)
+
+
+    @staticmethod
+    def load_local_display(width, height) -> pygame.SurfaceType:
+        ...
+
+
+    @staticmethod
+    def load_local_display_ratio(ratio) -> pygame.SurfaceType:
+        return pygame.Surface((GlobalSettings._win_res[0]*ratio, GlobalSettings._win_res[1]*ratio)) 
+
+
+    @staticmethod
     def lazy_upscale_display(new_res: tuple[int,int] = GlobalSettings._win_res) -> None:
         """
         Scaling the display to the size of the window.
@@ -112,18 +134,40 @@ class RendererMethods:
 
 
     @staticmethod
-    def update_window() -> None:
+    def update_window(display: pygame.SurfaceType) -> None:
         """
-        Updates the window from _display immedietely.
+        UpScales or DownScales the display to fit the window. 
+        Warning, this might strect the render. 
+        """
+        
+        RendererProperties._window.blit(pygame.transform.scale(display, RendererProperties._window),(0,0))
+
+
+    @staticmethod
+    def update_window_exp(display: pygame.SurfaceType) -> None:
+        """
+        UpScales or DownScales the display to fit the window. 
+        Warning, this might strect the render. 
+        """
+        temp_disp = display if display != None else RendererProperties._display
+        RendererProperties._window.blit(pygame.transform.scale(temp_disp, RendererProperties._window),(0,0))
+
+
+    @staticmethod
+    def update_window_disp() -> None:
+        """
+        Updates the window from _display immedietely. Faster than `RendererMethods.update_window()`
         """
         RendererProperties._window.blit(RendererProperties._display, (0, 0))
+
 
     @staticmethod
     def fill_display(color: tuple[int, int, int]) -> None:
         """
         Fill the display with color.
         """
-        EngineProperties._display.fill(color)
+        RendererProperties._display.fill(color)
+
 
     @staticmethod
     def load_window(

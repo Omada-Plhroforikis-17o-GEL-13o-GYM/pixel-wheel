@@ -1,7 +1,9 @@
 from ..utils.subpixel import SubPixelSurface
 from ..utils.annotations import Color
+from ..components.camera import CameraCatcher
 from .settings import GlobalSettings
-from .properties import RendererProperties
+from .properties import RendererProperties, SceneManagerProperties
+
 import pygame
 
 # The other renderer is a sub-renderer
@@ -18,14 +20,24 @@ class Renderer:
     Experimental Renderer
     """
     def __init__(self) -> None:
-        ...
+        self.current_display = None
+        self.default_camera = None
 
 
     def render(self) -> None:
+        if RendererProperties.scene_parameters[SceneManagerProperties._current_scene] != {}:
+            parameters = RendererProperties.scene_parameters[SceneManagerProperties._current_scene]
+            self.current_display = parameters['display']
+            print(parameters)
+            self.default_camera = CameraCatcher.cameras[parameters['camera']]
+        else:
+            self.current_display = RendererProperties._display
+            self.default_camera = CameraCatcher.default_camera
+
         for call in RendererProperties.render_calls:
             renderable = call
-            # .blit
-            RendererProperties._display.blit(renderable.surface, (renderable.x, renderable.y))
+            
+            self.current_display.blit(renderable.surface, (renderable.x, renderable.y))
 
 
 class Renderer_dep:
