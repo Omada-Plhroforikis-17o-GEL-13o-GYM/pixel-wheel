@@ -49,28 +49,27 @@ from .services.font import FontService
 from .services.tilemap import TileMap, TileSet
 
 # TODO Error in __all__ preventing * import 
-# __all__ = [
-# 'EngineMethods', 'SceneManagerMethods', 'SceneManagerProperties', 'RendererMethods', 'RendererProperties', 'EngineProperties',
-# 'Renderable',
-# 'Area', 
-# 'Sprite', 
-# 'Scene', 
-# 'Camera', 
-# 'Scene', 'SceneCatcher',
-# "Game",
-# 'Label', 
-# 'Object', 
-# 'Projectile', 'Particles', 
-# 'LazyAnimationService', 
-# 'SoundService',
-# 'ImageService', 
-# 'FontService', 
-# 'TileMap', 'TileSet', 
-# 'GlobalSettings', 'LocalSettings',
-# 'GlobalProperties', 'LocalProperties',
-# 'debug_print',
-# 'SubPixelSurface'
-# ]
+__all__ = [
+'EngineMethods', 'SceneManagerMethods', 'SceneManagerProperties', 'RendererMethods', 'RendererProperties', 'EngineProperties',
+'Renderable',
+'Area', 
+'Sprite', 
+'Scene', 
+'Camera', 
+'Scene', 'SceneCatcher',
+"Game",
+'Label', 
+'Object', 
+'Projectile', 'Particles', 
+'LazyAnimationService', 
+'SoundService',
+'ImageService', 
+'FontService', 
+'TileMap', 'TileSet', 
+'GlobalSettings', 'LocalSettings',
+'debug_print',
+'SubPixelSurface'
+]
 
 
 __author__ = "TheooKing/Theolaos"
