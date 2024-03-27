@@ -1,6 +1,7 @@
 from ..utils.subpixel import SubPixelSurface
 from ..utils.annotations import Color
 from ..components.camera import CameraCatcher
+from ..utils.debug import debug_print
 from .settings import GlobalSettings
 from .properties import RendererProperties, SceneManagerProperties
 
@@ -20,26 +21,21 @@ class Renderer:
     Experimental Renderer
     """
     def __init__(self) -> None:
-        self.current_display = None
-        self.default_camera = None
+        ...
 
 
     def render(self) -> None:
-        if RendererProperties.scene_parameters[SceneManagerProperties._current_scene] != {}:
-            parameters = RendererProperties.scene_parameters[SceneManagerProperties._current_scene]
-            self.current_display = parameters['display']
-            print(parameters)
-            self.default_camera = CameraCatcher.cameras[parameters['camera']]
-        else:
-            self.current_display = RendererProperties._display
-            self.default_camera = CameraCatcher.default_camera
-
+        # debug_print(RendererProperties.render_calls,tags=['Renderer', 'Render_calls'])
+   
         for call in RendererProperties.render_calls:
             renderable = call
             
-            self.current_display.blit(renderable.surface, (renderable.x, renderable.y))
+            RendererProperties._display.blit(renderable.surface, (renderable.x, renderable.y))
 
+        
+ 
 
+# reference only
 class Renderer_dep:
     """
     Depracated renderer

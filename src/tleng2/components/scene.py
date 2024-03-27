@@ -1,34 +1,3 @@
-"""
-Scene handler
-It justs puts the stuff on the screen and it handles the <scene changes> like menu->game->pause screen etc.
-Idea:
-SceneHandler will get layers, that the dev can assign multiple scenes to play.
-Scene will just handle the updates of the objects that it draws. After they were updated and drawn to the buffer screen then they will be flipped and start again onto the next frame.
-Scene should also change the scene state when neceasery.
-
-SceneHandler should recognise the state of the app for the right scene to play.
-
-Pseudo code:
-
-class menu_scene ...
-class game_scene ...
-
-scene_dict = menu : menu_scene, game : game_scene  ...
-game_state = menu
-
-gameloop
-    scene_phase(game_state)
-    clock.tick(fps)
-    buffer.flip()
-
-fn scene_phase:
-    sceneloop
-        events()
-        update()
-        render()
-
-
-"""
 from abc import ABC, abstractmethod
 from ..engine.properties import RendererProperties
 
@@ -36,29 +5,33 @@ from ..engine.properties import RendererProperties
 class SceneCatcher:
     scenes = {}
 
-    def __init__(self, scene_key):
+    def __init__(self, 
+            scene_key:str, 
+            sr_param_key: str
+        ) -> None:
         self.scenes.update({scene_key: self})
-        RendererProperties.scene_parameters.update({scene_key:self.scene_renderer_params()})
-
+        RendererProperties.scene_parameters.update({scene_key:sr_param_key})
 
 
 class Scene(SceneCatcher, ABC):
-    def __init__(self,scene_name)-> None:
-        SceneCatcher.__init__(self,scene_key=scene_name)
+    def __init__(self,
+            scene_name, 
+            sr_param_key: str = 'default'
+        )-> None:
+
+        SceneCatcher.__init__(self,
+                              scene_key=scene_name, 
+                              sr_param_key=sr_param_key),
         self.scene_name = scene_name
 
 
-    def scene_renderer_params(self) -> dict:
-        """
-        This method needs to return a dictionary with certain parameters for the renderer
-        """
-        return {}
-
-
     @abstractmethod
-    def event_handling(self, keys_pressed) -> None:
+    def event_handling(self) -> None:
         '''
-        To handle the events of mouse and other
+        To handle the events of mouse and other.
+        If you want to access Keys Pressed, you can do so, from 
+        
+        `EngineProperties._events` `EngineProperties._keys_pressed`
         
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
@@ -88,11 +61,3 @@ class SubSceneManagerCatcher:
 
 class SubSceneManager:
     ...
-
-
-# the general idea that the scene can be controlled by the scene itself is kinda stupid.
-
-
-# Scene grouping?
-# Dictionary of scenes that upon render will be rendered the "current_scene, just like the animation"
-# the whole idea is that the original scene is going to be created in another class, which will be stored here so the engine knows what to run.

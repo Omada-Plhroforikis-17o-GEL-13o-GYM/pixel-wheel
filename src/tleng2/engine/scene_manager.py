@@ -1,3 +1,35 @@
+"""
+Scene Manager
+It justs puts the stuff on the screen and it handles the <scene changes> like menu->game->pause screen etc.
+Idea:
+SceneHandler will get layers, that the dev can assign multiple scenes to play.
+Scene will just handle the updates of the objects that it draws. After they were updated and drawn to the buffer screen then they will be flipped and start again onto the next frame.
+Scene should also change the scene state when neceasery.
+
+SceneHandler should recognise the state of the app for the right scene to play.
+
+Pseudo code:
+
+class menu_scene ...
+class game_scene ...
+
+scene_dict = menu : menu_scene, game : game_scene  ...
+game_state = menu
+
+gameloop
+    scene_phase(game_state)
+    clock.tick(fps)
+    buffer.flip()
+
+fn scene_phase:
+    sceneloop
+        events()
+        update()
+        render()
+
+
+"""
+
 from ..components.scene import Scene, SceneCatcher
 from .settings import GlobalSettings
 from ..utils.debug import debug_print
@@ -16,6 +48,7 @@ class SceneManager:
         """
         self.scenes = None
         self.scene_layers = [] # future support for having a scene render on top of another scene, 
+        # self.current_scene
 
         # self.current_scene = ''
 
@@ -54,6 +87,5 @@ class SceneManager:
         scene.event_handling(keys_pressed)
         scene.update()
         scene.render()
-        pygame.display.flip()
 
         debug_print("Successfull scene render from SceneManager from SceneCatcher", tags=["Rendering"])

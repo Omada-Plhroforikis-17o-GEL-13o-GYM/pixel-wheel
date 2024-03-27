@@ -1,7 +1,7 @@
 { 
     "PYGAME_HIDE_SUPPORT_PROMPT" : "hide",
     "TLENG2_HIDE_SUPPORT_PROMPT" : "hide",
-    "FPS" : "60",
+    "FPS" : 60,
     "WINDOW_RESOLUTION" : [1280,720],
     "DISPLAY_RESOLUTION" : [1280,720],
     "FONT" : null,

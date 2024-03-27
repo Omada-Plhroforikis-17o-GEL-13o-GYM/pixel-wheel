@@ -1,7 +1,8 @@
 import sys
 import pygame
 
-from ..engine.properties import EngineProperties, EngineMethods, RendererMethods
+from ..engine.properties import EngineProperties, SceneManagerProperties, RendererProperties
+from ..engine.methods import  EngineMethods, RendererMethods, SceneManagerMethods
 from ..engine.renderer import Renderer
 from ..components.scene import SceneCatcher
 from ..utils.debug import debug_print
@@ -14,7 +15,7 @@ class Game:
         # pygame.init()
         self.scene_manager = SceneManager()
         self.renderer = Renderer()
-
+        
 
     def run(self, tleng2_intro: bool = True):
         '''
@@ -37,9 +38,13 @@ class Game:
 
             self.scene_manager.render_current_scene()
             self.renderer.render()
+            RendererMethods.update_window()
+            pygame.display.flip()
+
             RendererMethods.clear_render_calls()
-            RendererMethods.update_window_disp()
             EngineMethods.clock_tick_GP_dt(GlobalSettings._fps)
+            SceneManagerMethods.update_scene()
+
             debug_print(SceneCatcher.scenes, tags=["Rendering"])
 
         pygame.quit()

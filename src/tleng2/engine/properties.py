@@ -27,6 +27,7 @@ class EngineProperties:
     _clock = pygame.time.Clock()
     _dt = 0
     _events = None
+    _keys_pressed = None
     GAME_RUNNING = True
 
     # _index_event = 1
@@ -35,148 +36,28 @@ class EngineProperties:
 
 
 class SceneManagerProperties:
+    _default_scene = ''
+
     _current_scene = ''
+    
+    _waiting_scene = ''
+    _changing_scenes = False
 
 
 class RendererProperties:
-    scene_parameters = {}
-
     __temp_disp = None
 
+    _default_display = None
+
     _display = None
-    _local_display = None
     _window = None
+
+    _local_default_camera = None
+
+    # parameters to be used in scenes
+    scene_parameters = {}
+    type_parameters = {}
 
     # when you call to render a sprite, it's renderable attr will be passed 
     # here for the renderer to later inspect it and render it
     render_calls = []
-
-
-class EngineMethods:
-    @staticmethod
-    def set_caption(caption: str) -> None:
-        pygame.display.set_caption(caption)
-
-    
-    @staticmethod
-    def clock_tick_dt(target_fps: int) -> float:
-        return EngineProperties._clock.tick(target_fps) / 1000
-        # return 1
-    
-
-    @staticmethod
-    def clock_tick_GP_dt(target_fps: int) -> None:
-        """
-        Stores the dt value in EngineProperties.
-        """
-        EngineProperties._dt = EngineProperties._clock.tick(target_fps) / 1000
-
-
-    # micro optimization
-    @staticmethod
-    def lazy_clock_tick_GP_dt(target_fps: int) -> None:
-        """
-        Stores the dt value in EngineProperties.
-        """
-        EngineProperties._dt = EngineProperties._clock.tick(target_fps) >> 10 # bit shift, clock.tick / 1024
-    
-
-class SceneManagerMethods:
-    """
-    SceneManager Static methods that might be needed across the base game.
-    """
-    @staticmethod
-    def change_current_scene(new_scene: str) -> None:
-        """
-        Changes the value of the SceneManager in tleng2/core_engine/scene_manager.py
-        """
-        SceneManagerProperties._current_scene = new_scene
-
-
-class RendererMethods:
-    """
-    Renderer Static methods that might be needed across the base game.
-    """
-    @staticmethod
-    def clear_render_calls():
-        RendererProperties.render_calls = []
-
-
-    @staticmethod
-    def load_displays( bg_color: tuple[int, int, int] = (200, 200, 255) ) -> None:
-        """
-        Initialize the display.
-        """
-        RendererProperties._display = pygame.Surface(GlobalSettings._disp_res) 
-        RendererProperties._window = pygame.display.set_mode(GlobalSettings._win_res)
-        RendererProperties._display.fill(bg_color)
-
-
-    @staticmethod
-    def load_local_display(width, height) -> pygame.SurfaceType:
-        ...
-
-
-    @staticmethod
-    def load_local_display_ratio(ratio) -> pygame.SurfaceType:
-        return pygame.Surface((GlobalSettings._win_res[0]*ratio, GlobalSettings._win_res[1]*ratio)) 
-
-
-    @staticmethod
-    def lazy_upscale_display(new_res: tuple[int,int] = GlobalSettings._win_res) -> None:
-        """
-        Scaling the display to the size of the window.
-        And updates the window with the upscale.
-        Warning may be very pixelated.
-        """
-        EngineProperties.__temp_disp = pygame.transform.scale(EngineProperties._display, new_res)
-        EngineProperties._window.blit(EngineProperties.__temp_disp, (0, 0))
-
-
-    @staticmethod
-    def update_window(display: pygame.SurfaceType) -> None:
-        """
-        UpScales or DownScales the display to fit the window. 
-        Warning, this might strect the render. 
-        """
-        
-        RendererProperties._window.blit(pygame.transform.scale(display, RendererProperties._window),(0,0))
-
-
-    @staticmethod
-    def update_window_exp(display: pygame.SurfaceType) -> None:
-        """
-        UpScales or DownScales the display to fit the window. 
-        Warning, this might strect the render. 
-        """
-        temp_disp = display if display != None else RendererProperties._display
-        RendererProperties._window.blit(pygame.transform.scale(temp_disp, RendererProperties._window),(0,0))
-
-
-    @staticmethod
-    def update_window_disp() -> None:
-        """
-        Updates the window from _display immedietely. Faster than `RendererMethods.update_window()`
-        """
-        RendererProperties._window.blit(RendererProperties._display, (0, 0))
-
-
-    @staticmethod
-    def fill_display(color: tuple[int, int, int]) -> None:
-        """
-        Fill the display with color.
-        """
-        RendererProperties._display.fill(color)
-
-
-    @staticmethod
-    def load_window(
-            flags: int = 0,
-            depth: int = 0,
-            display: int = 0,
-            vsync: int = 0
-        ) -> None:
-        """
-        Initialize the window, with added parameters.
-        """
-        EngineProperties._window = pygame.display.set_mode(GlobalSettings._win_res, flags, depth, display, vsync) 

@@ -10,7 +10,8 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
 # core_engine Directory
 # from .core_engine.scene_manager import SceneManager
 from .engine.game import Game
-from .engine.properties import EngineProperties, EngineMethods, SceneManagerMethods, SceneManagerProperties, RendererMethods, RendererProperties
+from .engine.properties import EngineProperties, SceneManagerProperties, RendererProperties
+from .engine.methods import EngineMethods, SceneManagerMethods, RendererMethods
 from .engine.settings import GlobalSettings, LocalSettings
 # from .engine.ui_manager
 
@@ -74,7 +75,7 @@ __all__ = [
 
 
 __author__ = "TheooKing/Theolaos"
-__version__ = "v2.2.10-exp"
+__version__ = "v2.2.11-exp"
 
 __name__ = "tleng2"
 __doc__ = f'''TLeng2.py is a python 2d game engine

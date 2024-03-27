@@ -1,12 +1,12 @@
 import pygame
-import pymunk
-import sys
 
 from src.tleng2 import *
 
 from src.game import FreeRoam
 from src.menu import Menu
 from src.credits import Credits
+
+from src.params import import_params_needed
 # from src.tleng2.engine import EngineProperties
 
 
@@ -14,6 +14,8 @@ from src.credits import Credits
 GlobalSettings.update_bresolution((1280,720))
 RendererMethods.load_displays()
 EngineMethods.set_caption("PixelWheel")
+
+import_params_needed()
 
 GlobalSettings._debug = False
 # GlobalSettings.load_settings_json()
@@ -27,9 +29,8 @@ if __name__ == '__main__':
     credits = Credits('Credits')
     
     # updating the scene to menu
-    SceneManagerMethods.change_current_scene("Menu")
-
-
+    SceneManagerMethods.start_with_scene("Menu")
+    print(SceneManagerProperties._waiting_scene)
     # running the game engine to run the game
     game = Game()
     game.run()

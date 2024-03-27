@@ -2,22 +2,22 @@
 Gameplay scene class
 """
 from .tleng2 import *
+from .physics import Player
 import pygame
+
+
+
 
 class FreeRoam(Scene):
     def __init__(self,scene_name)->None:
         self.camera = Camera(default_camera=True)
-        super().__init__(scene_name)
-        
+        super().__init__(scene_name,'free_roam')
+
+        self.player = Player()
+        self.tileset = None
+        self.tilemap = None
+
         # self.space = pymunk.Space()
-
-    def scene_renderer_params(self) -> dict:
-        parameters = {
-            'camera' : self.camera.name,
-            'display' : RendererMethods.load_local_display_ratio(1/2)
-        }
-        return parameters
-
 
     def event_handling(self, keys_pressed) -> None:                    
         if keys_pressed[pygame.K_ESCAPE]:
