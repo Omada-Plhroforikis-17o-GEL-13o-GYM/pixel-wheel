@@ -29,6 +29,8 @@ class Renderer:
    
         for call in RendererProperties.render_calls:
             renderable = call
+
+            print(renderable)
             
             RendererProperties._display.blit(renderable.surface, (renderable.x, renderable.y))
 

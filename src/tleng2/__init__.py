@@ -48,6 +48,7 @@ from .services.image import ImageService
 from .services.sound import SoundService
 from .services.font import FontService
 from .services.tilemap import TileMap, TileSet
+from .services.sprite_stack import SpriteStackService
 
 # TODO Error in __all__ preventing * import 
 __all__ = [
@@ -66,7 +67,7 @@ __all__ = [
 'LazyAnimationService', 
 'SoundService',
 'ImageService', 
-'FontService', 
+'FontService', 'SpriteStackService',
 'TileMap', 'TileSet', 
 'GlobalSettings', 'LocalSettings',
 'debug_print',

@@ -9,6 +9,9 @@ class Renderable:
         self.surface = None # pygame.Surface()
 
 
+    def __repr__(self):
+        return f'x: {self.x}, y: {self.y}, surface: {self.surface}'
+
     @staticmethod
     def rect(rect: pygame.FRect, color: Color, thickness: int, radius: int) -> pygame.SurfaceType:
         """

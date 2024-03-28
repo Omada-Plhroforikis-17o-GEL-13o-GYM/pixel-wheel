@@ -1,5 +1,5 @@
 from ..components.renderable import Renderable
-from ..engine.properties import EngineProperties
+from ..engine.properties import EngineProperties, RendererProperties
 
 import pygame
 
@@ -11,6 +11,7 @@ class TileSet:
             height
         ) -> None:
         """
+        For images use ImageService
         Tile set, 
         {"grass": grass_tile.png,
          "concrete" : concrete_tile.png
@@ -23,7 +24,7 @@ class TileSet:
 
 
 class TileMap:
-    def __init__(self, name):
+    def __init__(self):
         self.tiles = []
         self.tileset = {}
         self.renderable = Renderable()
@@ -57,10 +58,14 @@ class TileMap:
 
     def render(self) -> None:
         # Renderer.render_tiles()
+
+        # this can be cached
         for y, y_tiles in enumerate(self.tiles):
             for x, tile_name in enumerate(y_tiles):
-                self.renderable.update(x*self.width, y*self.height, self.tileset[tile_name])
-                self.renderable.render()
+                # print(tile_name,self.tileset.set[tile_name])
+                RendererProperties._display.blit(self.tileset.set[tile_name],(x*self.tileset.width, y*self.tileset.height))
+                # self.renderable.update(x*self.tileset.width, y*self.tileset.height, self.tileset.set[tile_name])
+                # self.renderable.render()
 
     def update(self) -> None:
         pass

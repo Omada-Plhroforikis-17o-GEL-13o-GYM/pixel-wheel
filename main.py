@@ -1,6 +1,7 @@
 import pygame
 
 from src.tleng2 import *
+from src.tleng2.utils.debug import DebugTags
 
 from src.game import FreeRoam
 from src.menu import Menu
@@ -12,6 +13,8 @@ from src.params import import_params_needed
 
 # DebugTags.import_tags()
 GlobalSettings.update_bresolution((1280,720))
+# GlobalSettings._debug = True
+# DebugTags.import_tags(['renderable'])
 RendererMethods.load_displays()
 EngineMethods.set_caption("PixelWheel")
 
@@ -29,8 +32,8 @@ if __name__ == '__main__':
     credits = Credits('Credits')
     
     # updating the scene to menu
-    SceneManagerMethods.start_with_scene("Menu")
-    print(SceneManagerProperties._waiting_scene)
+    SceneManagerMethods.start_with_scene("FreeRoam")
+    
     # running the game engine to run the game
     game = Game()
     game.run()

@@ -10,7 +10,7 @@ def convert_deg_to_rad(deg) -> float:
 
 
 def convert_rad_to_deg(rad) -> float:
-    return (rad*pi)/180
+    return (rad*180)/pi
 
 
 def timer_func(func): 
