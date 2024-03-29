@@ -17,6 +17,7 @@ def flipy(p):
 def image_load(*path) -> pygame.SurfaceType:
     return pygame.image.load(os.path.join(*path)).convert_alpha()
 
+
 class FreeRoam(Scene):
     def __init__(self, scene_name) -> None:
         self.camera = Camera(default_camera = True)
@@ -32,7 +33,9 @@ class FreeRoam(Scene):
         self.player_sprite = SpriteStackService()
         self.player_sprite.load_images(os.path.join(assets_dir,'formula'))
 
-        self.player = Player((0,0), self.space, self.player_sprite.images[0].get_width(),self.player_sprite.images[0].get_height())
+        self.player = Player((0,0), self.space, 1, self.player_sprite.images[0].get_width(),self.player_sprite.images[0].get_height())
+
+        print(self.player_sprite.images[0].get_width(),self.player_sprite.images[0].get_height())
 
         
 
@@ -67,7 +70,7 @@ class FreeRoam(Scene):
             [RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO],
             [RO,SE,RD,RD,RD,SW,SE,RD,RD,RD,SW,RO,RO],
             [RO,RR,PO,PO,PO,RL,RR,PO,PO,PO,RL,RO,RO],
-            [RO,RR,PO,PO,PO,RL,NE,RU,RU,RU,NW,RO,RO],
+            [RO,RR,PO,RO,PO,RL,NE,RU,RU,RU,NW,RO,RO],
             [RO,RR,PO,PO,PO,RL,SE,RD,RD,RD,SW,RO,RO],
             [RO,NE,RU,RU,RU,NW,NE,RU,RU,RU,NW,RO,RO],
             [RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO],
@@ -90,6 +93,8 @@ class FreeRoam(Scene):
             'paved_road' : '',
         }
 
+        tile_size = 35/2
+
         self.free_roam_tilemap = TileMap()
         self.free_roam_tilemap.load_tilemap(tilemap)
         self.free_roam_tilemap.load_tileset(self.city_streets_tileset)
@@ -97,32 +102,33 @@ class FreeRoam(Scene):
 
         self.rotonta = SpriteStackService()
         self.rotonta.load_images(os.path.join(assets_dir,'ROTONTA'))
-        self.rotonta.update({'x':-17.5 + 35*5,'y':35*3})
+        self.rotonta.update({'x':tile_size*4,'y':tile_size*3})
 
         self.lefkos_pirgos = SpriteStackService()
         self.lefkos_pirgos.load_images(os.path.join(assets_dir,'LEFKOS'))
-        self.lefkos_pirgos.update({'x':-17.5 + 35*10,'y':35*2 +5})
+        self.lefkos_pirgos.update({'x':tile_size*10,'y':35*2 +5})
 
 
         self.polikatikia1 = SpriteStackService()
         self.polikatikia1.load_images(os.path.join(assets_dir,'building'))
-        self.polikatikia1.update({'x':-17.5 + 35*4,'y':35*2})
+        self.polikatikia1.update({'x':tile_size*1,'y':tile_size*1})
+        # self.polikatikia1.spread = 35
 
         self.polikatikia2 = SpriteStackService()
         self.polikatikia2.load_images(os.path.join(assets_dir,'building'))
-        self.polikatikia2.update({'x':-17.5 + 35*3,'y':35*3})
+        self.polikatikia2.update({'x':tile_size*3,'y':tile_size*3})
 
         self.polikatikia3 = SpriteStackService()
         self.polikatikia3.load_images(os.path.join(assets_dir,'building'))
-        self.polikatikia3.update({'x':-17.5 + 35*8,'y':35*2})
+        self.polikatikia3.update({'x':tile_size*8,'y':tile_size*2})
 
         self.polikatikia4 = SpriteStackService()
         self.polikatikia4.load_images(os.path.join(assets_dir,'building'))
-        self.polikatikia4.update({'x':-17.5 + 35*9,'y':35*2})
+        self.polikatikia4.update({'x':tile_size*9,'y':tile_size*2})
 
         self.polikatikia5 = SpriteStackService()
         self.polikatikia5.load_images(os.path.join(assets_dir,'building'))
-        self.polikatikia5.update({'x':-17.5 + 35*3,'y':35*2})
+        self.polikatikia5.update({'x':tile_size*3,'y':tile_size*2})
 
         self.buildings = [
                      self.polikatikia5,
@@ -147,7 +153,7 @@ class FreeRoam(Scene):
         self.space.step(1/60)
 
         self.player.update(EngineProperties._dt)
-        pos = self.player.body._get_position()
+        pos = flipy(self.player.body._get_position())
         angl = convert_rad_to_deg(self.player.body._get_angle())
         self.player_sprite.update(params={
             'x':pos[0],
@@ -174,6 +180,8 @@ class FreeRoam(Scene):
                 pygame.draw.lines(RendererProperties._display, (90, 200, 50), False, ps, 2)
 
         self.player_sprite.render()
+        print(self.player_sprite.rect, 'player rect')
+        #pygame.draw.rect(RendererProperties._display,(255,0,0),self.player_sprite.rect)
 
         self.rotonta.render()
         self.lefkos_pirgos.render()

@@ -17,6 +17,8 @@ class SpriteStackService:
         self.spread = 1
         self.rect = None
 
+        self.first_layer_rect = None
+
         self.caching = caching
         if caching:
             self.cache()        
@@ -59,14 +61,19 @@ class SpriteStackService:
                 rotated_img = pygame.transform.rotate(img, self.rotation)
                 if self.fill:
                     for j in range(self.spread):
-                        sprite_surf.blit(rotated_img, (0,0 -i*self.spread -j))
+                        sprite_surf.blit(rotated_img, (0,rotated_img.get_height() // 2 -i*self.spread -j))
 
-                sprite_surf.blit(rotated_img, (0, rotated_img.get_height() // 2 - i * self.spread))
+                sprite_surf.blit(rotated_img, (0,len(self.images*self.spread) - i*self.spread))
             
             self.renderable.update_surf(sprite_surf)
-            #pygame.draw.rect(RendererProperties._display,RED,pygame.FRect(self.renderable.x+20,self.renderable.y,sprite_surf.get_width(),sprite_surf.get_height()),3)
-            print(self.rect)
+            self.surf_rect = sprite_surf.get_frect()
 
+            self.surf_rect.bottomleft = self.rect.bottomleft
+
+            pygame.draw.rect(RendererProperties._display,RED,pygame.FRect(self.renderable.x+20,self.renderable.y,sprite_surf.get_width(),sprite_surf.get_height()),3)
+            print(self.surf_rect, 'surface_rect')
+
+        self.renderable.update_cords_rect(self.surf_rect)
         self.renderable.render()
 
         
@@ -75,7 +82,6 @@ class SpriteStackService:
         Takes X,Y parameters
         """
         if params != {}:
-            print(params, self.rect)
             self.rect.centerx = params['x']
             self.rect.centery = params['y']
-            self.renderable.update_cords_rect(self.rect)
+            
