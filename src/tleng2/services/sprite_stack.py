@@ -17,6 +17,8 @@ class SpriteStackService:
         self.spread = 1
         self.rect = None
 
+        self.center = (0,0)
+
         self.first_layer_rect = None
 
         self.caching = caching
@@ -52,6 +54,9 @@ class SpriteStackService:
         if self.caching: ... 
         else:
             surf = pygame.Surface(pygame.transform.rotate(self.images[0], self.rotation).get_size())
+            self.rect = surf.get_frect() 
+            self.rect.center = self.center
+
             sprite_surf = pygame.Surface((surf.get_width(),
                                               surf.get_height() + len(self.images)*self.spread))
             sprite_surf.fill(COLOR_KEY)
@@ -70,7 +75,7 @@ class SpriteStackService:
 
             self.surf_rect.bottomleft = self.rect.bottomleft
 
-            pygame.draw.rect(RendererProperties._display,RED,pygame.FRect(self.renderable.x+20,self.renderable.y,sprite_surf.get_width(),sprite_surf.get_height()),3)
+            #pygame.draw.rect(RendererProperties._display,RED,pygame.FRect(self.renderable.x+20,self.renderable.y,sprite_surf.get_width(),sprite_surf.get_height()),3)
             print(self.surf_rect, 'surface_rect')
 
         self.renderable.update_cords_rect(self.surf_rect)
@@ -82,6 +87,5 @@ class SpriteStackService:
         Takes X,Y parameters
         """
         if params != {}:
-            self.rect.centerx = params['x']
-            self.rect.centery = params['y']
+            self.center = (params['x'],params['y'])
             

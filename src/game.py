@@ -170,14 +170,14 @@ class FreeRoam(Scene):
         RendererMethods.fill_display(color=(34,32,52))
         self.free_roam_tilemap.render()
 
-        if self.debug:
-            for obj in self.all_sprites:
-                shape = obj.shape
-                ps = [flipy(pos.rotated(shape.body.angle) + shape.body.position)
-                      for pos in shape.get_vertices()]
-                ps.append(ps[0])
-                pygame.draw.rect(RendererProperties._display, pygame.Color('blue'), obj.rect, 2)
-                pygame.draw.lines(RendererProperties._display, (90, 200, 50), False, ps, 2)
+        # if self.debug:
+        #     for obj in self.all_sprites:
+        #         shape = obj.shape
+        #         ps = [flipy(pos.rotated(shape.body.angle) + shape.body.position)
+        #               for pos in shape.get_vertices()]
+        #         ps.append(ps[0])
+        #         pygame.draw.rect(RendererProperties._display, pygame.Color('blue'), obj.rect, 2)
+        #         pygame.draw.lines(RendererProperties._display, (90, 200, 50), False, ps, 2)
 
         self.player_sprite.render()
         print(self.player_sprite.rect, 'player rect')
