@@ -31,7 +31,7 @@ class FreeRoam(Scene):
         self.space.damping = .01
 
         self.player_sprite = SpriteStackService()
-        self.player_sprite.load_images(os.path.join(assets_dir,'formula'))
+        self.player_sprite.load_images(os.path.join(assets_dir,'RED'))
 
         self.player = Player((0,0), self.space, 1, self.player_sprite.images[0].get_width(),self.player_sprite.images[0].get_height())
 
@@ -102,7 +102,7 @@ class FreeRoam(Scene):
 
         self.rotonta = SpriteStackService()
         self.rotonta.load_images(os.path.join(assets_dir,'ROTONTA'))
-        self.rotonta.update({'x':tile_size*4,'y':tile_size*3})
+        self.rotonta.update({'x':tile_size*8,'y':tile_size*6})
 
         self.lefkos_pirgos = SpriteStackService()
         self.lefkos_pirgos.load_images(os.path.join(assets_dir,'LEFKOS'))
@@ -178,7 +178,7 @@ class FreeRoam(Scene):
         #         ps.append(ps[0])
         #         pygame.draw.rect(RendererProperties._display, pygame.Color('blue'), obj.rect, 2)
         #         pygame.draw.lines(RendererProperties._display, (90, 200, 50), False, ps, 2)
-
+        # self.player_sprite.spread = 8
         self.player_sprite.render()
         print(self.player_sprite.rect, 'player rect')
         #pygame.draw.rect(RendererProperties._display,(255,0,0),self.player_sprite.rect)
@@ -189,10 +189,4 @@ class FreeRoam(Scene):
         for building in self.buildings:
             building.render()
 
-        
-
-        
-
-
-        
         

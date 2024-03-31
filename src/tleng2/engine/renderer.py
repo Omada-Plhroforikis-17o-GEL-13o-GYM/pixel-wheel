@@ -21,7 +21,8 @@ class Renderer:
     Experimental Renderer
     """
     def __init__(self) -> None:
-        ...
+        self._display = None
+        self._window = None
 
 
     def render(self) -> None:

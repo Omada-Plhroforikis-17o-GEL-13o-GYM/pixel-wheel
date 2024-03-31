@@ -6,8 +6,6 @@ It's a 2D Racing game.
 
 Work In Progress.
 
-We need to make main.py work something like reference.py.
-
 - /assets/
     - Assets such as music and stuff
 - /src/ 
@@ -21,5 +19,7 @@ We need to make main.py work something like reference.py.
 
 ### TODO
 
+- Abolishing display/window surfaces in RendererProperties 
+- Update Renderable to hold a method for rendering complex objects (sprite stacking)
 - Camera
-- Renderer
+- Renderer [the base part is complete]
