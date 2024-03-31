@@ -33,6 +33,8 @@ class CameraCatcher:
 
 
 
+
+
 class Camera(CameraCatcher): 
     '''
     Handles how the Surfaces are rendered to the screen. While keeping the world positions.
@@ -53,6 +55,7 @@ class Camera(CameraCatcher):
         self.vert_area = VertArea(width=width, height=height)
 
         self.directions = pygame.math.Vector2(0,0)
+        
         self.offset_pos = pygame.math.Vector2(0,0)
         self.rect = pygame.FRect(0, 0, self.vert_area.width, self.vert_area.height)
 

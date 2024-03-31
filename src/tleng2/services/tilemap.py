@@ -1,8 +1,36 @@
 from ..components.renderable import Renderable
 from ..engine.properties import EngineProperties, RendererProperties
 
+from abc import ABC, abstractmethod
+
+from pygame import Vector2
 import pygame
 
+class Tile(ABC):
+    def __init__(self) -> None:
+        '''
+        {'name':{
+                'render' : [ImageService, SpriteStack]
+                'physics' : [Wall]
+            }
+        }
+        '''
+        super().__init__()
+        self.pos = Vector2()
+        self.properties = {}
+    
+
+    def update_position() -> None:
+        ...
+
+    @abstractmethod
+    def update(self) -> None: ...
+
+
+    @abstractmethod
+    def render() -> None:
+        ...
+        
 
 class TileSet:
     def __init__(self, 
@@ -13,8 +41,8 @@ class TileSet:
         """
         For images use ImageService
         Tile set, 
-        {"grass": grass_tile.png,
-         "concrete" : concrete_tile.png
+        {"grass": GrassTile,
+         "concrete" : ConcreteTile,
          ...}
         """
         
@@ -22,12 +50,11 @@ class TileSet:
         self.width = width
         self.height = height
 
-
 class TileMap:
     def __init__(self):
         self.tiles = []
         self.tileset = {}
-        self.renderable = Renderable()
+        
 
 
     def load_tilemap(self, 
@@ -37,6 +64,8 @@ class TileMap:
         Matrix list, if not created in a json file.
         """
         self.tiles = tilemap
+
+        # more calculations, for baking in tile coordinates and other.
     
 
     def load_tileset(self,
@@ -56,16 +85,14 @@ class TileMap:
         ) -> None: ...
 
 
-    def render(self) -> None:
-        # Renderer.render_tiles()
+    def get_info(self, key) -> None:
+        """
+        The key to help with the giving back all the info from 
+        """
 
-        # this can be cached
-        for y, y_tiles in enumerate(self.tiles):
-            for x, tile_name in enumerate(y_tiles):
-                # print(tile_name,self.tileset.set[tile_name])
-                RendererProperties._display.blit(self.tileset.set[tile_name],(x*self.tileset.width, y*self.tileset.height))
-                # self.renderable.update(x*self.tileset.width, y*self.tileset.height, self.tileset.set[tile_name])
-                # self.renderable.render()
 
     def update(self) -> None:
+        """
+        Update Animations and stuff in the tiles.
+        """
         pass

@@ -27,13 +27,24 @@ class Renderer:
 
     def render(self) -> None:
         # debug_print(RendererProperties.render_calls,tags=['Renderer', 'Render_calls'])
-   
+        display = RendererProperties._display
+
+
+
         for call in RendererProperties.render_calls:
             renderable = call
-
-            print(renderable)
             
-            RendererProperties._display.blit(renderable.surface, (renderable.x, renderable.y))
+            print(renderable)
+
+            if RendererProperties._local_default_camera != None:
+                pos = CameraCatcher.cameras[RendererProperties._local_default_camera].offset_pos
+                print(pos)
+                display.blit(renderable.surface, (round(renderable.x - pos[0]) , round(renderable.y - pos[1])))
+            else:
+                display.blit(renderable.surface, (renderable.x , renderable.y))
+        
+        print(CameraCatcher.cameras)
+
 
         
  

@@ -1,4 +1,5 @@
 import sys
+import os
 import pygame
 
 from ..engine.properties import EngineProperties, SceneManagerProperties, RendererProperties
@@ -8,6 +9,8 @@ from ..components.scene import SceneCatcher
 from ..utils.debug import debug_print
 from .settings import GlobalSettings
 from .scene_manager import SceneManager
+
+
 
 
 class Game: 

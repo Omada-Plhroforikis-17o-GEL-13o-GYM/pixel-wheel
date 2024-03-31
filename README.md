@@ -19,6 +19,9 @@ Work In Progress.
 
 ### TODO
 
+MASSIVE TODO
+- Redo the coordinate system, should be similar to pymunk, normal cartesian. Renderer will just convert the normal coordinates to the pygame-screen coordinates
+
 - Abolishing display/window surfaces in RendererProperties 
 - Update Renderable to hold a method for rendering complex objects (sprite stacking)
 - Camera

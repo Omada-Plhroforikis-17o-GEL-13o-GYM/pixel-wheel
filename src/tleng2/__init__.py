@@ -30,6 +30,7 @@ from .object.sprite import Sprite
 from .components.scene import Scene, SceneCatcher
 from .components.camera import Camera
 from .components.renderable import Renderable
+from .components.map import Map
 
 # ui_elemetns Directory
 from .ui_elements.label import Label
@@ -55,6 +56,7 @@ __all__ = [
 'colors', 'convert_rad_to_deg', 'convert_deg_to_rad', 'get_parent_dir',
 'EngineMethods', 'SceneManagerMethods', 'SceneManagerProperties', 'RendererMethods', 'RendererProperties', 'EngineProperties',
 'Renderable',
+'Map',
 'Area', 
 'Sprite', 
 'Scene', 

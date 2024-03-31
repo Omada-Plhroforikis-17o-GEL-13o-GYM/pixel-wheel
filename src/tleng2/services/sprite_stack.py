@@ -4,12 +4,26 @@ from ..utils.colors import COLOR_KEY, RED
 import os
 import pygame
 
+class LazySpriteStackService:
+    """
+    Embraces caching
+    """
+    ...
+
+
 class SpriteStackService:
+    """
+    Simple SpriteStacking method
+
+    Should load the pictures into a self.images list
+    And pass them into a Renderable Object 
+    """
     def __init__(self, caching: bool = False) -> None:
         """
         Rotation is calculated with radians.
         """
         self.renderable = Renderable()
+        self.renderable.rendering_method(self.sprite_stacking, self)
         self.images = None
         self.rotation = 0 # degrees TODO change this to radians
 
@@ -24,6 +38,7 @@ class SpriteStackService:
         self.caching = caching
         if caching:
             self.cache()        
+
 
     def cache(self) -> None: ...
 
@@ -50,34 +65,46 @@ class SpriteStackService:
         ...
 
 
+    def sprite_stacking(self, display) -> None:
+        surf = pygame.Surface(pygame.transform.rotate(self.images[0], self.rotation).get_size())
+        self.rect = surf.get_frect() 
+        self.rect.center = self.center
+        sprite_surf = pygame.Surface((surf.get_width(),
+                                          surf.get_height() + len(self.images)*self.spread))
+        sprite_surf.fill(COLOR_KEY)
+        sprite_surf.set_colorkey(COLOR_KEY)
+        for i, img in enumerate(self.images):
+            rotated_img = pygame.transform.rotate(img, self.rotation)
+            if self.fill:
+                for j in range(self.spread):
+                    sprite_surf.blit(rotated_img, (0,rotated_img.get_height() // 2 -i*self.spread -j))
+            sprite_surf.blit(rotated_img, (0,len(self.images*self.spread) - i*self.spread))
+        
+        self.renderable.update_surf(sprite_surf)
+        self.surf_rect = sprite_surf.get_frect()
+        self.surf_rect.bottomleft = self.rect.bottomleft
+        #pygame.draw.rect(RendererProperties._display,RED,pygame.FRect(self.renderable.x+20,self.renderable.y,sprite_surf.get_width(),sprite_surf.get_height()),3)
+        print(self.surf_rect, 'surface_rect')
+
+
     def render(self,) -> None:
-        if self.caching: ... 
-        else:
-            surf = pygame.Surface(pygame.transform.rotate(self.images[0], self.rotation).get_size())
-            self.rect = surf.get_frect() 
-            self.rect.center = self.center
-
-            sprite_surf = pygame.Surface((surf.get_width(),
-                                              surf.get_height() + len(self.images)*self.spread))
-            sprite_surf.fill(COLOR_KEY)
-            sprite_surf.set_colorkey(COLOR_KEY)
-
-            for i, img in enumerate(self.images):
-                rotated_img = pygame.transform.rotate(img, self.rotation)
-                if self.fill:
-                    for j in range(self.spread):
-                        sprite_surf.blit(rotated_img, (0,rotated_img.get_height() // 2 -i*self.spread -j))
-
-                sprite_surf.blit(rotated_img, (0,len(self.images*self.spread) - i*self.spread))
-            
-            self.renderable.update_surf(sprite_surf)
-            self.surf_rect = sprite_surf.get_frect()
-
-            self.surf_rect.bottomleft = self.rect.bottomleft
-
-            #pygame.draw.rect(RendererProperties._display,RED,pygame.FRect(self.renderable.x+20,self.renderable.y,sprite_surf.get_width(),sprite_surf.get_height()),3)
-            print(self.surf_rect, 'surface_rect')
-
+        surf = pygame.Surface(pygame.transform.rotate(self.images[0], self.rotation).get_size())
+        self.rect = surf.get_frect() 
+        self.rect.center = self.center
+        sprite_surf = pygame.Surface((surf.get_width(),
+                                          surf.get_height() + len(self.images)*self.spread))
+        sprite_surf.fill(COLOR_KEY)
+        sprite_surf.set_colorkey(COLOR_KEY)
+        for i, img in enumerate(self.images):
+            rotated_img = pygame.transform.rotate(img, self.rotation)
+            if self.fill:
+                for j in range(self.spread):
+                    sprite_surf.blit(rotated_img, (0,rotated_img.get_height() // 2 -i*self.spread -j))
+            sprite_surf.blit(rotated_img, (0,len(self.images*self.spread) - i*self.spread))
+        
+        self.renderable.update_surf(sprite_surf)
+        self.surf_rect = sprite_surf.get_frect()
+        self.surf_rect.bottomleft = self.rect.bottomleft
         self.renderable.update_cords_rect(self.surf_rect)
         self.renderable.render()
 

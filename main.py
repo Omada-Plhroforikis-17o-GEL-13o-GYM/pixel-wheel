@@ -16,12 +16,14 @@ GlobalSettings.update_bresolution((1280,720))
 # GlobalSettings._debug = True
 # DebugTags.import_tags(['renderable'])
 RendererMethods.load_displays()
-EngineMethods.set_caption("PixelWheel")
+EngineMethods.set_caption("PixelWheel: Thessaloniki Edition")
 
 import_params_needed()
 
 GlobalSettings._debug = False
 # GlobalSettings.load_settings_json()
+
+# loading music
 
 
 if __name__ == '__main__':

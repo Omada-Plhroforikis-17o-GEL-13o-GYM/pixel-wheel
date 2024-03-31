@@ -7,10 +7,12 @@ class Renderable:
         self.x = 0
         self.y = 0
         self.surface = None # pygame.Surface()
+        self.render_method = None
 
 
     def __repr__(self):
         return f'x: {self.x}, y: {self.y}, surface: {self.surface}'
+    
 
     @staticmethod
     def rect(rect: pygame.FRect, color: Color, thickness: int, radius: int) -> pygame.SurfaceType:
@@ -29,6 +31,10 @@ class Renderable:
 
         pygame.draw.rect(surface, color, temp_rect, abs(thickness), radius)
         return surface
+    
+
+    @staticmethod
+    def sprite_stack(images,) -> pygame.SurfaceType: ...
 
 
     def update_cords(self, 
@@ -63,5 +69,18 @@ class Renderable:
         self.update_cords(x,y)
         self.update_surf(new_surface)
     
+
     def render(self,) -> None:
         RendererProperties.render_calls += [self]
+
+
+    def rendering_method(self, render_method, game_object):
+        """
+        Gets invoked if the the game object is in the camera area. Used if it has a complex system for rendering 
+        e.x. SpriteStacking
+
+        :param render_method: must be a class method, or a function
+        """
+        self.render_method = render_method
+        self.self_class = game_object
+        

@@ -30,10 +30,10 @@ class Credits(Scene):
         for event in EngineProperties._events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 4: 
-                    scroll_y = min(scroll_y + 15, 1750/2)
+                    scroll_y = min(scroll_y + 30, 1750/2)
                     print('up')
                 if event.button == 5: 
-                    scroll_y = max(scroll_y - 15, -1750/8)
+                    scroll_y = max(scroll_y - 30, -1750/8)
 
         self.credits_img.rect.centery = scroll_y
     

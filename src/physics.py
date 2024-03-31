@@ -18,7 +18,7 @@ class Player(pygame.sprite.Sprite):
         #                [(1, 72), (26, 1), (51, 72)])
         pygame.draw.polygon(self.image, pygame.Color('steelblue2'),
                         [(1, height), (1,1),(width,1) ,(width, height)])
-        
+
         self.rect = self.image.get_rect(center=pos)
         self.orig_image = self.image
 
@@ -91,25 +91,26 @@ class Player(pygame.sprite.Sprite):
         self.space.remove(self.body, self.shape)
 
 
-class Wall(pygame.sprite.Sprite):
+class Wall():
 
-    def __init__(self, pos, verts, space, mass, *sprite_groups):
-        super().__init__(*sprite_groups)
+    def __init__(self, pos, verts, space, mass):
         # Determine the width and height of the surface.
-        width = max(v[0] for v in verts)
-        height = max(v[1] for v in verts)
-        self.image = pygame.Surface((width, height), pygame.SRCALPHA)
-        pygame.draw.polygon(self.image, pygame.Color('sienna1'), verts)
-        self.rect = self.image.get_rect(topleft=pos)
+        # width = max(v[0] for v in verts)
+        # height = max(v[1] for v in verts)
+        # self.image = pygame.Surface((width, height), pygame.SRCALPHA)
+        # pygame.draw.polygon(self.image, pygame.Color('sienna1'), verts)
+        # self.rect = self.image.get_rect(topleft=pos)
 
         moment = pymunk.moment_for_poly(mass, verts)
         self.body = pymunk.Body(mass, moment, pymunk.Body.STATIC)
         # Need to transform the vertices for the pymunk poly shape,
         # so that they fit to the image vertices.
-        verts2 = [(x, -y) for x, y in verts]
-        self.shape = pymunk.Poly(self.body, verts2, radius=2)
+        # verts2 = [(x, -y) for x, y in verts]
+        self.shape = pymunk.Poly(self.body, verts, radius=2)
         self.shape.friction = .9
         self.shape.elasticity = .52
-        self.body.position = flipy(pos)
+        self.body.position = pos
         self.space = space
         self.space.add(self.body, self.shape)
+
+    

@@ -5,6 +5,8 @@ import os
 import pygame
 from .tleng2 import *
 
+pygame.init()
+
 
 def play_callback():
     SceneManagerMethods.change_current_scene('FreeRoam')
@@ -29,6 +31,10 @@ CREDITS_BUTTON_IMG = (
     os.path.join(GAME_DIR, 'assets',"buttons",'credits','credits_0001.png'),
     os.path.join(GAME_DIR, 'assets',"buttons",'credits','credits_0002.png'),
     os.path.join(GAME_DIR, 'assets',"buttons",'credits','credits_0003.png'),    
+)
+
+BG_MUSIC = pygame.mixer.Sound(
+    os.path.join(GAME_DIR,'assets','music','bg_music.wav')
 )
 
 class Menu(Scene):
@@ -63,6 +69,9 @@ class Menu(Scene):
         self.image.load_image(LOGO, 57*scalar, 32*scalar)
         self.image.rect.centerx = GlobalSettings._disp_res[0]/2
         self.image.rect.y = 200
+
+        BG_MUSIC.play(-1)
+        BG_MUSIC.set_volume(0.1)
 
 
     def event_handling(self, keys_pressed) -> None:                    

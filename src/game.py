@@ -2,20 +2,31 @@
 Gameplay scene class
 """
 from .tleng2 import *
-from .physics import Player
+from .physics import Player, Wall
 
+from pygame import Vector2
 from pymunk import Vec2d
 import pymunk
 import pygame
 import os
 
 def flipy(p):
-    """Convert chipmunk coordinates to pygame coordinates."""
+    """Convert chipmunk coordinates to pygame screen coordinates."""
+    return Vec2d(p[0], -p[1]+RendererProperties._display.get_size()[1])
+
+def flipy_pymunk(p) -> float:
+    """."""
     return Vec2d(p[0], -p[1]+RendererProperties._display.get_size()[1])
 
 
 def image_load(*path) -> pygame.SurfaceType:
     return pygame.image.load(os.path.join(*path)).convert_alpha()
+
+
+def rect_to_vertices(rect) -> list[Vector2]:
+    return [Vec2d(*rect.topleft), Vec2d(*rect.topright), Vec2d(*rect.bottomright), Vec2d(*rect.bottomleft)]
+
+
 
 
 class FreeRoam(Scene):
@@ -24,6 +35,7 @@ class FreeRoam(Scene):
         super().__init__(scene_name,'free_roam')
         assets_dir = os.path.join(get_parent_dir(__file__,2), 'assets')
 
+        
         self.debug = True
 
         self.space = pymunk.Space()
@@ -33,7 +45,7 @@ class FreeRoam(Scene):
         self.player_sprite = SpriteStackService()
         self.player_sprite.load_images(os.path.join(assets_dir,'RED'))
 
-        self.player = Player((0,0), self.space, 1, self.player_sprite.images[0].get_width(),self.player_sprite.images[0].get_height())
+        self.player = Player((200,-100), self.space, 1, self.player_sprite.images[0].get_width(),self.player_sprite.images[0].get_height())
 
         print(self.player_sprite.images[0].get_width(),self.player_sprite.images[0].get_height())
 
@@ -66,6 +78,7 @@ class FreeRoam(Scene):
         RO = 'road'
         PR = 'paved_road'
 
+
         tilemap = [
             [RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO],
             [RO,SE,RD,RD,RD,SW,SE,RD,RD,RD,SW,RO,RO],
@@ -74,68 +87,90 @@ class FreeRoam(Scene):
             [RO,RR,PO,PO,PO,RL,SE,RD,RD,RD,SW,RO,RO],
             [RO,NE,RU,RU,RU,NW,NE,RU,RU,RU,NW,RO,RO],
             [RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO],
+            [RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO],
+            [RO,SE,RD,RD,RD,SW,SE,RD,RD,RD,SW,RO,RO],
+            [RO,RR,PO,PO,PO,RL,RR,PO,PO,PO,RL,RO,RO],
+            [RO,RR,PO,PO,PO,RL,NE,RU,RU,RU,NW,RO,RO],
+            [RO,RR,PO,PO,PO,RL,SE,RD,RD,RD,SW,RO,RO],
+            [RO,NE,RU,RU,RU,NW,NE,RU,RU,RU,NW,RO,RO],
+            [RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO],            
         ]
 
 
         ht = 35/2
         dc = 8 # distance from curb y px
-        tile_hitboxes = {
-            'road_straight_up' : [(-ht,ht),(-ht+dc,ht),(-ht+dc,-ht),(-ht,-ht)],
-            'road_straight_down' : [(-ht,-ht),(-ht,-ht+dc),(ht,-ht+dc),(ht,-ht)],
-            'road_straight_right' : [(ht,ht),(ht-dc,ht),(ht-dc,-ht),(ht,-ht)],
-            'road_straight_left' : [(-ht,ht),(-ht+dc,ht),(-ht+dc,-ht),(-ht,-ht)],
-            'road_turn_ne' : '',
-            'road_turn_se' : '',
-            'road_turn_sw' : '',
-            'road_turn_nw' : '',
-            'pavement' : '',
-            'road' : '',
-            'paved_road' : '',
+        
+        self.tile_hitboxes = {
+            'road_straight_up' : rect_to_vertices(pygame.FRect(-ht, ht-dc, ht*2, dc)), # done
+            'road_straight_down' : rect_to_vertices(pygame.FRect(-ht, -ht, ht*2, dc)), # done
+            'road_straight_right' : rect_to_vertices(pygame.FRect(ht-dc, -ht, dc, ht*2)), # done
+            'road_straight_left' : rect_to_vertices(pygame.FRect(-ht, -ht, dc, ht*2)), # done
+            'road_turn_ne' : rect_to_vertices(pygame.FRect(ht-dc, ht-dc, dc, dc)), # done
+            'road_turn_se' : rect_to_vertices(pygame.FRect(ht-dc, -ht, dc, dc)),
+            'road_turn_sw' : rect_to_vertices(pygame.FRect(-ht, -ht, dc, dc)), # done
+            'road_turn_nw' : rect_to_vertices(pygame.FRect(-ht, ht-dc, dc, dc)), # done
+            'pavement' : rect_to_vertices(pygame.FRect(-ht, -ht, ht*2, ht*2)),
         }
+
+        no_hitbox = ['road', 'paved_road']
+
+        for y, y_tiles in enumerate(tilemap):
+            for x, tile_name in enumerate(y_tiles):
+                if tile_name in no_hitbox:
+                    continue
+                else:
+                    Wall((x*35+35/2,-y*35+130), self.tile_hitboxes[tile_name],self.space, 1)
+                
 
         tile_size = 35/2
 
-        self.free_roam_tilemap = TileMap()
+        self.free_roam_tilemap = Map()
         self.free_roam_tilemap.load_tilemap(tilemap)
         self.free_roam_tilemap.load_tileset(self.city_streets_tileset)
+        self.free_roam_tilemap.pre_render()
 
 
         self.rotonta = SpriteStackService()
         self.rotonta.load_images(os.path.join(assets_dir,'ROTONTA'))
-        self.rotonta.update({'x':tile_size*8,'y':tile_size*6})
+        self.rotonta.update({'x':tile_size*7,'y':tile_size*7})
 
         self.lefkos_pirgos = SpriteStackService()
         self.lefkos_pirgos.load_images(os.path.join(assets_dir,'LEFKOS'))
-        self.lefkos_pirgos.update({'x':tile_size*10,'y':35*2 +5})
+        self.lefkos_pirgos.update({'x':tile_size*7,'y':35*10+15})
 
 
         self.polikatikia1 = SpriteStackService()
         self.polikatikia1.load_images(os.path.join(assets_dir,'building'))
-        self.polikatikia1.update({'x':tile_size*1,'y':tile_size*1})
+        self.polikatikia1.update({'x':tile_size*9,'y':tile_size*19})
         # self.polikatikia1.spread = 35
 
         self.polikatikia2 = SpriteStackService()
         self.polikatikia2.load_images(os.path.join(assets_dir,'building'))
-        self.polikatikia2.update({'x':tile_size*3,'y':tile_size*3})
+        self.polikatikia2.update({'x':tile_size*5,'y':tile_size*5})
 
         self.polikatikia3 = SpriteStackService()
         self.polikatikia3.load_images(os.path.join(assets_dir,'building'))
-        self.polikatikia3.update({'x':tile_size*8,'y':tile_size*2})
+        self.polikatikia3.update({'x':tile_size*19,'y':tile_size*5})
 
         self.polikatikia4 = SpriteStackService()
         self.polikatikia4.load_images(os.path.join(assets_dir,'building'))
-        self.polikatikia4.update({'x':tile_size*9,'y':tile_size*2})
+        self.polikatikia4.update({'x':tile_size*9,'y':tile_size*7})
 
         self.polikatikia5 = SpriteStackService()
         self.polikatikia5.load_images(os.path.join(assets_dir,'building'))
-        self.polikatikia5.update({'x':tile_size*3,'y':tile_size*2})
+        self.polikatikia5.update({'x':tile_size*17,'y':tile_size*19})
+
+        self.polikatikia6 = SpriteStackService()
+        self.polikatikia6.load_images(os.path.join(assets_dir,'building'))
+        self.polikatikia6.update({'x':tile_size*5,'y':tile_size*19})
 
         self.buildings = [
                      self.polikatikia5,
                      self.polikatikia1,
                      self.polikatikia2,
                      self.polikatikia3,
-                     self.polikatikia4]
+                     self.polikatikia4,
+                     self.polikatikia6]
 
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.player)
@@ -155,9 +190,11 @@ class FreeRoam(Scene):
         self.player.update(EngineProperties._dt)
         pos = flipy(self.player.body._get_position())
         angl = convert_rad_to_deg(self.player.body._get_angle())
+        self.camera.offset_pos = Vector2(pos[0],pos[1]) - Vector2(RendererProperties._display.get_width()/2, RendererProperties._display.get_width()/2) 
+
         self.player_sprite.update(params={
-            'x':pos[0],
-            'y':pos[1],
+            'x':int(self.camera.offset_pos.x + RendererProperties._display.get_width()//2),
+            'y':int(self.camera.offset_pos.y + RendererProperties._display.get_height()//2),
         })
 
         self.player_sprite.rotation = angl
@@ -188,5 +225,26 @@ class FreeRoam(Scene):
 
         for building in self.buildings:
             building.render()
+
+        # no_hitbox = ['road', 'paved_road']
+
+        # print('1points____________________________________________________________________')
+        # for x, y_tiles in enumerate(self.free_roam_tilemap.tiles):
+        #     for y, tile_name in enumerate(y_tiles):
+        #         if tile_name in no_hitbox:
+        #             continue
+        #         else:
+        #             temp_points = []
+                    
+        #             for point in self.tile_hitboxes[tile_name]:
+        #                 temp_points += [Vector2(point.x*x*35,point.y*y*35) - self.camera.offset_pos]
+
+        #             print(temp_points)
+        #             pygame.draw.lines(RendererProperties._display, (255,0,0), False, temp_points)
+
+        # print('2points ___________________________________________________________________')
+
+
+        #pygame.draw.circle(RendererProperties._display,(255,0,0), ())
 
         
