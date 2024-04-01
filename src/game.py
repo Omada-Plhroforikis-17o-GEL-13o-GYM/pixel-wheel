@@ -9,6 +9,7 @@ from pymunk import Vec2d
 import pymunk
 import pygame
 import os
+import json
 
 def flipy(p):
     """Convert chipmunk coordinates to pygame screen coordinates."""
@@ -43,7 +44,22 @@ class FreeRoam(Scene):
         self.space.damping = .01
 
         self.player_sprite = SpriteStackService()
-        self.player_sprite.load_images(os.path.join(assets_dir,'RED'))
+        car = 'RED'
+        try:
+            with open(os.path.join(assets_dir, 'car.json'),'r') as car_json:
+                print(car_json)
+                car = json.load(car_json)['car']
+                print(car_json)
+                print(car)
+        except Exception as error:
+            print(error)
+            print("smt")
+            car = 'RED'
+            
+        try:
+            self.player_sprite.load_images(os.path.join(assets_dir,car))
+        except:
+            self.player_sprite.load_images(os.path.join(assets_dir,'RED'))
 
         self.player = Player((200,-100), self.space, 1, self.player_sprite.images[0].get_width(),self.player_sprite.images[0].get_height())
 
@@ -98,7 +114,7 @@ class FreeRoam(Scene):
 
 
         ht = 35/2
-        dc = 8 # distance from curb y px
+        dc = 4 # distance from curb y px
         
         self.tile_hitboxes = {
             'road_straight_up' : rect_to_vertices(pygame.FRect(-ht, ht-dc, ht*2, dc)), # done
@@ -119,7 +135,7 @@ class FreeRoam(Scene):
                 if tile_name in no_hitbox:
                     continue
                 else:
-                    Wall((x*35+35/2,-y*35+130), self.tile_hitboxes[tile_name],self.space, 1)
+                    Wall((x*35+35/2+1,-y*35+129), self.tile_hitboxes[tile_name],self.space, 1)
                 
 
         tile_size = 35/2
