@@ -1,2 +1,8 @@
-pymunk
-pygame-ce
+pyinstaller==6.2.0
+pyinstaller-hooks-contrib==2023.10
+moderngl==5.9.0
+typing_extensions==4.9.0
+pymunk==6.6.0
+numpy==1.24.4
+numpy-stl==2.17.1
+pygame-ce==2.4.1
