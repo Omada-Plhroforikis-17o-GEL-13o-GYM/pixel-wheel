@@ -34,7 +34,7 @@ class Renderable:
     
 
     @staticmethod
-    def sprite_stack(images,) -> pygame.SurfaceType: ...
+    def sprite_stack(images, rotation, spread) -> pygame.SurfaceType: ...
 
 
     def update_cords(self, 

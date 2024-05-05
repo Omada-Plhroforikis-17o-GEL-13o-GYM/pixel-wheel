@@ -11,6 +11,7 @@ import pygame
 import os
 import json
 
+
 def flipy(p):
     """Convert chipmunk coordinates to pygame screen coordinates."""
     return Vec2d(p[0], -p[1]+RendererProperties._display.get_size()[1])

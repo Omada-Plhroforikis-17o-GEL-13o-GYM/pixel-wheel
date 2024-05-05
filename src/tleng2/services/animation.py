@@ -1,8 +1,9 @@
+import pygame
+
 from ..engine.settings import GlobalSettings
 from ..engine.properties import EngineProperties, RendererProperties
 from ..components.renderable import Renderable
 
-import pygame
 
 class FancyAnimationService:
     """
@@ -15,7 +16,7 @@ class LazyAnimationService:
     """
     Animation that imports image files immedietly.
     """
-    def __init__(self, LocalSettings: None = None):
+    def __init__(self,):
         """
         An implementation of Local Settings has not been done yet.
         """
@@ -24,12 +25,15 @@ class LazyAnimationService:
         self.current_anim = ''
         self.current_image_anim = ''
         self.anim_frame_data = 0
-        self.renderable = Renderable()
+
+        self.image = ...
+        self.center = ...
+        self.renderable = Renderable() # deprecate
 
 
     def load_animation(self,
-            anim_dict:dict
-            ) -> None:
+                        anim_dict: dict
+                      ) -> None:
         '''
         Load the animation. The animation must have consistent widths and heights!
 
@@ -65,9 +69,9 @@ class LazyAnimationService:
         '''
         Updating the current animation
 
-        :param target_fps: These are the targeted fps, it is useful in case the current fps are 0, then we will use the target_fps
-        :param fps: The "wanted" fps of the game (it is advised to use get_fps function as it may not work if you have capped at 1000fps but only get 60)
-        :param frames: *How many frames will the animation last
+        :target_fps: These are the targeted fps, it is useful in case the current fps are 0, then we will use the target_fps
+        :fps: The "wanted" fps of the game (it is advised to use get_fps function as it may not work if you have capped at 1000fps but only get 60)
+        :frames: *How many frames will the animation last
         :return: it returns nothing
 
         For debugging animation use: 

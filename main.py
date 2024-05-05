@@ -18,17 +18,20 @@ GlobalSettings.update_bresolution((1280,720))
 RendererMethods.load_displays()
 EngineMethods.set_caption("PixelWheel: Thessaloniki Edition")
 
+#EngineProperties.import_render_params(`file`)
 import_params_needed()
 
 GlobalSettings._debug = False
 # GlobalSettings.load_settings_json()
 
-# loading music
-
 
 if __name__ == '__main__':
     pygame.init()
     # initializing the scene classes
+
+    # game = Game()
+
+    # game.load_scenes(FreeRoam(), Menu(), Credits())
     free_roam = FreeRoam('FreeRoam')
     menu = Menu('Menu')
     credits = Credits('Credits')

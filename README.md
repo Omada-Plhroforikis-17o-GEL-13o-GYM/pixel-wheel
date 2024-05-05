@@ -65,6 +65,8 @@ Go to releases!
 ### TODO
 
 MASSIVE TODO
+- ECS re-write
+
 - Redo the coordinate system, should be similar to pymunk, normal cartesian. Renderer will just convert the normal coordinates to the pygame-screen coordinates
 
 - Abolishing display/window surfaces in RendererProperties 
