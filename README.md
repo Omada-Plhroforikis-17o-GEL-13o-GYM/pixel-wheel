@@ -4,7 +4,7 @@
 
 It's a 2D Racing game. The setting of the game is in current day Thessaloniki.
 
-The game uses the Sprite-Stacking technique to create a pseudo 3d world.
+The game uses the Sprite-Stacking technique to create a pseudo 3d world. It also uses the [tleng](https://github.com/tl-ecosystem/tleng) game engine.
 
 Work In Progress.
 
