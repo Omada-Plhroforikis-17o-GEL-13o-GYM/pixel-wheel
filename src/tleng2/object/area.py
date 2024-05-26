@@ -3,12 +3,12 @@ from warnings import warn
 from .point import Point
 from ..utils.annotations import Color, VertRect
 from ..utils.colors import WHITE, BLACK
-from ..engine.settings import GlobalSettings
+# from ..engine.settings import GlobalSettings
 from ..utils.debug import debug_print
 from ..components.renderable import Renderable
 
 
-# I dont remmember the usage of this
+# I dont remember the usage of this
 class AreaCatcher:
     area_in_scene: dict = {}
 

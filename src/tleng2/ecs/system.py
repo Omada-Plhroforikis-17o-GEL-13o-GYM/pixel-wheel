@@ -1,2 +1,6 @@
+from abc import abstractmethod
+
 class System:
-    pass
+    @abstractmethod
+    def __init__(self) -> None:
+        pass

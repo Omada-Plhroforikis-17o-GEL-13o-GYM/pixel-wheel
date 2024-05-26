@@ -1,6 +1,13 @@
+class IEntity: ... # id entity
+
+
 class Entity:
-    def __init__(self):
+    def __init__(self, **components):
         self.components = {}
+
+        if components != []:
+            for component in components:
+                self.add_component(component)
 
     def add_component(self, component):
         self.components[type(component)] = component

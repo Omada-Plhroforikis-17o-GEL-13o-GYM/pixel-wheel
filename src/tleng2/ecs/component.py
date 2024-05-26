@@ -1,2 +1,6 @@
+from abc import abstractmethod
+
 class Component:
-    pass
+    @abstractmethod
+    def __init__(self) -> None:
+        pass

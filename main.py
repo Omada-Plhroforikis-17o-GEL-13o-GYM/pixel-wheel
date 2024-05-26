@@ -18,7 +18,7 @@ GlobalSettings.update_bresolution((1280,720))
 RendererMethods.load_displays()
 EngineMethods.set_caption("PixelWheel: Thessaloniki Edition")
 
-#EngineProperties.import_render_params(`file`)
+#EngineMethods.import_render_params(`file`)
 import_params_needed()
 
 GlobalSettings._debug = False
@@ -42,3 +42,19 @@ if __name__ == '__main__':
     # running the game engine to run the game
     game = Game()
     game.run()
+
+"""
+TODO:
+Redo the coordinate system. The world coordinates should be independent from the screen coordinates.
+
+Redo the tilemaps.
+
+PERF TODO:
+Rendering every spritestack in a single surface inside a chunk.
+
+QOL TODO:
+Nodify the scene manager.
+
+Abolish the catchers.
+
+"""

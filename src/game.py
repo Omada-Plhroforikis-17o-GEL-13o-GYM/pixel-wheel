@@ -68,7 +68,7 @@ class FreeRoam(Scene):
 
         
 
-
+        # tileset should import from a .json file as well.
         self.city_streets_tileset = TileSet({
             'road_straight_up' : image_load(assets_dir,'city_tileset', 'road_straight_up.png'),
             'road_straight_down' : image_load(assets_dir,'city_tileset', 'road_straight_down.png'),

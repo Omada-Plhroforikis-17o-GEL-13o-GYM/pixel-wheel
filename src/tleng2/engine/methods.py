@@ -4,6 +4,7 @@ from .settings import GlobalSettings
 
 import pygame
 
+
 class EngineMethods:
     @staticmethod
     def set_caption(caption: str) -> None:
@@ -31,6 +32,17 @@ class EngineMethods:
         Stores the dt value in EngineProperties.
         """
         EngineProperties._dt = EngineProperties._clock.tick(target_fps) >> 10 # bit shift, clock.tick / 1024
+
+
+    @staticmethod
+    def import_render_params(file_path: str) -> None:
+        """
+        Import the renderer parameters from a file.
+
+        The file must be in `.json` format.
+        """
+
+        ...
     
 
 
