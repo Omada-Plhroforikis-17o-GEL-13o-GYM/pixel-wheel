@@ -1,0 +1,3 @@
+[submodule "tleng2"]
+	path = tleng2
+	url = https://github.com/tl-ecosystem/tleng
