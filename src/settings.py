@@ -1,30 +1,81 @@
 """
 Settings scene class
 """
-import tleng2
+from dataclasses import dataclass
+
+from tleng2.ecs.component import Component
+from tleng2.ecs.world import World
+from tleng2.ecs.system import System, system
+
+from tleng2 import *
+from tleng2.components.camera import *
 
 
 """ settings.py """
 
-# settings_scene = ecs_scene()
+world = World()
 
-# entities = Entity(
-#   Coordinates2(0,0),
-#   Area(0,0,10,10),
-#   SpriteStackComponent(images_path, 10, 10) # loads the images to save time. Caches and stuff. 
-#    )
+@dataclass
+class Coordinates2(Component):
+    x: float
+    y: float
 
-# if you want to explicitly say what systems you want to use
-# settings_scene.use_systems(systems)
-# class systems ...
-# def systems ...
+@dataclass
+class AreaComponent(Component):
+    width: int
+    height: int
+
+@dataclass
+class SpriteStackComponent(Component):
+    dir_image_filepath: str
 
 
-# settings_scene.add_entities(entities)
-# adding custom systems
-# settings_scene.add_systems(systems)
+images_path = "path/to/spritestack"
 
-""" game.py """
+camera = world.spawn(
+    # CameraBundle()
+)
+
+
+# returns the id of the car 
+car1 = world.spawn(
+    Coordinates2(0,0),
+    AreaComponent(10,10),
+    SpriteStackComponent(images_path)
+)
+
+car2 = world.spawn(
+    Coordinates2(5,5),
+    AreaComponent(12,12),
+    SpriteStackComponent(images_path + "2")
+)
+
+def MovementSystem(world: World) -> None:
+    components = world.query(
+        Coordinates2
+    )
+
+    for coordinate in components:
+        coordinate.x += 1
+        coordinate.y += 1
+
+
+
+class AnimationSystem(System):
+    def update(self):
+        components = self.world.query(
+            Coordinates2,
+            optional = [
+                AreaComponent
+            ]
+        )
+
+        for coordinate in components:
+            coordinate.x += 1
+            coordinate.y += 1        
+
+
+""" main.py """
 
 # import setting_scene
 

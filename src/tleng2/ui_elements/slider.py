@@ -1,3 +1,0 @@
-
-class Slider(Button):
-    pass
