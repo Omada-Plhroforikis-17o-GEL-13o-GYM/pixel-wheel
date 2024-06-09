@@ -23,39 +23,61 @@ Go to releases!
 
 ### Linux
  - Using Wine:
-
+    - Ensure that you have wine installed.
     - Follow Windows How-To.
 
- - From Source: 
-    - Clone the repository locally.
+ - Linux binaries:
+    - Install the `pixel-wheel-linux.tar.gz` 
+    - Extract the contents of `pixel-wheel-linux.tar.gz`
+    - Double click on the `pixel-wheel` file
 
-        ``` bash
-        $ git clone https://www.github.com/Omada-Plhroforikis-17o-GEL-13o-GYM/pixel-wheel.git
-        ```    
+### From Source: 
+- Clone the games repository locally. And clone the Tleng Game engine Locally
+    ``` bash
+    $ git clone https://www.github.com/Omada-Plhroforikis-17o-GEL-13o-GYM/pixel-wheel.git
+    $ git clone https://www.github.com/tl-ecosystem/tleng.git
+    ```    
+- Create a symbolic link inside pixel-wheel from the tleng repo:
+    ```bash
+    $ ln -r -s ./tleng/tleng2 ./pixel-wheel/src
+    ```
+- Change to the game directory
+    ``` bash
+    $ cd pixel-wheel
+    ```
+- Create a virtual python enviroment and then activate it:
+    ```bash
+    $ python -m venv venv
+    ```
+    - linux
+    ```bash
+    $ source ./venv/bin/activate
+    ```
+    - Windows
+    ```bash
+    $ .\venv\Scripts\Activate.ps1
+    ```
+- Download the requirements (delete if you have the pygame library and not pygame-ce):
 
-    - Change to the game directory
+    Using pip:
+    ```bash
+    $ pip install -r requirements.txt
+    ```
+    Using your package manager manually (apt, dnf, pacman ...):
+    ``` bash
+    $ sudo 'your-package-manager' install pygame3-'your-package'
+    ```
+- Run the game.
+    ``` bash
+    $ python main.py
+    ```
 
-        ``` bash
-        $ cd pixel-wheel
-        ```
-
-    - Download the requirements (delete if you have the pygame library and not pygame-ce)
-    
-        Using pip:
-        ```
-        $ pip install -r requirements.txt
-        ```
-        Using your package manager manually (apt, dnf, pacman ...):
-
-        ``` bash
-        $ sudo 'your-package-manager' install pygame3-'your-package'
-        ```
-
-    - Run the game.
-
-        ``` bash
-        $ python main.py
-        ```
+## Running Pixel Wheel (main.py) 
+- When you boot up pixel wheel you are in the Menu
+- You can click the buttons with `right click`
+- If you press `Play` you free roam with `WASD`
+- If you press `Credits` you can scroll with your `mouse-wheel`
+- to go back to the `Menu` you need to press `esc` 
 
 ## Running reference.py
 - You can move with `WASD` 
