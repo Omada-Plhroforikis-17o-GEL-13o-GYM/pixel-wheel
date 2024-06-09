@@ -202,7 +202,7 @@ class FreeRoam(Scene):
 
 
     def update(self) -> None:
-        self.space.step(1/60)
+        self.space.step(EngineProperties._dt)
 
         self.player.update(EngineProperties._dt)
         pos = flipy(self.player.body._get_position())

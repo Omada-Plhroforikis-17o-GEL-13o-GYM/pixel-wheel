@@ -20,7 +20,7 @@ GlobalSettings.update_bresolution((1280,720))
 # DebugTags.import_tags(['renderable'])
 RendererMethods.load_displays()
 EngineMethods.set_caption("PixelWheel: Thessaloniki Edition")
-
+GlobalSettings._fps = 60
 # EngineMethods.import_render_params(`file`) the file is .json
 import_params_needed()
 
@@ -34,10 +34,11 @@ if __name__ == '__main__':
 
     game = Game()
 
-    # game.load_scenes(
+    # game.load_worlds(
     #     FreeRoam(), 
     #     Menu(), 
-    #     Credits()
+    #     Credits(),
+    #     settings
     # )
     free_roam = FreeRoam('FreeRoam')
     menu = Menu('Menu')

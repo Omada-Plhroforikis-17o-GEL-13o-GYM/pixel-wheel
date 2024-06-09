@@ -4,7 +4,7 @@ Settings scene class
 from dataclasses import dataclass
 
 from tleng2.ecs.component import Component
-from tleng2.ecs.world import World
+from tleng2.ecs.world import World, Schedule
 from tleng2.ecs.system import System, system
 
 from tleng2 import *
@@ -50,16 +50,6 @@ car2 = world.spawn(
     SpriteStackComponent(images_path + "2")
 )
 
-def MovementSystem(world: World) -> None:
-    components = world.query(
-        Coordinates2
-    )
-
-    for coordinate in components:
-        coordinate.x += 1
-        coordinate.y += 1
-
-
 
 class AnimationSystem(System):
     def update(self):
@@ -72,7 +62,15 @@ class AnimationSystem(System):
 
         for coordinate in components:
             coordinate.x += 1
-            coordinate.y += 1        
+            coordinate.y += 1   
+
+schedule = Schedule()
+
+schedule.add_systems(
+    AnimationSystem,
+)
+
+
 
 
 """ main.py """

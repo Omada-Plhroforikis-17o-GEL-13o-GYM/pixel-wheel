@@ -71,14 +71,14 @@ class Player(pygame.sprite.Sprite):
     def update(self, dt):
         # Accelerate the pymunk body of this sprite.
         if self.accel_forw and self.body.velocity.length < self.topspeed:
-            self.body.apply_force_at_local_point(Vec2d(0, 1624/2), Vec2d(0, 0))
+            self.body.apply_force_at_local_point(Vec2d(0, 1624/2) , Vec2d(0, 0))
         if self.accel_back and self.body.velocity.length < self.topspeed:
-            self.body.apply_force_at_local_point(Vec2d(0, -514), Vec2d(0, 0))
+            self.body.apply_force_at_local_point(Vec2d(0, -514) , Vec2d(0, 0))
         if self.turn_left and self.body.velocity.length < self.topspeed:
-            self.body.angle += .08
+            self.body.angle += .08 * dt * 100
             self.body.angular_velocity = 0
         if self.turn_right and self.body.velocity.length < self.topspeed:
-            self.body.angle -= .08
+            self.body.angle -= .08 * dt * 100
             self.body.angular_velocity = 0
         # Rotate the image of the sprite.
         self.angle = self.body.angle
