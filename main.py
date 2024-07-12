@@ -58,6 +58,10 @@ Independent Coordinates even in different screen sizes.
 
 Redo the tilemaps.
 
+Add multiworld entities?
+(a new actual reason for the world manager to exist)
+Ans: better ways of storing and loading maps. in a single scene.
+
 PERF TODO:
 Rendering every spritestack in a single surface inside a chunk.
 

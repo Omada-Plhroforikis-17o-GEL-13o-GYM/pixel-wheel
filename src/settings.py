@@ -101,6 +101,8 @@ schedule.add_systems(
     Test2System(),
 )
 
+print(schedule.system_schedule)
+
 world.use_schedule(schedule)
 
 world.run_schedule()
