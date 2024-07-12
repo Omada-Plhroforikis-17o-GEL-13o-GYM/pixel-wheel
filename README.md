@@ -57,18 +57,18 @@ Go to releases!
     ```bash
     $ .\venv\Scripts\Activate.ps1
     ```
-- Download the requirements (delete if you have the pygame library and not pygame-ce):
+- Download the requirements:
 
     Using pip:
     ```bash
     $ pip install -r requirements.txt
     ```
     Using your package manager manually (apt, dnf, pacman ...):
-    ``` bash
+    ```bash
     $ sudo 'your-package-manager' install pygame3-'your-package'
     ```
 - Run the game.
-    ``` bash
+    ```bash
     $ python main.py
     ```
 

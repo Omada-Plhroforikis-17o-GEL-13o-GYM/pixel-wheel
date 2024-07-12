@@ -45,7 +45,7 @@ if __name__ == '__main__':
     credits = Credits('Credits')
     
     # updating the scene to menu
-    SceneManagerMethods.start_with_scene("Menu")
+    SceneManagerMethods.start_with_scene("FreeRoam")
     
     # running the game engine to run the game
     game.run()
@@ -53,6 +53,8 @@ if __name__ == '__main__':
 """
 TODO:
 Redo the coordinate system. The world coordinates should be independent from the screen coordinates.
+
+Independent Coordinates even in different screen sizes.
 
 Redo the tilemaps.
 

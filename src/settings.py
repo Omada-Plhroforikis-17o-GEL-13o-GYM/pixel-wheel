@@ -3,30 +3,26 @@ Settings scene class
 """
 from dataclasses import dataclass
 
-from tleng2.ecs.component import Component
-from tleng2.ecs.world import World, Schedule
-from tleng2.ecs.system import System, system
-
 from tleng2 import *
 from tleng2.components.camera import *
 
 
 """ settings.py """
 
-world = World()
+world = ecs.World()
 
 @dataclass
-class Coordinates2(Component):
+class Coordinates2:
     x: float
     y: float
 
 @dataclass
-class AreaComponent(Component):
+class AreaComponent:
     width: int
     height: int
 
 @dataclass
-class SpriteStackComponent(Component):
+class SpriteStackComponent:
     dir_image_filepath: str
 
 
@@ -50,39 +46,61 @@ car2 = world.spawn(
     SpriteStackComponent(images_path + "2")
 )
 
+car3 = world.spawn(
+    Coordinates2(5,5),
+    AreaComponent(12,12),
+)
 
-class AnimationSystem(System):
-    def update(self):
-        components = self.world.query(
-            Coordinates2,
-            optional = [
-                AreaComponent
-            ]
-        )
-
-        for coordinate in components:
-            coordinate.x += 1
-            coordinate.y += 1   
-
-schedule = Schedule()
-
-schedule.add_systems(
-    AnimationSystem,
+car4 = world.spawn(
+    Coordinates2(5,5),
+    SpriteStackComponent(images_path + "2")
 )
 
 
 
+class AnimationSystem(ecs.System):
+    def update(self):
+        components = self.world.query(
+            Coordinates2,
 
-""" main.py """
+            has = (
+                AreaComponent,
+            )
+        )
 
-# import setting_scene
+        print("Animation system", components)
 
-# ecs_manager = ecs_manager()
 
-# ecs_manager.add_scene(setting_scene)
+class Test1System(ecs.System):
+    def update(self):
+        components = self.world.query(
+            Coordinates2,
+        )
 
-# ecs_manager.set_current_scene(...)
+        print("test1 system", components)
 
-""" ecs_manager """
 
-# 
+class Test2System(ecs.System):
+    def update(self):
+
+        print("test2 system")
+
+
+class MovementSystem(ecs.System):
+    def update(self):
+
+        print("Doing Movement")
+
+
+schedule = ecs.Schedule()
+
+schedule.add_systems(
+    AnimationSystem(5),
+    Test1System(),
+    MovementSystem(2),
+    Test2System(),
+)
+
+world.use_schedule(schedule)
+
+world.run_schedule()
