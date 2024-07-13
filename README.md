@@ -15,14 +15,20 @@ Click here to get the newest Release of [PixelWheel: Thessaloniki Edition](https
 ## How to download:
 
 Go to releases!
-
-### Windows
+<details>
+<summary><h3>Windows</h3></summary>
+ 
  - Install the `.zip` file
  - Extract the `.zip` file to a folder of your liking
  - Double click the `.exe` file. 
+ 
+</details>
 
-### Linux
- - Using Wine:
+
+<details>
+<summary><h3>Linux</h3></summary>
+
+  - Using Wine:
     - Ensure that you have wine installed.
     - Follow Windows How-To.
 
@@ -30,8 +36,11 @@ Go to releases!
     - Install the `pixel-wheel-linux.tar.gz` 
     - Extract the contents of `pixel-wheel-linux.tar.gz`
     - Double click on the `pixel-wheel` file
+</details>
 
-### From Source: 
+<details>
+<summary><h3>From Source</h3></summary>
+ 
 - Clone the games repository locally. And clone the Tleng Game engine Locally
     ``` bash
     $ git clone https://www.github.com/Omada-Plhroforikis-17o-GEL-13o-GYM/pixel-wheel.git
@@ -71,6 +80,8 @@ Go to releases!
     ```bash
     $ python main.py
     ```
+    
+</details>
 
 ## Running Pixel Wheel (main.py) 
 - When you boot up pixel wheel you are in the Menu
