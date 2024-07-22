@@ -3,6 +3,8 @@ Menu scene class
 """
 import os
 import pygame
+import json
+
 from .tleng2 import *
 
 pygame.init()
@@ -36,6 +38,16 @@ CREDITS_BUTTON_IMG = (
 BG_MUSIC = pygame.mixer.Sound(
     os.path.join(GAME_DIR,'assets','music','bg_music.wav')
 )
+
+MUSIC_VOLUME = 0.2
+try:
+    with open(os.path.join(GAME_DIR, 'settings.json'),'r') as settings:
+        print(settings)
+        MUSIC_VOLUME = json.load(settings)['MUSIC_VOLUME']
+except Exception as error:
+    print(error)
+    MUSIC_VOLUME = 0.2
+
 
 class Menu(Scene):
     def __init__(self,scene_name) -> None:
@@ -71,7 +83,7 @@ class Menu(Scene):
         self.image.rect.y = 200
 
         BG_MUSIC.play(-1)
-        BG_MUSIC.set_volume(0.1)
+        BG_MUSIC.set_volume(MUSIC_VOLUME)
 
 
     def event_handling(self, keys_pressed) -> None:                    

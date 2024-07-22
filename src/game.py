@@ -47,14 +47,11 @@ class FreeRoam(Scene):
         self.player_sprite = SpriteStackService()
         car = 'RED'
         try:
-            with open(os.path.join(assets_dir, 'car.json'),'r') as car_json:
-                print(car_json)
-                car = json.load(car_json)['car']
-                print(car_json)
-                print(car)
+            with open(os.path.join(assets_dir, 'settings.json'),'r') as settings:
+                print(settings)
+                car = json.load(settings)['CAR']
         except Exception as error:
             print(error)
-            print("smt")
             car = 'RED'
             
         try:
@@ -215,7 +212,9 @@ class FreeRoam(Scene):
         })
 
         self.player_sprite.rotation = angl
-        print(angl,self.player.body._get_angle())
+
+        # print(angl,self.player.body._get_angle())
+
         # self.rotonta.update({'x':35,'y':50})
         # self.lefkos_pirgos.update()
     
@@ -234,7 +233,8 @@ class FreeRoam(Scene):
         #         pygame.draw.lines(RendererProperties._display, (90, 200, 50), False, ps, 2)
         # self.player_sprite.spread = 8
         self.player_sprite.render()
-        print(self.player_sprite.rect, 'player rect')
+        #print(self.player_sprite.rect, 'player rect')
+        
         #pygame.draw.rect(RendererProperties._display,(255,0,0),self.player_sprite.rect)
 
         self.rotonta.render()
