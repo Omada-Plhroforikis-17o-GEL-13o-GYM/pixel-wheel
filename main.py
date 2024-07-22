@@ -1,4 +1,6 @@
 import pygame
+import os
+import json
 
 from src.tleng2 import * 
 from src.tleng2.utils.debug import DebugTags
@@ -20,7 +22,17 @@ GlobalSettings.update_bresolution((1280,720))
 # DebugTags.import_tags(['renderable'])
 RendererMethods.load_displays()
 EngineMethods.set_caption("PixelWheel: Thessaloniki Edition")
-GlobalSettings._fps = 60
+
+assets_dir = os.path.join(get_parent_dir(__file__,2), 'assets')
+fps = 60
+try:
+    with open(os.path.join(assets_dir, 'settings.json'),'r') as settings:
+        print(settings)
+        fps = json.load(settings)['FPS']
+except Exception as error:
+    print(error)
+    fps = 60
+GlobalSettings._fps = fps
 # EngineMethods.import_render_params(`file`) the file is .json
 import_params_needed()
 
@@ -38,7 +50,7 @@ if __name__ == '__main__':
     #     FreeRoam(), 
     #     Menu(), 
     #     Credits(),
-    #     settings
+    #     settings()
     # )
     free_roam = FreeRoam('FreeRoam')
     menu = Menu('Menu')

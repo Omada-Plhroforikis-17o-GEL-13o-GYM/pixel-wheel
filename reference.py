@@ -228,7 +228,7 @@ class Game:
             self.player.handle_event(event)
 
     def run_logic(self):
-        self.space.step(1/60)
+        self.space.step(self.dt)
         self.all_sprites.update(self.dt)
 
     def draw(self):
@@ -274,7 +274,7 @@ class Game:
 
 if __name__ == '__main__':
     pg.init()
-    pg.event.set_allowed([QUIT, KEYDOWN, KEYUP])
+    # pg.event.set_allowed([QUIT, KEYDOWN, KEYUP])
     Game().run()
     pg.quit()
     sys.exit()
