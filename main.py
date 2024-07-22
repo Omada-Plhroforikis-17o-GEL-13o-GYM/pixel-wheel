@@ -23,13 +23,14 @@ GlobalSettings.update_bresolution((1280,720))
 RendererMethods.load_displays()
 EngineMethods.set_caption("PixelWheel: Thessaloniki Edition")
 
-assets_dir = os.path.join(get_parent_dir(__file__,2), 'assets')
+assets_dir = os.path.join(get_parent_dir(__file__, 1), 'assets')
 fps = 60
 try:
     with open(os.path.join(assets_dir, 'settings.json'),'r') as settings:
         print(settings)
         fps = json.load(settings)['FPS']
 except Exception as error:
+    print("FPS ERROR FILE/TAG NOT FOUND")
     print(error)
     fps = 60
 GlobalSettings._fps = fps

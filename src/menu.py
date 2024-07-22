@@ -41,11 +41,12 @@ BG_MUSIC = pygame.mixer.Sound(
 
 MUSIC_VOLUME = 0.2
 try:
-    with open(os.path.join(GAME_DIR, 'settings.json'),'r') as settings:
+    with open(os.path.join(GAME_DIR, "assets", 'settings.json'),'r') as settings:
         print(settings)
         MUSIC_VOLUME = json.load(settings)['MUSIC_VOLUME']
 except Exception as error:
     print(error)
+    print("MUSIC ERROR FILE/TAG NOT FOUND")
     MUSIC_VOLUME = 0.2
 
 
