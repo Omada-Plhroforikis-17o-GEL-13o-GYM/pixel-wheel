@@ -30,7 +30,6 @@ def rect_to_vertices(rect) -> list[Vector2]:
 
 
 
-
 class FreeRoam(Scene):
     def __init__(self, scene_name) -> None:
         self.camera = Camera(default_camera = True)

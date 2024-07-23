@@ -58,7 +58,7 @@ if __name__ == '__main__':
     credits = Credits('Credits')
     
     # updating the scene to menu
-    SceneManagerMethods.start_with_scene("FreeRoam")
+    SceneManagerMethods.start_with_scene("Menu")
     
     # running the game engine to run the game
     game.run()
