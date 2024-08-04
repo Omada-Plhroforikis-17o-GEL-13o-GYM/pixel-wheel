@@ -211,6 +211,7 @@ class FreeRoam(Scene):
         })
 
         self.player_sprite.rotation = angl
+        # EngineMethods.set_caption(f"{EngineProperties._clock.get_fps():.2f}")
 
         # print(angl,self.player.body._get_angle())
 

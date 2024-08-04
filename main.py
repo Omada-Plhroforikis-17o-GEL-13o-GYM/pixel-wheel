@@ -32,7 +32,7 @@ try:
 except Exception as error:
     print("FPS ERROR FILE/TAG NOT FOUND")
     print(error)
-    fps = 60
+    
 GlobalSettings._fps = fps
 # EngineMethods.import_render_params(`file`) the file is .json
 import_params_needed()
@@ -42,6 +42,7 @@ GlobalSettings._debug = False
 
 
 if __name__ == '__main__':
+    pygame.mixer.pre_init(44100, 16, 2, 4096)
     pygame.init()
     # initializing the scene classes
 
@@ -61,7 +62,7 @@ if __name__ == '__main__':
     SceneManagerMethods.start_with_scene("Menu")
     
     # running the game engine to run the game
-    game.run()
+    game.run_old()
 
 """
 TODO:

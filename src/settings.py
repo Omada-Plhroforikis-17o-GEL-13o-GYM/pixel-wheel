@@ -97,11 +97,11 @@ schedule = ecs.Schedule()
 schedule.add_systems(
     AnimationSystem(5),
     Test1System(),
-    MovementSystem(2),
-    Test2System(),
+    MovementSystem(-2),
+    Test2System(-3),
 )
 
-print(schedule.system_schedule)
+# print(schedule.system_schedule)
 
 world.use_schedule(schedule)
 
