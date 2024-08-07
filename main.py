@@ -46,14 +46,8 @@ if __name__ == '__main__':
     pygame.init()
     # initializing the scene classes
 
-    game = Game()
+    game = App()
 
-    # game.load_worlds(
-    #     FreeRoam(), 
-    #     Menu(), 
-    #     Credits(),
-    #     settings()
-    # )
     free_roam = FreeRoam('FreeRoam')
     menu = Menu('Menu')
     credits = Credits('Credits')
@@ -73,11 +67,12 @@ Independent Coordinates even in different screen sizes.
 Redo the tilemaps.
 
 Add multiworld entities?
-(a new actual reason for the world manager to exist)
-Ans: better ways of storing and loading maps. in a single scene.
+Resources :) (unique compoenents)
 
 PERF TODO:
-Rendering every spritestack in a single surface inside a chunk.
+Rendering every spritestack in a single surface inside a chunk. (if spritestack is static, ex in the map)
+and caching the whole chunk in the caches of the spritestack instead of seperate ones. if one spritestck in a stack
+dont cache.
 
 QOL TODO:
 Change the debug print class/functions to a logger.
