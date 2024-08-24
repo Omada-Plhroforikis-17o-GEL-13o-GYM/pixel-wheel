@@ -24,6 +24,8 @@ RendererMethods.load_displays()
 EngineMethods.set_caption("PixelWheel: Thessaloniki Edition")
 
 assets_dir = os.path.join(get_parent_dir(__file__, 1), 'assets')
+
+EngineMethods.set_icon(os.path.join(assets_dir, 'logo', 'pixel_wheel_whole_logo.png'))
 fps = 60
 try:
     with open(os.path.join(assets_dir, 'settings.json'),'r') as settings:

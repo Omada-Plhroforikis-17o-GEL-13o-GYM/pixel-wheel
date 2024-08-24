@@ -78,10 +78,10 @@ class Menu(Scene):
                             )
         
         self.image = ImageService()
-        scalar = 5
-        self.image.load_image(LOGO, 57*scalar, 32*scalar)
-        self.image.rect.centerx = GlobalSettings._disp_res[0]/2
-        self.image.rect.y = 200
+        scalar = 7
+        self.image.load_image(LOGO, 57*scalar, 57*scalar)
+        self.image.rect.centerx = GlobalSettings._disp_res[0]/2 - 10
+        self.image.rect.centery = 200
 
         BG_MUSIC.play(-1)
         BG_MUSIC.set_volume(MUSIC_VOLUME)
@@ -104,3 +104,7 @@ class Menu(Scene):
         self.play_button.simple_draw()
         self.credits_button.simple_draw()
         self.image.render()
+
+
+# pixel
+#  wheel
