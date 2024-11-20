@@ -50,9 +50,9 @@ if __name__ == '__main__':
 
     game = App()
 
-    free_roam = FreeRoam('FreeRoam')
-    menu = Menu('Menu')
-    credits = Credits('Credits')
+    FreeRoam('FreeRoam')
+    Menu('Menu')
+    Credits('Credits')
     
     # updating the scene to menu
     SceneManagerMethods.start_with_scene("Menu")
