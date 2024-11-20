@@ -98,11 +98,11 @@ Go to releases!
 ### TODO
 
 MASSIVE TODO
-- ECS re-write
+- ECS re-write [almost complete]
 
 - Redo the coordinate system, should be similar to pymunk, normal cartesian. Renderer will just convert the normal coordinates to the pygame-screen coordinates
 
-- Abolishing display/window surfaces in RendererProperties 
+- Abolishing display/window surfaces in RendererProperties [being worked on for ecs] 
 - Update Renderable to hold a method for rendering complex objects (sprite stacking)
 - Camera
 - Renderer [the base part is complete]
