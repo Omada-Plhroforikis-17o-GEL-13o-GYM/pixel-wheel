@@ -1,3 +1,19 @@
+# PixelWheel: Thessaloniki Edition - A pseudo 2.5D Racing game made in pygame 
+# Copyright (C) 2024  theolaos
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 import pygame
 import os
 import json
@@ -65,11 +81,6 @@ TODO:
 Redo the coordinate system. The world coordinates should be independent from the screen coordinates.
 
 Independent Coordinates even in different screen sizes.
-
-Redo the tilemaps.
-
-Add multiworld entities?
-Resources :) (unique compoenents)
 
 PERF TODO:
 Rendering every spritestack in a single surface inside a chunk. (if spritestack is static, ex in the map)

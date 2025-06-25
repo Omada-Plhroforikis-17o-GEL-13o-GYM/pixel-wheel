@@ -166,9 +166,9 @@ class Game:
     def __init__(self):
         self.done = False
         self.screen = pg.display.set_mode((800, 600),flags)
-        self.pixel = pg.surface.Surface((800/4, 600/4))
         self.pixel2 = pg.surface.Surface((800/2, 600/2))
-        self.pixel3 = pg.surface.Surface((800/1.5, 600/1.5))
+        self.pixel = pg.surface.Surface((800/4, 600/4))
+        self.pixel3 = pg.surface.Surface((round(800/3), 600/3))
         self.clock = pg.time.Clock()
         self.bg_color = pg.Color(60, 60, 60)
 
@@ -178,9 +178,9 @@ class Game:
 
         self.all_sprites = pg.sprite.Group()
         self.images = load_images()
+        self.low_images = load_bimages(width=self.images[0].get_width()*1.3 , height=self.images[0].get_height()*1.3)
         self.mid_images = load_bimages(width=self.images[0].get_width()*2 , height=self.images[0].get_height()*2)
         self.big_images = load_bimages(width=self.images[0].get_width()*4 , height=self.images[0].get_height()*4)
-        self.low_images = load_bimages(width=self.images[0].get_width()*1.5,height=self.images[0].get_height()*1.5)
         print(self.low_images[0].get_height()),self.big_images[0].get_height()
         self.player = Player((100, 300), self.space, width=self.images[0].get_width()*4-10, height=self.images[0].get_height()*4-10)
         self.all_sprites.add(self.player)
@@ -254,14 +254,14 @@ class Game:
         if self.pixel_r == 1:
             # print(self.player.body._get_angle())
             print(self.player.body._get_angle()) if self.debug else None
-            spritestack(self.screen, flipy(self.player.body._get_position()), self.big_images, convert_rad_to_deg(self.player.body._get_angle()),spread=4, fill=True)
+            spritestack(self.screen, pos, self.big_images, convert_rad_to_deg(self.player.body._get_angle()),spread=4, fill=True)
         elif self.pixel_r == 2:
             self.pixel2.set_colorkey((1,0,0))
-            spritestack(self.pixel2, (pos[0]/2, pos[1]/2), self.mid_images, convert_rad_to_deg(self.player.body._get_angle()),spread=2, fill=True)
+            spritestack(self.pixel2, (pos[0]/2, pos[1]/2), self.mid_images, convert_rad_to_deg(self.player.body._get_angle()), spread=2, fill=True)
             self.screen.blit(pg.transform.scale(self.pixel2,(800,600)),(0,0))
         elif self.pixel_r == 3:
             self.pixel3.set_colorkey((1,0,0))
-            spritestack(self.pixel3, (pos[0]/1.5, pos[1]/1.5), self.low_images, convert_rad_to_deg(self.player.body._get_angle()),spread=1.5)
+            spritestack(self.pixel3, (pos[0]/3, pos[1]/3), self.low_images, convert_rad_to_deg(self.player.body._get_angle()), spread=1,)
             self.screen.blit(pg.transform.scale(self.pixel3,(800,600)),(0,0))            
         else:
             self.pixel.set_colorkey((1,0,0))

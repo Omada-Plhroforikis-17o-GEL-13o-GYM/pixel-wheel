@@ -1,27 +1,60 @@
-"""
-Gameplay scene class
-"""
-from .tleng2 import *
-from .physics import Player, Wall
+# PixelWheel: Thessaloniki Edition - A pseudo 2.5D Racing game made in pygame 
+# Copyright (C) 2024  theolaos
 
-from pygame import Vector2
-from pymunk import Vec2d
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+
+import math
 import pymunk
 import pygame
 import os
 import json
+from pygame import Vector2
+from pymunk import Vec2d
 
+from .physics import Player, Wall
+from .tleng2 import *
+
+def rotate_to_center(rot: float, pos: tuple[float, float], center: tuple[float, float]) -> tuple[float, float]:
+    """
+    Angle in radians
+    """
+    
+    vec_x = pos[0] -  center[0]
+    vec_y = pos[1] - center[1]
+
+    new_x = math.cos(rot)*vec_x + math.sin(rot)*vec_y
+    new_y = -math.sin(rot)*vec_x + math.cos(rot)*vec_y
+
+    return (new_x, new_y)
 
 def flipy(p):
     """Convert chipmunk coordinates to pygame screen coordinates."""
-    return Vec2d(p[0], -p[1]+RendererProperties._display.get_size()[1])
+    return Vector2(p[0], -p[1]+RendererProperties._display.get_size()[1])
+
+
+def convert_to_vector2(p):
+    """Convert chipmunk coordinates to pygame vector2"""
+    return Vector2(p[0], p[1])
+
 
 def flipy_pymunk(p) -> float:
     """."""
     return Vec2d(p[0], -p[1]+RendererProperties._display.get_size()[1])
 
 
-def image_load(*path) -> pygame.SurfaceType:
+def image_load(*path) -> pygame.Surface:
     return pygame.image.load(os.path.join(*path)).convert_alpha()
 
 
@@ -29,13 +62,24 @@ def rect_to_vertices(rect) -> list[Vector2]:
     return [Vec2d(*rect.topleft), Vec2d(*rect.topright), Vec2d(*rect.bottomright), Vec2d(*rect.bottomleft)]
 
 
+def transformation(ss: SpriteStackService, transform: Camera.get_transform) -> None:
+    """
+    ss: SpriteStackService
+    transform: Camera.get_transform function
+    """
+    vec = transform(Vector2(ss.world_pos[0], ss.world_pos[1]))
+    ss.update({'x': vec.x, 'y': vec.y})
+
 
 class FreeRoam(Scene):
     def __init__(self, scene_name) -> None:
         self.camera = Camera(default_camera = True)
+        self.camera_run_setup = False
+        # self.camera.
         super().__init__(scene_name,'free_roam')
         assets_dir = os.path.join(get_parent_dir(__file__,2), 'assets')
 
+        self.angle = 0 #radians
         
         self.debug = True
 
@@ -44,6 +88,7 @@ class FreeRoam(Scene):
         self.space.damping = .01
 
         self.player_sprite = SpriteStackService()
+        self.player_sprite.renderable.centered = True
         car = 'RED'
         try:
             with open(os.path.join(assets_dir, 'settings.json'),'r') as settings:
@@ -60,7 +105,7 @@ class FreeRoam(Scene):
 
         self.player = Player((200,-100), self.space, 1, self.player_sprite.images[0].get_width(),self.player_sprite.images[0].get_height())
 
-        print(self.player_sprite.images[0].get_width(),self.player_sprite.images[0].get_height())
+        # print(self.player_sprite.images[0].get_width(),self.player_sprite.images[0].get_height())
 
         
 
@@ -96,7 +141,7 @@ class FreeRoam(Scene):
             [RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO],
             [RO,SE,RD,RD,RD,SW,SE,RD,RD,RD,SW,RO,RO],
             [RO,RR,PO,PO,PO,RL,RR,PO,PO,PO,RL,RO,RO],
-            [RO,RR,PO,RO,PO,RL,NE,RU,RU,RU,NW,RO,RO],
+            [RO,RR,PO,PO,PO,RL,NE,RU,RU,RU,NW,RO,RO],
             [RO,RR,PO,PO,PO,RL,SE,RD,RD,RD,SW,RO,RO],
             [RO,NE,RU,RU,RU,NW,NE,RU,RU,RU,NW,RO,RO],
             [RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO],
@@ -132,7 +177,8 @@ class FreeRoam(Scene):
                 if tile_name in no_hitbox:
                     continue
                 else:
-                    Wall((x*35+35/2+1,-y*35+129), self.tile_hitboxes[tile_name],self.space, 1)
+                    # Wall((x*35+35/2+1,-y*35+129), self.tile_hitboxes[tile_name],self.space, 1)
+                    Wall((x*35,-y*35), self.tile_hitboxes[tile_name],self.space, 1)
                 
 
         tile_size = 35/2
@@ -141,7 +187,29 @@ class FreeRoam(Scene):
         self.free_roam_tilemap.load_tilemap(tilemap)
         self.free_roam_tilemap.load_tileset(self.city_streets_tileset)
         self.free_roam_tilemap.pre_render()
+        self.free_roam_tilemap.center
 
+        RO = 'ROTONTA'
+        LE = 'LEFKOS'
+        BU = 'building'
+        LL = "none"
+
+        sprite_stack_tilemap = [
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,RO,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LE,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],              
+        ]
 
         self.rotonta = SpriteStackService()
         self.rotonta.load_images(os.path.join(assets_dir,'ROTONTA'))
@@ -178,40 +246,57 @@ class FreeRoam(Scene):
         self.polikatikia6.update({'x':tile_size*5,'y':tile_size*19})
 
         self.buildings = [
-                     self.polikatikia5,
-                     self.polikatikia1,
-                     self.polikatikia2,
-                     self.polikatikia3,
-                     self.polikatikia4,
-                     self.polikatikia6]
+            self.polikatikia5,
+            self.polikatikia1,
+            self.polikatikia2,
+            self.polikatikia3,
+            self.polikatikia4,
+            self.polikatikia6
+        ]
 
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.player)
+
 
         # self.space = pymunk.Space()
 
     def event_handling(self, keys_pressed) -> None:                    
         if keys_pressed[pygame.K_ESCAPE]:
+            self.camera_run_setup = False
             SceneManagerMethods.change_current_scene('Menu')
         for event in EngineProperties._events:
             self.player.handle_event(event)
 
+        if keys_pressed[pygame.K_LEFT]:
+            self.angle += 0.01
+        if keys_pressed[pygame.K_RIGHT]:
+            self.angle -= 0.01
+
 
     def update(self) -> None:
+        if not self.camera_run_setup:
+            self.camera.update_center_screen((RendererProperties._display.get_width()/2, RendererProperties._display.get_width()/2))
+            self.camera_run_setup = True
+        
         self.space.step(EngineProperties._dt)
 
         self.player.update(EngineProperties._dt)
-        pos = flipy(self.player.body._get_position())
-        angl = convert_rad_to_deg(self.player.body._get_angle())
-        self.camera.offset_pos = Vector2(pos[0],pos[1]) - Vector2(RendererProperties._display.get_width()/2, RendererProperties._display.get_width()/2) 
 
-        self.player_sprite.update(params={
-            'x':int(self.camera.offset_pos.x + RendererProperties._display.get_width()//2),
-            'y':int(self.camera.offset_pos.y + RendererProperties._display.get_height()//2),
-        })
+        pos = convert_to_vector2(self.player.body._get_position())
 
-        self.player_sprite.rotation = angl
-        # EngineMethods.set_caption(f"{EngineProperties._clock.get_fps():.2f}")
+        # When rewriting, this can be optimized
+        self.camera.update_center((pos.x,pos.y))
+        
+        self.player_sprite.update_new(
+            x = pos.x,
+            y = pos.y,
+        )
+        # self.player_sprite.update_new(
+        #     x = int(self.camera.offset_pos.x + RendererProperties._display.get_width()//2),
+        #     y = int(self.camera.offset_pos.y + RendererProperties._display.get_height()//2),
+        # )
+
+        EngineMethods.set_caption(f"{EngineProperties._clock.get_fps():.2f}")
 
         # print(angl,self.player.body._get_angle())
 
@@ -221,47 +306,37 @@ class FreeRoam(Scene):
 
     def render(self) -> None:
         RendererMethods.fill_display(color=(34,32,52))
-        self.free_roam_tilemap.render()
 
-        # if self.debug:
-        #     for obj in self.all_sprites:
-        #         shape = obj.shape
-        #         ps = [flipy(pos.rotated(shape.body.angle) + shape.body.position)
-        #               for pos in shape.get_vertices()]
-        #         ps.append(ps[0])
-        #         pygame.draw.rect(RendererProperties._display, pygame.Color('blue'), obj.rect, 2)
-        #         pygame.draw.lines(RendererProperties._display, (90, 200, 50), False, ps, 2)
-        # self.player_sprite.spread = 8
-        self.player_sprite.render()
-        #print(self.player_sprite.rect, 'player rect')
-        
-        #pygame.draw.rect(RendererProperties._display,(255,0,0),self.player_sprite.rect)
+        # Center of rotation is the player's position
+        player_pos = convert_to_vector2(self.player.body._get_position())
 
-        self.rotonta.render()
-        self.lefkos_pirgos.render()
+        transform = self.camera.get_transform()
 
+        # Render the tilemap with rotation around the player
+        self.free_roam_tilemap.render_angle(
+            convert_rad_to_deg(self.angle),
+        )
+
+        # Render all world objects (buildings, etc.) rotated around the player
         for building in self.buildings:
-            building.render()
 
-        # no_hitbox = ['road', 'paved_road']
+            building.render(self.angle)
 
-        # print('1points____________________________________________________________________')
-        # for x, y_tiles in enumerate(self.free_roam_tilemap.tiles):
-        #     for y, tile_name in enumerate(y_tiles):
-        #         if tile_name in no_hitbox:
-        #             continue
-        #         else:
-        #             temp_points = []
-                    
-        #             for point in self.tile_hitboxes[tile_name]:
-        #                 temp_points += [Vector2(point.x*x*35,point.y*y*35) - self.camera.offset_pos]
+        # Render landmarks
+        self.rotonta.render(self.angle)
 
-        #             print(temp_points)
-        #             pygame.draw.lines(RendererProperties._display, (255,0,0), False, temp_points)
+        self.lefkos_pirgos.render(self.angle)
 
-        # print('2points ___________________________________________________________________')
+        # Render the player sprite at the center of the screen, only with its own angle
+        self.player_sprite.rotation = convert_rad_to_deg(self.player.body.rotation_vector.angle)
+        self.player_sprite.render()
 
+        print(f"Player world position: {player_pos}")
 
-        #pygame.draw.circle(RendererProperties._display,(255,0,0), ())
-
-        
+        # Draw direction line
+        velocity = Vector2(0,1).rotate_rad(-self.player.body.rotation_vector.angle)
+        if velocity.length() > 0:
+            velocity_dir = velocity.normalize() * 50  # Length of the line
+            start_screen = Vector2(RendererProperties._display.get_width() // 2, RendererProperties._display.get_height() // 2)
+            end_screen = start_screen + velocity_dir
+            pygame.draw.line(RendererProperties._display, (255, 0, 0), start_screen, end_screen, 3)
