@@ -97,7 +97,7 @@ class Menu(Scene):
         scalar = 7
         self.image.load_image(LOGO, 57*scalar, 57*scalar)
         self.image.rect.centerx = GlobalSettings._disp_res[0]/2 - 10
-        self.image.rect.centery = 200
+        self.image.rect.centery = 230
 
         BG_MUSIC.play(-1)
         BG_MUSIC.set_volume(MUSIC_VOLUME)
