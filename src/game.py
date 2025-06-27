@@ -283,14 +283,12 @@ class FreeRoam(Scene):
         self.player.update(EngineProperties._dt)
 
         pos = convert_to_vector2(self.player.body._get_position())
-
-        # When rewriting, this can be optimized
-        self.camera.update_center((pos.x,pos.y))
-        
         self.player_sprite.update_new(
             x = pos.x,
             y = pos.y,
         )
+        # When rewriting, this can be optimized
+        self.camera.update_center((pos.x,pos.y))
         # self.player_sprite.update_new(
         #     x = int(self.camera.offset_pos.x + RendererProperties._display.get_width()//2),
         #     y = int(self.camera.offset_pos.y + RendererProperties._display.get_height()//2),
@@ -306,11 +304,10 @@ class FreeRoam(Scene):
 
     def render(self) -> None:
         RendererMethods.fill_display(color=(34,32,52))
+        self.camera.angle = self.angle
 
         # Center of rotation is the player's position
         player_pos = convert_to_vector2(self.player.body._get_position())
-
-        transform = self.camera.get_transform()
 
         # Render the tilemap with rotation around the player
         self.free_roam_tilemap.render_angle(
@@ -319,7 +316,6 @@ class FreeRoam(Scene):
 
         # Render all world objects (buildings, etc.) rotated around the player
         for building in self.buildings:
-
             building.render(self.angle)
 
         # Render landmarks
@@ -328,13 +324,13 @@ class FreeRoam(Scene):
         self.lefkos_pirgos.render(self.angle)
 
         # Render the player sprite at the center of the screen, only with its own angle
-        self.player_sprite.rotation = convert_rad_to_deg(self.player.body.rotation_vector.angle)
+        self.player_sprite.rotation = convert_rad_to_deg(self.player.body.rotation_vector.angle + self.angle)
         self.player_sprite.render()
 
         print(f"Player world position: {player_pos}")
 
         # Draw direction line
-        velocity = Vector2(0,1).rotate_rad(-self.player.body.rotation_vector.angle)
+        velocity = Vector2(0,-1).rotate_rad(-self.player.body.rotation_vector.angle)
         if velocity.length() > 0:
             velocity_dir = velocity.normalize() * 50  # Length of the line
             start_screen = Vector2(RendererProperties._display.get_width() // 2, RendererProperties._display.get_height() // 2)
