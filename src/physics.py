@@ -93,10 +93,10 @@ class Player(pygame.sprite.Sprite):
         if self.accel_back and self.body.velocity.length < self.topspeed:
             self.body.apply_force_at_local_point(Vec2d(0, -514) , Vec2d(0, 0))
         if self.turn_left and self.body.velocity.length < self.topspeed:
-            self.body.angle += .08 * dt * 75
+            self.body.angle += .05 * dt * 75
             self.body.angular_velocity = 0
         if self.turn_right and self.body.velocity.length < self.topspeed:
-            self.body.angle -= .08 * dt * 75
+            self.body.angle -= .05 * dt * 75
             self.body.angular_velocity = 0
         # Rotate the image of the sprite.
         self.angle = self.body.angle

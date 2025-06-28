@@ -95,14 +95,12 @@ Go to releases!
 - You can turn on the debug mode, that shows the hitboxes with `B`
 - You can toggle the clarity of the car model with `V` 
 
-### TODO
+## TODO
+- Redo the coordinate system, should be similar to pymunk, normal cartesian. Renderer will just convert the normal coordinates to the pygame-screen coordinates (mostly complete)
+
+- Camera (almost complete)
+- Renderer (mostly complete, even support y-sort)
 
 MASSIVE TODO
-- ECS re-write [almost complete]
-
-- Redo the coordinate system, should be similar to pymunk, normal cartesian. Renderer will just convert the normal coordinates to the pygame-screen coordinates
-
+- ECS re-write (for the v0.1.5-alpha update)
 - Abolishing display/window surfaces in RendererProperties [being worked on for ecs] 
-- Update Renderable to hold a method for rendering complex objects (sprite stacking)
-- Camera
-- Renderer [the base part is complete]

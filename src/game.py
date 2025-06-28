@@ -265,6 +265,7 @@ class FreeRoam(Scene):
 
 
         # self.space = pymunk.Space()
+        self.temp_angle = 0.0
 
     def event_handling(self, keys_pressed) -> None:                    
         if keys_pressed[pygame.K_ESCAPE]:
@@ -272,6 +273,11 @@ class FreeRoam(Scene):
             SceneManagerMethods.change_current_scene('Menu')
         for event in EngineProperties._events:
             self.player.handle_event(event)
+
+        if keys_pressed[pygame.K_LEFT]:
+            self.temp_angle += 0.05
+        if keys_pressed[pygame.K_RIGHT]:
+            self.temp_angle -= 0.05
 
     def update(self) -> None:
         if not self.camera_run_setup:
@@ -299,7 +305,7 @@ class FreeRoam(Scene):
         EngineMethods.set_caption(f"{EngineProperties._clock.get_fps():.2f}")
 
         target_angle = -self.player.body.angle  # or whatever your car's angle is
-        lerp_speed = 0.08  # 0 < lerp_speed <= 1, smaller is slower
+        lerp_speed = 0.06  # 0 < lerp_speed <= 1, smaller is slower
 
         # Smoothly interpolate self.angle towards target_angle
         self.angle = lerp_angle(self.angle, target_angle, lerp_speed)
@@ -321,7 +327,7 @@ class FreeRoam(Scene):
 
         # Render all world objects (buildings, etc.) rotated around the player
         for building in self.buildings:
-            building.render(self.angle, True)
+            building.render(self.angle + self.temp_angle, True)
 
         # Render landmarks
         self.rotonta.render(self.angle, True)

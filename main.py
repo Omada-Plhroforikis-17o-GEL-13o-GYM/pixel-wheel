@@ -55,7 +55,7 @@ GlobalSettings._fps = fps
 # EngineMethods.import_render_params(`file`) the file is .json
 import_params_needed()
 
-GlobalSettings._debug = False
+GlobalSettings._debug = True
 # GlobalSettings.load_settings_json()
 
 
