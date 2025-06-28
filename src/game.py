@@ -61,22 +61,14 @@ def image_load(*path) -> pygame.Surface:
 def rect_to_vertices(rect) -> list[Vector2]:
     return [Vec2d(*rect.topleft), Vec2d(*rect.topright), Vec2d(*rect.bottomright), Vec2d(*rect.bottomleft)]
 
-
-def transformation(ss: SpriteStackService, transform: Camera.get_transform) -> None:
-    """
-    ss: SpriteStackService
-    transform: Camera.get_transform function
-    """
-    vec = transform(Vector2(ss.world_pos[0], ss.world_pos[1]))
-    ss.update({'x': vec.x, 'y': vec.y})
-
+def lerp_angle(a, b, t):
+    """Linearly interpolate from angle a to b by t, handling wraparound."""
+    diff = (b - a + math.pi) % (2 * math.pi) - math.pi
+    return a + diff * t
 
 class FreeRoam(Scene):
     def __init__(self, scene_name) -> None:
-        self.camera = Camera(default_camera = True,
-                             width=1280/3,
-                             height=720/3,
-                             )
+        self.camera = Camera(default_camera = True)
         self.camera_run_setup = False
 
         # self.camera.
@@ -125,7 +117,11 @@ class FreeRoam(Scene):
             'road_turn_nw' : image_load(assets_dir,'city_tileset','road_turn_nw.png'),
             'pavement' : image_load(assets_dir,'city_tileset', 'pavement.png'),
             'road' : image_load(assets_dir,'city_tileset', 'road.png'),
-            'paved_road' : image_load(assets_dir,'city_tileset', 'paved_road.png')
+            'paved_road' : image_load(assets_dir,'city_tileset', 'paved_road.png'),
+            'road_closed_turn_ne' : image_load(assets_dir,'city_tileset', 'road_closed_turn_ne.png'),
+            'road_closed_turn_se' : image_load(assets_dir,'city_tileset', 'road_closed_turn_se.png'),
+            'road_closed_turn_sw' : image_load(assets_dir,'city_tileset', 'road_closed_turn_sw.png'),
+            'road_closed_turn_nw' : image_load(assets_dir,'city_tileset', 'road_closed_turn_nw.png'),
         }, 35, 35)
 
         RU = 'road_straight_up'
@@ -139,12 +135,16 @@ class FreeRoam(Scene):
         PO = 'pavement'
         RO = 'road'
         PR = 'paved_road'
+        C1 = 'road_closed_turn_ne'
+        C2 = 'road_closed_turn_se'
+        C3 = 'road_closed_turn_sw'
+        C4 = 'road_closed_turn_nw'
 
 
         tilemap = [
-            [RO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,RO],
-            [RO,RU,RU,RU,RU,RU,RU,RU,RU,RU,RU,RU,RO],
-            [RL,SE,RD,RD,RD,RD,RD,RD,RD,RD,RD,RL,RR],
+            [PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,RO],
+            [C2,RU,RU,RU,RU,RU,RU,RU,RU,RU,RU,RU,RO],
+            [RL,SE,RD,RD,RD,RD,RD,RD,RD,RD,RD,SW,RR],
             [RL,RR,RD,PO,PO,PO,PO,PO,PO,PO,PO,RL,RR],
             [RL,RR,PO,PO,PO,RL,NE,RU,RU,RU,RU,NW,RR],
             [RL,RR,PO,PO,PO,RL,SE,RD,RD,RD,SW,RO,RR],
@@ -175,7 +175,7 @@ class FreeRoam(Scene):
             'pavement' : rect_to_vertices(pygame.FRect(-ht, -ht, ht*2, ht*2)),
         }
 
-        no_hitbox = ['road', 'paved_road']
+        no_hitbox = ['road', 'paved_road', 'road_closed_turn_ne', 'road_closed_turn_se', 'road_closed_turn_sw', 'road_closed_turn_nw']
 
         for y, y_tiles in enumerate(tilemap):
             for x, tile_name in enumerate(y_tiles):
@@ -194,9 +194,10 @@ class FreeRoam(Scene):
         self.free_roam_tilemap.pre_render()
         self.free_roam_tilemap.center
 
-        RO = 'ROTONTA'
-        LE = 'LEFKOS'
-        BU = 'building'
+        RO = "ROTONTA"
+        LE = "LEFKOS"
+        BU = "building"
+        KA = "KAMARA"
         LL = "none"
 
         sprite_stack_tilemap = [
@@ -265,9 +266,6 @@ class FreeRoam(Scene):
 
         # self.space = pymunk.Space()
 
-        self.turn_left = False
-        self.turn_right = False
-
     def event_handling(self, keys_pressed) -> None:                    
         if keys_pressed[pygame.K_ESCAPE]:
             self.camera_run_setup = False
@@ -275,11 +273,9 @@ class FreeRoam(Scene):
         for event in EngineProperties._events:
             self.player.handle_event(event)
 
-        self.angle = -self.player.body.angle
-
     def update(self) -> None:
         if not self.camera_run_setup:
-            self.camera.update_center_screen((RendererProperties._display.get_width()/2, RendererProperties._display.get_width()/2))
+            self.camera.update_center_screen((RendererProperties._display.get_width()/2, RendererProperties._display.get_height()/2))
             self.camera_run_setup = True
         
         dt = EngineProperties._dt
@@ -302,6 +298,13 @@ class FreeRoam(Scene):
 
         EngineMethods.set_caption(f"{EngineProperties._clock.get_fps():.2f}")
 
+        target_angle = -self.player.body.angle  # or whatever your car's angle is
+        lerp_speed = 0.08  # 0 < lerp_speed <= 1, smaller is slower
+
+        # Smoothly interpolate self.angle towards target_angle
+        self.angle = lerp_angle(self.angle, target_angle, lerp_speed)
+
+
     
 
     def render(self) -> None:
@@ -318,16 +321,16 @@ class FreeRoam(Scene):
 
         # Render all world objects (buildings, etc.) rotated around the player
         for building in self.buildings:
-            building.render(self.angle)
+            building.render(self.angle, True)
 
         # Render landmarks
-        self.rotonta.render(self.angle)
+        self.rotonta.render(self.angle, True)
 
-        self.lefkos_pirgos.render(self.angle)
+        self.lefkos_pirgos.render(self.angle, True)
 
         # Render the player sprite at the center of the screen, only with its own angle
-        # self.player_sprite.rotation = convert_rad_to_deg(self.player.body.rotation_vector.angle)
-        self.player_sprite.render()
+        self.player_sprite.rotation = convert_rad_to_deg(self.player.body.angle + self.angle)
+        self.player_sprite.render(bysort=True)
 
         # print(f"Player world position: {player_pos}")
 
