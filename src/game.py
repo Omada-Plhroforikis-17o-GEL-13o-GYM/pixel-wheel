@@ -66,6 +66,37 @@ def lerp_angle(a, b, t):
     diff = (b - a + math.pi) % (2 * math.pi) - math.pi
     return a + diff * t
 
+
+def wall_visualization(wall: Wall, color: tuple[int, int, int] = (255, 0, 0)) -> pygame.Surface:
+    # --- Create a renderable for this wall ---
+    # Get vertices in world coordinates
+    verts = [wall.body.local_to_world(v) for v in wall.shape.get_vertices()]
+    # Convert to pygame coordinates
+    verts_pg = [ Vector2(v.x, v.y) for v in verts]
+    # Find bounding rect
+    min_x = min(v.x for v in verts_pg)
+    min_y = min(v.y for v in verts_pg)
+    max_x = max(v.x for v in verts_pg)
+    max_y = max(v.y for v in verts_pg)
+    width = max_x - min_x
+    height = max_y - min_y
+    # Create a transparent surface
+    surf = pygame.Surface((width+2, height+2), pygame.SRCALPHA)
+    # Draw polygon (shifted to surface coordinates)
+    shifted = [(v.x - min_x + 1, v.y - min_y + 1) for v in verts_pg]
+    pygame.draw.polygon(surf, (0,255,255,100), shifted, 2)
+    # Create renderable
+    renderable = Renderable()
+    renderable.surface = surf
+    # Set world_pos to the center of the polygon
+    center_x = (min_x + max_x) / 2
+    center_y = (min_y + max_y) / 2
+    renderable.world_pos = Vector2(center_x, center_y)
+    renderable.frect = surf.get_frect(center=(center_x, center_y))
+
+    return renderable
+        
+
 class FreeRoam(Scene):
     def __init__(self, scene_name) -> None:
         self.camera = Camera(default_camera = True)
@@ -124,6 +155,7 @@ class FreeRoam(Scene):
             'road_closed_turn_nw' : image_load(assets_dir,'city_tileset', 'road_closed_turn_nw.png'),
         }, 35, 35)
 
+
         RU = 'road_straight_up'
         RD = 'road_straight_down'
         RR = 'road_straight_right'
@@ -177,13 +209,18 @@ class FreeRoam(Scene):
 
         no_hitbox = ['road', 'paved_road', 'road_closed_turn_ne', 'road_closed_turn_se', 'road_closed_turn_sw', 'road_closed_turn_nw']
 
+        self.walls = []
+        self.wall_renderables = []
         for y, y_tiles in enumerate(tilemap):
             for x, tile_name in enumerate(y_tiles):
                 if tile_name in no_hitbox:
                     continue
                 else:
                     # Wall((x*35+35/2+1,-y*35+129), self.tile_hitboxes[tile_name],self.space, 1)
-                    Wall((x*35,-y*35), self.tile_hitboxes[tile_name],self.space, 1)
+                    wall = Wall((x*35,-y*35), self.tile_hitboxes[tile_name],self.space, 1)
+                    self.walls.append(wall)
+                    renderable = wall_visualization(wall)
+                    self.wall_renderables.append(renderable)
                 
 
         tile_size = 35/2
@@ -192,7 +229,7 @@ class FreeRoam(Scene):
         self.free_roam_tilemap.load_tilemap(tilemap)
         self.free_roam_tilemap.load_tileset(self.city_streets_tileset)
         self.free_roam_tilemap.pre_render()
-        self.free_roam_tilemap.center
+        self.free_roam_tilemap.center = (0,0)
 
         RO = "ROTONTA"
         LE = "LEFKOS"
@@ -204,68 +241,63 @@ class FreeRoam(Scene):
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,RO,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,RO,LE,LL,LL,LL,LL,LL,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,BU,BU,BU,BU,BU,BU,BU,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,KA,LL,LL,LL,LL,LL,LL],
             [LL,LL,LL,LE,LL,LL,LL,LL,LL,LL,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],              
         ]
-
         self.rotonta = SpriteStackService()
         self.rotonta.load_images(os.path.join(assets_dir,'ROTONTA'))
-        self.rotonta.update({'x':tile_size*7,'y':tile_size*7})
 
         self.lefkos_pirgos = SpriteStackService()
         self.lefkos_pirgos.load_images(os.path.join(assets_dir,'LEFKOS'))
-        self.lefkos_pirgos.update({'x':tile_size*7,'y':35*10+15})
 
+        self.kamara = SpriteStackService()
+        self.kamara.load_from_spritesheet(os.path.join(assets_dir,'KAMARA','kamara.png'), 35, 20)
 
-        self.polikatikia1 = SpriteStackService()
-        self.polikatikia1.load_images(os.path.join(assets_dir,'building'))
-        self.polikatikia1.update({'x':tile_size*9,'y':tile_size*19})
-        # self.polikatikia1.spread = 35
+        self.polikatikia = SpriteStackService()
+        self.polikatikia.load_images(os.path.join(assets_dir,'building'))
 
-        self.polikatikia2 = SpriteStackService()
-        self.polikatikia2.load_images(os.path.join(assets_dir,'building'))
-        self.polikatikia2.update({'x':tile_size*5,'y':tile_size*5})
+        self.sprite_stack_types = {
+            RO: self.rotonta,
+            LE: self.lefkos_pirgos,
+            BU: self.polikatikia,  # You can load images for buildings as needed
+            KA: SpriteStackService(),  # For KAMARA, if you have images
+        }
 
-        self.polikatikia3 = SpriteStackService()
-        self.polikatikia3.load_images(os.path.join(assets_dir,'building'))
-        self.polikatikia3.update({'x':tile_size*19,'y':tile_size*5})
+        self.sprite_stacks = []
+        for row_idx, row in enumerate(sprite_stack_tilemap):
+            for col_idx, cell in enumerate(row):
+                if cell != LL:
+                    if cell == RO:
+                        stack = self.rotonta
+                    elif cell == LE:
+                        stack = self.lefkos_pirgos
+                    elif cell == BU:
+                        stack = self.polikatikia
+                    elif cell == KA:
+                        stack = SpriteStackService()
+                        stack.load_images(os.path.join(assets_dir, cell))
+                    TILE_SIZE = stack.tile_size  # or whatever your grid size is
+                    center_x = col_idx * TILE_SIZE + TILE_SIZE // 2
+                    center_y = row_idx * TILE_SIZE + TILE_SIZE // 2
+                    stack.update({'x': center_x, 'y': center_y})
+                    self.sprite_stacks.append(stack)
 
-        self.polikatikia4 = SpriteStackService()
-        self.polikatikia4.load_images(os.path.join(assets_dir,'building'))
-        self.polikatikia4.update({'x':tile_size*9,'y':tile_size*7})
-
-        self.polikatikia5 = SpriteStackService()
-        self.polikatikia5.load_images(os.path.join(assets_dir,'building'))
-        self.polikatikia5.update({'x':tile_size*17,'y':tile_size*19})
-
-        self.polikatikia6 = SpriteStackService()
-        self.polikatikia6.load_images(os.path.join(assets_dir,'building'))
-        self.polikatikia6.update({'x':tile_size*5,'y':tile_size*19})
-
-        self.buildings = [
-            self.polikatikia5,
-            self.polikatikia1,
-            self.polikatikia2,
-            self.polikatikia3,
-            self.polikatikia4,
-            self.polikatikia6
-        ]
 
         self.all_sprites = pygame.sprite.Group()
         self.all_sprites.add(self.player)
 
-
         # self.space = pymunk.Space()
         self.temp_angle = 0.0
+
 
     def event_handling(self, keys_pressed) -> None:                    
         if keys_pressed[pygame.K_ESCAPE]:
@@ -325,18 +357,17 @@ class FreeRoam(Scene):
             convert_rad_to_deg(self.angle),
         )
 
-        # Render all world objects (buildings, etc.) rotated around the player
-        for building in self.buildings:
-            building.render(self.angle + self.temp_angle, True)
 
-        # Render landmarks
-        self.rotonta.render(self.angle, True)
-
-        self.lefkos_pirgos.render(self.angle, True)
+        for stack in self.sprite_stacks:
+            stack.render(self.angle, bysort=True)
 
         # Render the player sprite at the center of the screen, only with its own angle
         self.player_sprite.rotation = convert_rad_to_deg(self.player.body.angle + self.angle)
         self.player_sprite.render(bysort=True)
+
+        for wall_renderable in self.wall_renderables:
+            # RendererProperties.render_calls.append(wall_renderable)
+            wall_renderable.render()
 
         # print(f"Player world position: {player_pos}")
 
