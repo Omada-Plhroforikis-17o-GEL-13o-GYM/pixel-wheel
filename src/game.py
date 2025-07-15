@@ -163,6 +163,12 @@ class FreeRoam(Scene):
             'road_closed_turn_se' : image_load(assets_dir,'city_tileset', 'road_closed_turn_se.png'),
             'road_closed_turn_sw' : image_load(assets_dir,'city_tileset', 'road_closed_turn_sw.png'),
             'road_closed_turn_nw' : image_load(assets_dir,'city_tileset', 'road_closed_turn_nw.png'),
+            'road_straight_thick_left' : image_load(assets_dir,'city_tileset', 'road_straight_thick_left.png'),
+            'road_straight_thick_right' : image_load(assets_dir,'city_tileset', 'road_straight_thick_right.png'),
+            'road_turn_thick_ne' : image_load(assets_dir,'city_tileset', 'road_turn_thick_ne.png'),
+            'road_turn_thick_se' : image_load(assets_dir,'city_tileset', 'road_turn_thick_se.png'),
+            'road_turn_thick_sw' : image_load(assets_dir,'city_tileset', 'road_turn_thick_sw.png'),
+            'road_turn_thick_nw' : image_load(assets_dir,'city_tileset', 'road_turn_thick_nw.png'),
         }, 35, 35)
 
 
@@ -174,6 +180,14 @@ class FreeRoam(Scene):
         SE = 'road_turn_se'
         SW = 'road_turn_sw'
         NW = 'road_turn_nw'
+
+        R1 = 'road_straight_thick_left'
+        R2 = 'road_straight_thick_right'
+        T1 = 'road_turn_thick_ne'
+        T2 = 'road_turn_thick_se'
+        T3 = 'road_turn_thick_sw'
+        T4 = 'road_turn_thick_nw'
+
         PO = 'pavement'
         RO = 'road'
         PR = 'paved_road'
@@ -193,9 +207,9 @@ class FreeRoam(Scene):
             [RL,NE,RU,RU,RU,NW,SE,RD,SW,SE,RD,RD,C4,PO,C1,RD,RD,SW,RR],
             [RL,SE,RD,RD,RD,RD,C4,PO,RL,RR,PO,PO,PO,PO,PO,PO,PO,RL,RR],
             [RL,RR,PO,PO,PO,PO,PO,C2,NW,NE,C3,PO,PO,PO,PO,PO,PO,RL,RR],
-            [RL,RR,PO,PO,PO,PO,PO,RL,RO,RO,RR,PO,PO,PO,PO,PO,PO,RL,RR],
-            [RL,NE,C3,PO,PO,PO,PO,RL,SE,SW,RR,PO,PO,PO,PO,PO,PO,RL,RR],
-            [RL,RO,NE,RU,RU,RU,RU,NW,NE,NW,NE,RU,RU,RU,RU,RU,RU,NW,RR],
+            [RL,RR,PO,PO,PO,PO,PO,RL,T2,T3,RR,PO,PO,PO,PO,PO,PO,RL,RR],
+            [RL,NE,C3,PO,PO,PO,PO,RL,R2,R1,RR,PO,PO,PO,PO,PO,PO,RL,RR],
+            [RL,RO,NE,RU,RU,RU,RU,NW,T1,T4,NE,RU,RU,RU,RU,RU,RU,NW,RR],
             [RL,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RR],
             [C1,RD,RD,RD,RD,RD,RD,SW,SE,SW,SE,RD,RD,RD,RD,RD,RD,SW,RR],
             [PO,PO,PO,PO,PO,PO,PO,RL,RR,RL,RR,PO,PO,PO,PO,PO,PO,RL,RR],
@@ -212,6 +226,7 @@ class FreeRoam(Scene):
 
         ht = 35/2
         dc = 4 # distance from curb y px
+        dc2 = 19-4
         
         self.tile_hitboxes = {
             'road_straight_up' : rect_to_vertices(pygame.FRect(-ht, ht-dc, ht*2, dc)), # done
@@ -234,6 +249,13 @@ class FreeRoam(Scene):
 
             'road_closed_turn_nw' : [rect_to_vertices(pygame.FRect(ht-dc, -ht, dc, ht*2)),
                                      rect_to_vertices(pygame.FRect(-ht, -ht, ht*2-dc, dc))], # done
+        
+            'road_straight_thick_left' : rect_to_vertices(pygame.FRect(-ht, -ht, dc2, ht*2)),
+            'road_straight_thick_right' : rect_to_vertices(pygame.FRect(ht-dc2, -ht, dc2, ht*2)),
+            'road_turn_thick_ne' : rect_to_vertices(pygame.FRect(ht-dc2, ht-dc2, dc2, dc2)),
+            'road_turn_thick_se' : rect_to_vertices(pygame.FRect(ht-dc2, -ht, dc2, dc2)),
+            'road_turn_thick_sw' : rect_to_vertices(pygame.FRect(-ht, -ht, dc2, dc2)),
+            'road_turn_thick_nw' : rect_to_vertices(pygame.FRect(-ht, ht-dc2, dc2, dc2))
         }
 
         no_hitbox = [
@@ -296,7 +318,7 @@ class FreeRoam(Scene):
             [LL,LL,LL,BU,LL,LL,BU,LL,LL,LL,LL,LL,BU,LL,LL,LL,BU,LL,LL],
             [LL,LL,LL,LL,BU,LL,BU,LL,LL,LL,LL,LL,LL,BU,BU,LL,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,KA,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
             [LL,LL,LL,LL,BU,LL,LL,LL,LL,LL,LL,BU,LL,BU,LL,BU,LL,LL,LL],
             [LL,LL,BU,LL,LL,LL,BU,LL,LL,LL,LL,BU,LL,LL,LL,BU,LL,LL,LL],
@@ -310,7 +332,6 @@ class FreeRoam(Scene):
         ]
 
 
-
         self.rotonta = SpriteStackService(caching)
         self.rotonta.load_images(os.path.join(assets_dir,'ROTONTA'))
 
@@ -318,7 +339,7 @@ class FreeRoam(Scene):
         self.lefkos_pirgos.load_images(os.path.join(assets_dir,'LEFKOS'))
 
         self.kamara = SpriteStackService(caching)
-        self.kamara.load_from_spritesheet(os.path.join(assets_dir,'KAMARA', 'kamara.png'), 40, 20)
+        self.kamara.load_images(os.path.join(assets_dir,'KAMARA'))
 
         self.polikatikia = SpriteStackService(caching)
         self.polikatikia.load_images(os.path.join(assets_dir,'building'))
@@ -327,7 +348,7 @@ class FreeRoam(Scene):
             RO: self.rotonta,
             LE: self.lefkos_pirgos,
             BU: self.polikatikia,  # You can load images for buildings as needed
-            KA: SpriteStackService(),  # For KAMARA, if you have images
+            KA: self.kamara,  # For KAMARA, if you have images
         }
 
         self.sprite_stacks = []
@@ -346,13 +367,15 @@ class FreeRoam(Scene):
                         stack = SpriteStackService(caching)
                         stack.load_images(os.path.join(assets_dir,'building'))
                     elif cell == KA:
-                        stack = SpriteStackService()
-                        stack.load_images(os.path.join(assets_dir, cell))
+                        stack = self.kamara
                     TILE_SIZE = stack.tile_size  # or whatever your grid size is
                     center_x = col_idx*35 - (len(tilemap[0])*35)/2 +35/2
                     center_y = -row_idx*35 + len(tilemap)*35/2 - 35/2
                     stack.update({'x': center_x, 'y': center_y})
                     self.sprite_stacks.append(stack)
+
+        self.kamara.update({'x': -16, 'y': 35})
+        self.sprite_stacks.append(self.kamara)
 
 
         self.all_sprites = pygame.sprite.Group()
@@ -365,6 +388,7 @@ class FreeRoam(Scene):
         if keys_pressed[pygame.K_ESCAPE]:
             self.camera_run_setup = False
             SceneManagerMethods.change_current_scene('Menu')
+
         for event in EngineProperties._events:
             self.player.handle_event(event)
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -411,8 +435,8 @@ class FreeRoam(Scene):
         #     x = int(self.camera.offset_pos.x + RendererProperties._display.get_width()//2),
         #     y = int(self.camera.offset_pos.y + RendererProperties._display.get_height()//2),
         # )
-
-        EngineMethods.set_caption(f"{EngineProperties._clock.get_fps():.2f}")
+        if GlobalSettings._debug and DebugTags.has_tags(["FPS"]):
+            EngineMethods.set_caption(f"{EngineProperties._clock.get_fps():.2f}")
 
         target_angle = -self.player.body.angle  # or whatever your car's angle is
         lerp_speed = 0.06  # 0 < lerp_speed <= 1, smaller is slower

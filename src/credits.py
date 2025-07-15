@@ -41,7 +41,7 @@ class Credits(Scene):
         if keys_pressed[pygame.K_ESCAPE]:
             SceneManagerMethods.change_current_scene('Menu')
         
-        scroll_y = self.credits_img.rect.centery
+        scroll_y = self.credits_img.frect.centery
 
         for event in EngineProperties._events:
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -51,13 +51,12 @@ class Credits(Scene):
                 if event.button == 5: 
                     scroll_y = max(scroll_y - 30, -1750/8)
 
-        self.credits_img.rect.centery = scroll_y
+        self.credits_img.frect.centery = scroll_y
     
 
     def update(self) -> None:
         self.credits_img.update()
 
-    
 
     def render(self) -> None:
         RendererMethods.fill_display(color=colors.AQUA)

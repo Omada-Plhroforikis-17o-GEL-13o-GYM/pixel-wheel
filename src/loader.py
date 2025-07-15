@@ -21,6 +21,7 @@ class LoadingScene:
         self.bar_fg_color = (0, 200, 0)
         self.animation_speed = 0.15  # Lerp speed
 
+
     def draw(self):
         self.display.fill(self.bg_color)
         # Draw bar background
@@ -29,6 +30,7 @@ class LoadingScene:
         fill_width = int(self.bar_width * self.progress)
         pygame.draw.rect(self.display, self.bar_fg_color, (self.bar_x, self.bar_y, fill_width, self.bar_height))
         pygame.display.flip()
+
 
     def run(self):
         clock = pygame.time.Clock()

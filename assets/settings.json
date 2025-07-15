@@ -1,6 +1,6 @@
 {
     "CAR": "BLUE",
-    "FPS": 200,
-    "MUSIC_VOLUME" : 0.5,
+    "FPS": 60,
+    "MUSIC_VOLUME" : 0.8,
     "SPRITESTACK_OPTIMIZATION": true
 }

@@ -32,7 +32,6 @@ from src.loader import LoadingScene
 from src.params import import_params_needed
 # from src.tleng2.engine import EngineProperties
 
-
 # DebugTags.import_tags()
 GlobalSettings.update_bresolution((1280,720))
 # GlobalSettings._debug = True
@@ -74,8 +73,8 @@ if __name__ == '__main__':
 
     game = App()
     LoadingScene([
-        (FreeRoam, 'Free Roam'),
         (Menu, 'Menu'),
+        (FreeRoam, 'FreeRoam'),
         (Credits, 'Credits'),
     ]).run()
     # updating the scene to menu
@@ -85,21 +84,13 @@ if __name__ == '__main__':
     game.run_old()
 
 """
-TODO:
-Redo the coordinate system. The world coordinates should be independent from the screen coordinates.
-
-Independent Coordinates even in different screen sizes.
-
 PERF TODO:
 Rendering every spritestack in a single surface inside a chunk. (if spritestack is static, ex in the map)
 and caching the whole chunk in the caches of the spritestack instead of seperate ones. if one spritestck in a stack
 dont cache.
 
 QOL TODO:
-Change the debug print class/functions to a logger.
-
 Nodify the scene manager.
 
 Abolish the catchers.
-
 """
