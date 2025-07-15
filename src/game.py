@@ -80,21 +80,23 @@ def wall_visualization(wall: Wall, color: tuple[int, int, int] = (255, 0, 0)) ->
     max_y = max(v.y for v in verts_pg)
     width = max_x - min_x
     height = max_y - min_y
+
     # Create a transparent surface
     surf = pygame.Surface((width+2, height+2), pygame.SRCALPHA)
     # Draw polygon (shifted to surface coordinates)
     shifted = [(v.x - min_x + 1, v.y - min_y + 1) for v in verts_pg]
     pygame.draw.polygon(surf, (0,255,255,100), shifted, 2)
+
     # Create renderable
-    renderable = Renderable()
-    renderable.surface = surf
+    img_service = ImageService()
+    img_service.set_image(surf)
     # Set world_pos to the center of the polygon
     center_x = (min_x + max_x) / 2
     center_y = (min_y + max_y) / 2
-    renderable.world_pos = Vector2(center_x, center_y)
-    renderable.frect = surf.get_frect(center=(center_x, center_y))
+    img_service.world_pos = Vector2(center_x, center_y)
+    img_service.frect = surf.get_frect(center=(center_x, center_y))
 
-    return renderable
+    return img_service
         
 
 class FreeRoam(Scene):
@@ -210,7 +212,7 @@ class FreeRoam(Scene):
         no_hitbox = ['road', 'paved_road', 'road_closed_turn_ne', 'road_closed_turn_se', 'road_closed_turn_sw', 'road_closed_turn_nw']
 
         self.walls = []
-        self.wall_renderables = []
+        self.wall_imgs = []
         for y, y_tiles in enumerate(tilemap):
             for x, tile_name in enumerate(y_tiles):
                 if tile_name in no_hitbox:
@@ -219,8 +221,8 @@ class FreeRoam(Scene):
                     # Wall((x*35+35/2+1,-y*35+129), self.tile_hitboxes[tile_name],self.space, 1)
                     wall = Wall((x*35,-y*35), self.tile_hitboxes[tile_name],self.space, 1)
                     self.walls.append(wall)
-                    renderable = wall_visualization(wall)
-                    self.wall_renderables.append(renderable)
+                    img = wall_visualization(wall)
+                    self.wall_imgs.append(img)
                 
 
         tile_size = 35/2
@@ -341,7 +343,9 @@ class FreeRoam(Scene):
 
         # Smoothly interpolate self.angle towards target_angle
         self.angle = lerp_angle(self.angle, target_angle, lerp_speed)
-
+        for wall_img in self.wall_imgs:
+            # RendererProperties.render_calls.append(wall_renderable)
+            wall_img.update()
 
     
 
@@ -354,7 +358,7 @@ class FreeRoam(Scene):
 
         # Render the tilemap with rotation around the player
         self.free_roam_tilemap.render_angle(
-            convert_rad_to_deg(self.angle),
+            convert_rad_to_deg(self.angle)
         )
 
 
@@ -365,9 +369,11 @@ class FreeRoam(Scene):
         self.player_sprite.rotation = convert_rad_to_deg(self.player.body.angle + self.angle)
         self.player_sprite.render(bysort=True)
 
-        for wall_renderable in self.wall_renderables:
+        for wall_img in self.wall_imgs:
             # RendererProperties.render_calls.append(wall_renderable)
-            wall_renderable.render()
+            wall_img.render_angle(
+                convert_rad_to_deg(self.angle)
+            )
 
         # print(f"Player world position: {player_pos}")
 

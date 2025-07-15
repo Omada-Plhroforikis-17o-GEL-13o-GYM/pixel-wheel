@@ -34,7 +34,7 @@ class Credits(Scene):
 
         self.credits_img = ImageService()
         self.credits_img.load_image(CREDITS,950,1750)
-        self.credits_img.rect.centerx = GlobalSettings._disp_res[0]//2
+        self.credits_img.frect.centerx = GlobalSettings._disp_res[0]//2
 
 
     def event_handling(self, keys_pressed) -> None:                    
