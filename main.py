@@ -58,7 +58,7 @@ import_params_needed()
 GlobalSettings._debug = True
 DebugTags.import_tags([
     'HITBOXES', 
-    # 'points',
+    'POINTS',
     # 'RENDERABLE_RECT',
     # 'renderer', 
     # 'image_service'

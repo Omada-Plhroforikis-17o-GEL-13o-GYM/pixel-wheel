@@ -133,7 +133,7 @@ class FreeRoam(Scene):
         except:
             self.player_sprite.load_images(os.path.join(assets_dir,'RED'))
 
-        self.player = Player((200,100), self.space, 1, self.player_sprite.images[0].get_width(),self.player_sprite.images[0].get_height())
+        self.player = Player((-20,100), self.space, 1, self.player_sprite.images[0].get_width(),self.player_sprite.images[0].get_height())
         # self.player_debug_img = wall_visualization(self.player, color=(255,0,0,100))
         # print(self.player_sprite.images[0].get_width(),self.player_sprite.images[0].get_height())
 
@@ -175,21 +175,29 @@ class FreeRoam(Scene):
 
 
         tilemap = [
-            [PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,RO],
-            [C2,RU,RU,RU,RU,RU,RU,RU,RU,RU,RU,RU,C3],
-            [RL,SE,RD,RD,RD,RD,RD,RD,RD,RD,RD,SW,RR],
-            [RL,RR,RD,PO,PO,PO,PO,PO,PO,PO,PO,RL,RR],
-            [RL,RR,PO,PO,PO,RL,NE,RU,RU,RU,RU,NW,RR],
-            [RL,RR,PO,PO,PO,RL,SE,RD,RD,RD,SW,RO,RR],
-            [RL,NE,RU,RU,RU,NW,NE,RU,RU,RU,NW,RO,RR],
-            [RL,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RR],
-            [RL,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RR],
-            [RL,SE,RD,RD,RD,SW,SE,RD,RD,RD,SW,RO,RR],
-            [RL,RR,PO,PO,PO,RL,RR,PO,PO,PO,RL,RO,RR],
-            [RL,RR,PO,PO,PO,RL,NE,RU,RU,RU,NW,RO,RR],
-            [RL,RR,PO,PO,PO,RL,SE,RD,RD,RD,SW,RO,RR],
-            [RL,NE,RU,RU,RU,NW,NE,RU,RU,RU,NW,RO,RR],
-            [C1,RD,RD,RD,RD,RD,RD,RD,RD,RD,RD,RD,C4],            
+            [C2,C3,PO,PO,PO,PO,C2,RU,RU,RU,RU,RU,C3,PO,PO,PO,PO,PO,PO],
+            [RL,NE,RU,RU,RU,RU,NW,SE,RD,RD,RD,SW,RR,PO,PO,PO,PO,C2,C3],
+            [RL,SE,RD,RD,RD,RD,SW,RR,PO,PO,PO,RL,RR,PO,PO,PO,PO,RL,RR],
+            [RL,RR,PO,PO,PO,PO,RL,RR,PO,PO,PO,RL,NE,RU,RU,C3,PO,RL,RR],
+            [RL,RR,PO,PO,PO,PO,RL,RR,PO,PO,PO,RL,SE,RD,SW,RR,PO,RL,RR],
+            [RL,RR,PO,PO,PO,C2,NW,NE,RU,RU,RU,NW,RR,PO,RL,NE,RU,NW,RR],
+            [RL,NE,RU,RU,RU,NW,SE,RD,SW,SE,RD,RD,C4,PO,C1,RD,RD,SW,RR],
+            [RL,SE,RD,RD,RD,RD,C4,PO,RL,RR,PO,PO,PO,PO,PO,PO,PO,RL,RR],
+            [RL,RR,PO,PO,PO,PO,PO,C2,NW,NE,C3,PO,PO,PO,PO,PO,PO,RL,RR],
+            [RL,RR,PO,PO,PO,PO,PO,RL,RO,RO,RR,PO,PO,PO,PO,PO,PO,RL,RR],
+            [RL,NE,C3,PO,PO,PO,PO,RL,SE,SW,RR,PO,PO,PO,PO,PO,PO,RL,RR],
+            [RL,RO,NE,RU,RU,RU,RU,NW,NE,NW,NE,RU,RU,RU,RU,RU,RU,NW,RR],
+            [RL,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RO,RR],
+            [C1,RD,RD,RD,RD,RD,RD,SW,SE,SW,SE,RD,RD,RD,RD,RD,RD,SW,RR],
+            [PO,PO,PO,PO,PO,PO,PO,RL,RR,RL,RR,PO,PO,PO,PO,PO,PO,RL,RR],
+            [PO,PO,PO,PO,PO,PO,PO,RL,RR,RL,RR,PO,PO,PO,PO,PO,PO,RL,RR],
+            [PO,PO,PO,PO,PO,PO,PO,RL,RR,RL,RR,PO,PO,PO,PO,PO,PO,RL,RR],
+            [PO,PO,PO,PO,PO,PO,PO,RL,RR,RL,RR,PO,PO,PO,PO,PO,PO,RL,RR],
+            [PO,PO,PO,PO,PO,PO,PO,RL,RR,RL,RR,PO,PO,PO,PO,PO,PO,RL,RR],
+            [PO,PO,PO,PO,PO,PO,PO,RL,RR,RL,RR,PO,PO,PO,PO,PO,PO,RL,RR],
+            [C2,RU,RU,RU,RU,RU,RU,NW,NE,NW,NE,RU,RU,RU,RU,RU,RU,NW,RR],
+            [C1,RD,RD,RD,RD,RD,RD,RD,RD,RD,RD,RD,RD,RD,RD,RD,RD,RD,C4],            
+            [PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO],            
         ]
 
 
@@ -267,20 +275,29 @@ class FreeRoam(Scene):
         LL = "none"
 
         sprite_stack_tilemap = [
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,RO,LE,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,BU,BU,BU,BU,BU,BU,BU,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,KA,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LE,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],              
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,BU,LL,LL,LL,RO,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],            
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LE,LL,LL,LL,LL],            
         ]
         self.rotonta = SpriteStackService()
         self.rotonta.load_images(os.path.join(assets_dir,'ROTONTA'))
@@ -315,8 +332,8 @@ class FreeRoam(Scene):
                         stack = SpriteStackService()
                         stack.load_images(os.path.join(assets_dir, cell))
                     TILE_SIZE = stack.tile_size  # or whatever your grid size is
-                    center_x = col_idx * TILE_SIZE + TILE_SIZE // 2
-                    center_y = row_idx * TILE_SIZE + TILE_SIZE // 2
+                    center_x = col_idx*35  - (len(tilemap[0])*35)/2 +35/2
+                    center_y = row_idx*35  + len(tilemap)*35/2 - 35/2
                     stack.update({'x': center_x, 'y': center_y})
                     self.sprite_stacks.append(stack)
 
