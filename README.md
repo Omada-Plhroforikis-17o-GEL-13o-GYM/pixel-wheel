@@ -90,17 +90,7 @@ Go to releases!
 - If you press `Credits` you can scroll with your `mouse-wheel`
 - to go back to the `Menu` you need to press `esc` 
 
-## Running reference.py
-- You can move with `WASD` 
-- You can turn on the debug mode, that shows the hitboxes with `B`
-- You can toggle the clarity of the car model with `V` 
-
 ## TODO
-- Redo the coordinate system, should be similar to pymunk, normal cartesian. Renderer will just convert the normal coordinates to the pygame-screen coordinates (mostly complete)
-
-- Camera (almost complete)
-- Renderer (mostly complete, even support y-sort)
-
 MASSIVE TODO
-- ECS re-write (for the v0.1.5-alpha update)
+- ECS re-write (for the v0.3.0-alpha update)
 - Abolishing display/window surfaces in RendererProperties [being worked on for ecs] 
