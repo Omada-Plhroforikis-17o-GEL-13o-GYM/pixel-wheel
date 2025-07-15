@@ -275,26 +275,26 @@ class FreeRoam(Scene):
         LL = "none"
 
         sprite_stack_tilemap = [
+            [LL,LL,LL,LL,BU,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,BU],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,BU,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,BU,BU,LL,LL,LL,LL],
+            [LL,LL,LL,BU,LL,BU,LL,LL,LL,RO,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,BU,LL,LL,BU,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,BU,LL,LL],
+            [LL,LL,BU,LL,BU,LL,LL,LL,LL,LL,LL,LL,LL,BU,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,BU,LL,LL,BU,LL,BU,LL,LL,LL,BU,LL,LL],
+            [LL,LL,BU,BU,LL,LL,BU,LL,LL,LL,LL,BU,LL,LL,BU,LL,LL,LL,LL],
+            [LL,LL,LL,BU,LL,LL,BU,LL,LL,LL,LL,LL,BU,LL,LL,LL,BU,LL,LL],
+            [LL,LL,LL,LL,BU,LL,BU,LL,LL,LL,LL,LL,LL,BU,BU,LL,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,BU,LL,LL,LL,RO,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,BU,LL,LL,LL,LL,LL,LL,BU,LL,BU,LL,BU,LL,LL,LL],
+            [LL,LL,BU,LL,LL,LL,BU,LL,LL,LL,LL,BU,LL,LL,LL,BU,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,BU,LL,LL,LL,LL,BU,LL,LL,LL,LL,BU,LL,LL],
+            [LL,BU,LL,LL,LL,LL,BU,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,BU,LL,BU,LL,LL,LL,LL,BU,LL,BU,LL,LL,BU,LL,LL],
+            [LL,BU,LL,LL,LL,BU,LL,LL,LL,LL,LL,BU,LL,LL,LL,BU,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],            
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LE,LL,LL,LL,LL],            
@@ -319,6 +319,10 @@ class FreeRoam(Scene):
         }
 
         self.sprite_stacks = []
+
+        for y, y_tiles in enumerate(tilemap):
+            for x, tile_name in enumerate(y_tiles):
+                ...
         for row_idx, row in enumerate(sprite_stack_tilemap):
             for col_idx, cell in enumerate(row):
                 if cell != LL:
@@ -327,13 +331,14 @@ class FreeRoam(Scene):
                     elif cell == LE:
                         stack = self.lefkos_pirgos
                     elif cell == BU:
-                        stack = self.polikatikia
+                        stack = SpriteStackService()
+                        stack.load_images(os.path.join(assets_dir,'building'))
                     elif cell == KA:
                         stack = SpriteStackService()
                         stack.load_images(os.path.join(assets_dir, cell))
                     TILE_SIZE = stack.tile_size  # or whatever your grid size is
-                    center_x = col_idx*35  - (len(tilemap[0])*35)/2 +35/2
-                    center_y = row_idx*35  + len(tilemap)*35/2 - 35/2
+                    center_x = col_idx*35 - (len(tilemap[0])*35)/2 +35/2
+                    center_y = -row_idx*35 + len(tilemap)*35/2 - 35/2
                     stack.update({'x': center_x, 'y': center_y})
                     self.sprite_stacks.append(stack)
 
