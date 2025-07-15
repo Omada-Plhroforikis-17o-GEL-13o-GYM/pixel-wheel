@@ -25,6 +25,7 @@ from pymunk import Vec2d
 
 from .physics import Player, Wall
 from .tleng2 import *
+from .tleng2.utils.debug import DebugTags
 
 def rotate_to_center(rot: float, pos: tuple[float, float], center: tuple[float, float]) -> tuple[float, float]:
     """
@@ -67,7 +68,7 @@ def lerp_angle(a, b, t):
     return a + diff * t
 
 
-def wall_visualization(wall: Wall, color: tuple[int, int, int] = (255, 0, 0)) -> pygame.Surface:
+def wall_visualization(wall: Wall, color: tuple[int, int, int, int] = (0,255,255,100)) -> pygame.Surface:
     # --- Create a renderable for this wall ---
     # Get vertices in world coordinates
     verts = [wall.body.local_to_world(v) for v in wall.shape.get_vertices()]
@@ -85,7 +86,7 @@ def wall_visualization(wall: Wall, color: tuple[int, int, int] = (255, 0, 0)) ->
     surf = pygame.Surface((width+2, height+2), pygame.SRCALPHA)
     # Draw polygon (shifted to surface coordinates)
     shifted = [(v.x - min_x + 1, v.y - min_y + 1) for v in verts_pg]
-    pygame.draw.polygon(surf, (0,255,255,100), shifted, 2)
+    pygame.draw.polygon(surf, color, shifted, 2)
 
     # Create renderable
     img_service = ImageService()
@@ -133,10 +134,8 @@ class FreeRoam(Scene):
             self.player_sprite.load_images(os.path.join(assets_dir,'RED'))
 
         self.player = Player((200,100), self.space, 1, self.player_sprite.images[0].get_width(),self.player_sprite.images[0].get_height())
-
+        # self.player_debug_img = wall_visualization(self.player, color=(255,0,0,100))
         # print(self.player_sprite.images[0].get_width(),self.player_sprite.images[0].get_height())
-
-        
 
         # tileset should import from a .json file as well.
         self.city_streets_tileset = TileSet({
@@ -209,7 +208,14 @@ class FreeRoam(Scene):
             'pavement' : rect_to_vertices(pygame.FRect(-ht, -ht, ht*2, ht*2)),
         }
 
-        no_hitbox = ['road', 'paved_road', 'road_closed_turn_ne', 'road_closed_turn_se', 'road_closed_turn_sw', 'road_closed_turn_nw']
+        no_hitbox = [
+            'road', 
+            'paved_road', 
+            'road_closed_turn_ne', 
+            'road_closed_turn_se', 
+            'road_closed_turn_sw', 
+            'road_closed_turn_nw'
+        ]
 
         self.walls = []
         self.wall_imgs = []
@@ -219,7 +225,8 @@ class FreeRoam(Scene):
                     continue
                 else:
                     # Wall((x*35+35/2+1,-y*35+129), self.tile_hitboxes[tile_name],self.space, 1)
-                    wall = Wall((x*35,-y*35), self.tile_hitboxes[tile_name],self.space, 1)
+                    wall = Wall((x*35 - (len(tilemap[0])*35)/2 +35/2 , -y*35 + len(tilemap)*35/2 - 35/2), self.tile_hitboxes[tile_name], self.space, 1)
+                    print(len(tilemap))
                     self.walls.append(wall)
                     img = wall_visualization(wall)
                     self.wall_imgs.append(img)
@@ -300,18 +307,33 @@ class FreeRoam(Scene):
         # self.space = pymunk.Space()
         self.temp_angle = 0.0
 
-
     def event_handling(self, keys_pressed) -> None:                    
         if keys_pressed[pygame.K_ESCAPE]:
             self.camera_run_setup = False
             SceneManagerMethods.change_current_scene('Menu')
         for event in EngineProperties._events:
             self.player.handle_event(event)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_x, mouse_y = event.pos
+                    print(f"Display coords: {mouse_x}, {mouse_y}")
+
+                    # Convert display (screen) to world coordinates
+                    # 1. Convert to Vector2
+                    screen_vec = Vector2(mouse_x, mouse_y)
+                    # 2. Undo pymunk_to_pygame (flip y)
+                    world_screen = Vector2(screen_vec.x, RendererProperties._display.get_height() - screen_vec.y)
+                    # 3. Undo camera transform
+                    camera = self.camera
+                    rel = world_screen - camera.center_screen
+                    rel = rel.rotate_rad(-camera.angle)
+                    world_pos = rel + camera.center
+                    print(f"World pos: {world_pos.x:.2f}, {world_pos.y:.2f}")
 
         if keys_pressed[pygame.K_LEFT]:
             self.temp_angle += 0.05
         if keys_pressed[pygame.K_RIGHT]:
             self.temp_angle -= 0.05
+        
 
     def update(self) -> None:
         if not self.camera_run_setup:
@@ -343,9 +365,10 @@ class FreeRoam(Scene):
 
         # Smoothly interpolate self.angle towards target_angle
         self.angle = lerp_angle(self.angle, target_angle, lerp_speed)
-        for wall_img in self.wall_imgs:
-            # RendererProperties.render_calls.append(wall_renderable)
-            wall_img.update()
+        if GlobalSettings._debug and DebugTags.has_tags(["HITBOXES"]):
+            for wall_img in self.wall_imgs:
+                # RendererProperties.render_calls.append(wall_renderable)
+                wall_img.update()
 
     
 
@@ -369,11 +392,13 @@ class FreeRoam(Scene):
         self.player_sprite.rotation = convert_rad_to_deg(self.player.body.angle + self.angle)
         self.player_sprite.render(bysort=True)
 
-        for wall_img in self.wall_imgs:
-            # RendererProperties.render_calls.append(wall_renderable)
-            wall_img.render_angle(
-                convert_rad_to_deg(self.angle)
-            )
+        if GlobalSettings._debug and DebugTags.has_tags(["HITBOXES"]):
+            for wall_img in self.wall_imgs:
+                # RendererProperties.render_calls.append(wall_renderable)
+                wall_img.render_angle(
+                    convert_rad_to_deg(self.angle)
+                )
+            # self.player_debug_img.render_angle(convert_rad_to_deg(self.angle))
 
         # print(f"Player world position: {player_pos}")
 

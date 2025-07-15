@@ -56,6 +56,13 @@ GlobalSettings._fps = fps
 import_params_needed()
 
 GlobalSettings._debug = True
+DebugTags.import_tags([
+    'HITBOXES', 
+    # 'points',
+    # 'RENDERABLE_RECT',
+    # 'renderer', 
+    # 'image_service'
+])
 # GlobalSettings.load_settings_json()
 
 
