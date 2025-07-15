@@ -2,6 +2,7 @@ import pygame
 import time
 import os
 from .tleng2.engine.properties import RendererProperties
+from .tleng2.utils.utils import get_parent_dir
 
 def lerp(a, b, t):
     return a + (b - a) * t
@@ -23,7 +24,8 @@ class LoadingScene:
         self.animation_speed = 0.15  # Lerp speed
 
         # Load logo image
-        assets_dir = os.path.join(os.path.dirname(__file__), "../assets")
+        assets_dir = os.path.join(get_parent_dir(__file__, 2), "assets")
+        print(assets_dir)
         logo_path = os.path.join(assets_dir, "logo", "pixel_wheel_whole_logo.png")
         self.logo_img = pygame.image.load(logo_path).convert_alpha()
         # Scale logo if needed
