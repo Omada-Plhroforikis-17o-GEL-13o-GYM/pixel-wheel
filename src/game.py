@@ -384,6 +384,15 @@ class FreeRoam(Scene):
         # self.space = pymunk.Space()
         self.temp_angle = 0.0
 
+        self.show_fps = False
+        try:
+            with open(os.path.join(assets_dir, 'settings.json'),'r') as settings:
+                print(settings)
+                self.show_fps = json.load(settings)['SHOW_FPS']
+        except Exception as error:
+            print(error)
+            self.show_fps = False
+
     def event_handling(self, keys_pressed) -> None:                    
         if keys_pressed[pygame.K_ESCAPE]:
             self.camera_run_setup = False
@@ -435,7 +444,7 @@ class FreeRoam(Scene):
         #     x = int(self.camera.offset_pos.x + RendererProperties._display.get_width()//2),
         #     y = int(self.camera.offset_pos.y + RendererProperties._display.get_height()//2),
         # )
-        if GlobalSettings._debug and DebugTags.has_tags(["FPS"]):
+        if (GlobalSettings._debug and DebugTags.has_tags(["FPS"])) or self.show_fps:
             EngineMethods.set_caption(f"{EngineProperties._clock.get_fps():.2f}")
 
         target_angle = -self.player.body.angle  # or whatever your car's angle is
