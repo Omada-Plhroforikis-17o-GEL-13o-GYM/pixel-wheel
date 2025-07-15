@@ -424,7 +424,7 @@ class FreeRoam(Scene):
 
         self.player.update(dt)
 
-        pos = convert_to_vector2(self.player.body._get_position())
+        pos = convert_to_vector2(self.player.body.position)
         self.player_sprite.update_new(
             x = pos.x,
             y = pos.y,
@@ -455,7 +455,7 @@ class FreeRoam(Scene):
         self.camera.angle = self.angle
 
         # Center of rotation is the player's position
-        player_pos = convert_to_vector2(self.player.body._get_position())
+        player_pos = convert_to_vector2(self.player.body.position)
 
         # Render the tilemap with rotation around the player
         self.free_roam_tilemap.render_angle(
