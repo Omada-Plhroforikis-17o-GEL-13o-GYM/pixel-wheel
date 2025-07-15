@@ -176,7 +176,7 @@ class FreeRoam(Scene):
 
         tilemap = [
             [PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,PO,RO],
-            [C2,RU,RU,RU,RU,RU,RU,RU,RU,RU,RU,RU,RO],
+            [C2,RU,RU,RU,RU,RU,RU,RU,RU,RU,RU,RU,C3],
             [RL,SE,RD,RD,RD,RD,RD,RD,RD,RD,RD,SW,RR],
             [RL,RR,RD,PO,PO,PO,PO,PO,PO,PO,PO,RL,RR],
             [RL,RR,PO,PO,PO,RL,NE,RU,RU,RU,RU,NW,RR],
@@ -189,7 +189,7 @@ class FreeRoam(Scene):
             [RL,RR,PO,PO,PO,RL,NE,RU,RU,RU,NW,RO,RR],
             [RL,RR,PO,PO,PO,RL,SE,RD,RD,RD,SW,RO,RR],
             [RL,NE,RU,RU,RU,NW,NE,RU,RU,RU,NW,RO,RR],
-            [RO,RD,RD,RD,RD,RD,RD,RD,RD,RD,RD,RD,RO],            
+            [C1,RD,RD,RD,RD,RD,RD,RD,RD,RD,RD,RD,C4],            
         ]
 
 
@@ -202,18 +202,32 @@ class FreeRoam(Scene):
             'road_straight_right' : rect_to_vertices(pygame.FRect(ht-dc, -ht, dc, ht*2)), # done
             'road_straight_left' : rect_to_vertices(pygame.FRect(-ht, -ht, dc, ht*2)), # done
             'road_turn_ne' : rect_to_vertices(pygame.FRect(ht-dc, ht-dc, dc, dc)), # done
-            'road_turn_se' : rect_to_vertices(pygame.FRect(ht-dc, -ht, dc, dc)),
+            'road_turn_se' : rect_to_vertices(pygame.FRect(ht-dc, -ht, dc, dc)), # done
             'road_turn_sw' : rect_to_vertices(pygame.FRect(-ht, -ht, dc, dc)), # done
             'road_turn_nw' : rect_to_vertices(pygame.FRect(-ht, ht-dc, dc, dc)), # done
-            'pavement' : rect_to_vertices(pygame.FRect(-ht, -ht, ht*2, ht*2)),
+            'pavement' : rect_to_vertices(pygame.FRect(-ht, -ht, ht*2, ht*2)), # done
+            'road_closed_turn_ne' : [rect_to_vertices(pygame.FRect(-ht, -ht, dc, ht*2)),
+                                     rect_to_vertices(pygame.FRect(-ht +dc, -ht, ht*2-dc, dc))], # done
+
+            'road_closed_turn_se' : [rect_to_vertices(pygame.FRect(-ht, -ht, dc, ht*2)),
+                                     rect_to_vertices(pygame.FRect(-ht +dc, ht-dc, ht*2-dc, dc))], # done
+
+            'road_closed_turn_sw' : [rect_to_vertices(pygame.FRect(ht-dc, -ht, dc, ht*2)),
+                                     rect_to_vertices(pygame.FRect(-ht, ht-dc, ht*2-dc, dc))], # done
+
+            'road_closed_turn_nw' : [rect_to_vertices(pygame.FRect(ht-dc, -ht, dc, ht*2)),
+                                     rect_to_vertices(pygame.FRect(-ht, -ht, ht*2-dc, dc))], # done
         }
 
         no_hitbox = [
             'road', 
-            'paved_road', 
+            'paved_road',    
+        ]
+
+        multiple_hitboxes = [
+            'road_closed_turn_sw',
             'road_closed_turn_ne', 
-            'road_closed_turn_se', 
-            'road_closed_turn_sw', 
+            'road_closed_turn_se',
             'road_closed_turn_nw'
         ]
 
@@ -223,10 +237,16 @@ class FreeRoam(Scene):
             for x, tile_name in enumerate(y_tiles):
                 if tile_name in no_hitbox:
                     continue
+                if tile_name in multiple_hitboxes:
+                    # Create two walls for the closed turn
+                    for i in range(len(self.tile_hitboxes[tile_name])):
+                        wall = Wall((x*35 - (len(tilemap[0])*35)/2 +35/2, -y*35 + len(tilemap)*35/2 - 35/2), self.tile_hitboxes[tile_name][i], self.space, 1)
+                        self.walls.append(wall)
+                        img = wall_visualization(wall)
+                        self.wall_imgs.append(img)
                 else:
                     # Wall((x*35+35/2+1,-y*35+129), self.tile_hitboxes[tile_name],self.space, 1)
                     wall = Wall((x*35 - (len(tilemap[0])*35)/2 +35/2 , -y*35 + len(tilemap)*35/2 - 35/2), self.tile_hitboxes[tile_name], self.space, 1)
-                    print(len(tilemap))
                     self.walls.append(wall)
                     img = wall_visualization(wall)
                     self.wall_imgs.append(img)
