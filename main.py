@@ -24,6 +24,7 @@ from src.tleng2.utils.debug import DebugTags
 from src.game import FreeRoam
 from src.menu import Menu
 from src.credits import Credits
+from src.loader import LoadingScene
 
 # from src.credits import world as CreditsScene
 # from src.settings import world as SettingsScene
@@ -72,11 +73,11 @@ if __name__ == '__main__':
     # initializing the scene classes
 
     game = App()
-
-    FreeRoam('FreeRoam')
-    Menu('Menu')
-    Credits('Credits')
-    
+    LoadingScene([
+        (FreeRoam, 'Free Roam'),
+        (Menu, 'Menu'),
+        (Credits, 'Credits'),
+    ]).run()
     # updating the scene to menu
     SceneManagerMethods.start_with_scene("Menu")
     

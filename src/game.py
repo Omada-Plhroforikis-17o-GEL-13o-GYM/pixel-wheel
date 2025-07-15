@@ -117,7 +117,16 @@ class FreeRoam(Scene):
         self.space.gravity = Vec2d(0.0, 0.0)
         self.space.damping = .01
 
-        self.player_sprite = SpriteStackService()
+        caching = True
+        try:
+            with open(os.path.join(assets_dir, 'settings.json'),'r') as settings:
+                print(settings)
+                caching = json.load(settings)['SPRITESTACK_OPTIMIZATION']
+        except Exception as error:
+            print(error)
+            caching = True
+
+        self.player_sprite = SpriteStackService(caching)
         self.player_sprite.renderable.centered = True
         car = 'RED'
         try:
@@ -287,7 +296,7 @@ class FreeRoam(Scene):
             [LL,LL,LL,BU,LL,LL,BU,LL,LL,LL,LL,LL,BU,LL,LL,LL,BU,LL,LL],
             [LL,LL,LL,LL,BU,LL,BU,LL,LL,LL,LL,LL,LL,BU,BU,LL,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
-            [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
+            [LL,LL,LL,LL,LL,LL,LL,LL,KA,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],
             [LL,LL,LL,LL,BU,LL,LL,LL,LL,LL,LL,BU,LL,BU,LL,BU,LL,LL,LL],
             [LL,LL,BU,LL,LL,LL,BU,LL,LL,LL,LL,BU,LL,LL,LL,BU,LL,LL,LL],
@@ -299,16 +308,19 @@ class FreeRoam(Scene):
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL],            
             [LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LL,LE,LL,LL,LL,LL],            
         ]
-        self.rotonta = SpriteStackService()
+
+
+
+        self.rotonta = SpriteStackService(caching)
         self.rotonta.load_images(os.path.join(assets_dir,'ROTONTA'))
 
-        self.lefkos_pirgos = SpriteStackService()
+        self.lefkos_pirgos = SpriteStackService(caching)
         self.lefkos_pirgos.load_images(os.path.join(assets_dir,'LEFKOS'))
 
-        self.kamara = SpriteStackService()
-        self.kamara.load_from_spritesheet(os.path.join(assets_dir,'KAMARA','kamara.png'), 35, 20)
+        self.kamara = SpriteStackService(caching)
+        self.kamara.load_from_spritesheet(os.path.join(assets_dir,'KAMARA', 'kamara.png'), 40, 20)
 
-        self.polikatikia = SpriteStackService()
+        self.polikatikia = SpriteStackService(caching)
         self.polikatikia.load_images(os.path.join(assets_dir,'building'))
 
         self.sprite_stack_types = {
@@ -331,7 +343,7 @@ class FreeRoam(Scene):
                     elif cell == LE:
                         stack = self.lefkos_pirgos
                     elif cell == BU:
-                        stack = SpriteStackService()
+                        stack = SpriteStackService(caching)
                         stack.load_images(os.path.join(assets_dir,'building'))
                     elif cell == KA:
                         stack = SpriteStackService()
