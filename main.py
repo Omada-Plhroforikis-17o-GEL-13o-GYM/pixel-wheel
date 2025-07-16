@@ -17,6 +17,7 @@
 import pygame
 import os
 import json
+import sys
 
 from src.tleng2 import * 
 from src.tleng2.utils.debug import DebugTags
@@ -26,22 +27,23 @@ from src.menu import Menu
 from src.credits import Credits
 from src.loader import LoadingScene
 
-# from src.credits import world as CreditsScene
-# from src.settings import world as SettingsScene
-
 from src.params import import_params_needed
 # from src.tleng2.engine import EngineProperties
 
-# DebugTags.import_tags()
-GlobalSettings.update_bresolution((1280,720))
-# GlobalSettings._debug = True
-# DebugTags.import_tags(['renderable'])
+GlobalSettings.update_resolutions((1280,720),(1280,720))
 RendererMethods.load_displays()
 EngineMethods.set_caption("PixelWheel: Thessaloniki Edition")
 
-assets_dir = os.path.join(get_parent_dir(__file__, 1), 'assets')
+assets_dir = ""
+
+if getattr(sys, 'frozen', False):
+    base_path = sys.executable
+    assets_dir = os.path.join(get_parent_dir(__file__, 2), 'assets')
+else:
+    assets_dir = os.path.join(os.path.abspath("."), "assets")
 
 EngineMethods.set_icon(os.path.join(assets_dir, 'logo', 'pixel_wheel_whole_logo.png'))
+
 fps = 60
 try:
     with open(os.path.join(assets_dir, 'settings.json'),'r') as settings:
