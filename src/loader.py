@@ -2,7 +2,7 @@ import pygame
 import time
 import os
 from .tleng2.engine.properties import RendererProperties
-from .tleng2.utils.utils import get_parent_dir
+from .tleng2.utils.utils import resource_path
 
 def lerp(a, b, t):
     return a + (b - a) * t
@@ -24,7 +24,7 @@ class LoadingScene:
         self.animation_speed = 0.15  # Lerp speed
 
         # Load logo image
-        assets_dir = os.path.join(get_parent_dir(__file__, 2), "assets")
+        assets_dir = resource_path("assets")
         print(assets_dir)
         logo_path = os.path.join(assets_dir, "logo", "pixel_wheel_whole_logo.png")
         self.logo_img = pygame.image.load(logo_path).convert_alpha()
@@ -48,6 +48,7 @@ class LoadingScene:
         # Load font
         font_path = os.path.join(assets_dir, "Font", "megamax-jonathan-too-font", "MegamaxJonathanToo-YqOq2.ttf")  # Replace with your font filename
         self.font = pygame.font.Font(font_path, 22)
+
 
     def draw(self):
         self.display.fill(self.bg_color)
@@ -75,6 +76,7 @@ class LoadingScene:
         self.display.blit(self.tleng2_logo, (x + text_rect.width + logo_margin, y + (text_rect.height - self.tleng2_logo.get_height()) // 2))
 
         pygame.display.flip()
+
 
     def run(self):
         clock = pygame.time.Clock()
