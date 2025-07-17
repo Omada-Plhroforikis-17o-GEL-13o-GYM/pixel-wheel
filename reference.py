@@ -6,6 +6,7 @@
 import pygame
 import random
 
+from math import pi
 from pygame.math import Vector2
 
 pygame.init()
@@ -22,8 +23,7 @@ font = pygame.font.SysFont(None, 28)
 def generate_spritestack_polygon(points, layers: int = 50) -> list[pygame.Surface]:
     if len(points) < 3:
         return None, 0, 0, 0
-    
-    # creating the base image
+
     min_x = min(pt[0] for pt in points)
     min_y = min(pt[1] for pt in points)
 
@@ -32,10 +32,9 @@ def generate_spritestack_polygon(points, layers: int = 50) -> list[pygame.Surfac
 
     width = max_x - min_x
     height = max_y - min_y
-
-    image = pygame.Surface((width, height), pygame.SRCALPHA)
     # for the point sequence there is a translation to the origin found above.
-    pygame.draw.polygon(image, (100, 100, 200), [(pt[0] - min_x, pt[1] - min_y) for pt in points])
+    points = [(pt[0] - min_x, pt[1] - min_y) for pt in points]
+
 
     # finding if the polygon has been made in cw or ccw, with the showlace method
     n = len(points)
@@ -46,15 +45,71 @@ def generate_spritestack_polygon(points, layers: int = 50) -> list[pygame.Surfac
 
     cw = False if a > 0 else True
 
-    vectors = []
+    vectors: list[Vector2] = []
+    point_vectors: list[Vector2] = []
+    # TODO probably a small logic problem with the -1
     for i in range(len(points)):
-        ...
+        vectors.append(Vector2(points[i]) - Vector2(points[i-1])) # AB = B - A
+        point_vectors.append(Vector2(points[i-1]))
 
+    balconies: list[list[Vector2]] = []
+    for i, vector in enumerate(vectors):
+        l = vector.length()
+        v = vector.copy()
+        scalar = 20
+
+        temp_point_balcony = []
+        v1 = None
+        if cw:
+            v1 = v.rotate_rad(pi/2)*1/l
+            v1 *= scalar
+        else: # CounterClockWise
+            v1 = v.rotate_rad(-pi/2)*1/l
+            v1 *= scalar
+
+        v *= 1/l
+        p = l/3
+        v *= p
+        temp_point_balcony.append(point_vectors[i] + v)
+        temp_point_balcony.append(point_vectors[i] + v + v1)
+        temp_point_balcony.append(point_vectors[i] + v + v1 + v)
+        temp_point_balcony.append(point_vectors[i] + v + v)
+
+        balconies.append(temp_point_balcony)
+
+    all_balcony_points: list[tuple] = []
+    for balcony in balconies:
+        for v in balcony:
+            all_balcony_points.append((v.x, v.y))
+
+    all_points = points + all_balcony_points
+    print("polygon points", points)
+    print("balcony points", all_balcony_points)
+    print("all points", all_points)
+    # creating the base image
+    min_x = min(pt[0] for pt in all_points)
+    min_y = min(pt[1] for pt in all_points)
+
+    max_x = max(pt[0] for pt in all_points)
+    max_y = max(pt[1] for pt in all_points)
+
+    width = max_x - min_x
+    height = max_y - min_y
+
+    image = pygame.Surface((width, height), pygame.SRCALPHA)
+
+    pygame.draw.polygon(image, (100, 100, 200), points)
+    pygame.draw.rect(image, "RED", (0,0,width,height), 1)
+
+    # print(len(points), len(vectors))
     images = [image]
 
     for i in range(1,layers):
         temp_image = pygame.Surface((width, height), pygame.SRCALPHA)
-        pygame.draw.polygon(temp_image, (0+i*3, 0+i*3, 0+i*3), [(pt[0] - min_x, pt[1] - min_y) for pt in points])
+        # pygame.draw.polygon(temp_image, (0+i*3, 0+i*3, 0+i*3), points)
+        for balcony in balconies:
+            # print("list of points for each balcony", balcony)
+            pygame.draw.polygon(temp_image, (100-i*2, 100-i*2, 100-i*2), balcony)
         images += [temp_image]
         
     images[::-1]
@@ -64,6 +119,7 @@ def generate_spritestack_polygon(points, layers: int = 50) -> list[pygame.Surfac
 running = True
 txt = font.render("Left-click to plot building base, right-click to finish", True, (220,220,220))
 angle = 0
+rotate_enabled = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -79,8 +135,12 @@ while running:
                 buildings.append((spritestack, (200, 150)))
                 current_poly = []
                 drawing = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                rotate_enabled = not rotate_enabled  # Toggle rotation
 
-    angle += 3
+    if rotate_enabled:
+        angle += 1
     screen.fill((40, 40, 60))
     # print(buildings)
     for building in buildings:
