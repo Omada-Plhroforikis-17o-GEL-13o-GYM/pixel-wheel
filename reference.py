@@ -20,20 +20,22 @@ current_poly = []
 
 font = pygame.font.SysFont(None, 28)
 
-def generate_spritestack_polygon(points, layers: int = 50) -> list[pygame.Surface]:
+def generate_spritestack_polygon(points: list[tuple], layers: int = 50) -> list[pygame.Surface]:
     if len(points) < 3:
         return None, 0, 0, 0
+    
+    or_points = points.copy()
 
-    min_x = min(pt[0] for pt in points)
-    min_y = min(pt[1] for pt in points)
+    # min_x = min(pt[0] for pt in points)
+    # min_y = min(pt[1] for pt in points)
 
-    max_x = max(pt[0] for pt in points)
-    max_y = max(pt[1] for pt in points)
+    # max_x = max(pt[0] for pt in points)
+    # max_y = max(pt[1] for pt in points)
 
-    width = max_x - min_x
-    height = max_y - min_y
-    # for the point sequence there is a translation to the origin found above.
-    points = [(pt[0] - min_x, pt[1] - min_y) for pt in points]
+    # width = max_x - min_x
+    # height = max_y - min_y
+    # # for the point sequence there is a translation to the origin found above.
+    # points = [(pt[0] - min_x, pt[1] - min_y) for pt in points]
 
 
     # finding if the polygon has been made in cw or ccw, with the showlace method
@@ -96,6 +98,12 @@ def generate_spritestack_polygon(points, layers: int = 50) -> list[pygame.Surfac
     width = max_x - min_x
     height = max_y - min_y
 
+    points = [(pt[0] - min_x, pt[1] - min_y) for pt in or_points]
+    temp_balconies = []
+    for balcony in balconies:
+        temp_balconies.append([Vector2(v.x - min_x, v.y - min_y) for v in balcony])
+    balconies = temp_balconies
+    
     image = pygame.Surface((width, height), pygame.SRCALPHA)
 
     pygame.draw.polygon(image, (100, 100, 200), points)
@@ -140,7 +148,8 @@ while running:
                 rotate_enabled = not rotate_enabled  # Toggle rotation
 
     if rotate_enabled:
-        angle += 1
+        angle += 0.7
+
     screen.fill((40, 40, 60))
     # print(buildings)
     for building in buildings:
