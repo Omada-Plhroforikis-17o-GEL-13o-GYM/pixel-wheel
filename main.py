@@ -57,6 +57,7 @@ GlobalSettings._fps = fps
 # EngineMethods.import_render_params(`file`) the file is .json
 import_params_needed()
 
+
 GlobalSettings._debug = False
 DebugTags.import_tags([
     'HITBOXES', 
@@ -74,16 +75,30 @@ if __name__ == '__main__':
     # initializing the scene classes
 
     game = App()
-    LoadingScene([
-        (Menu, 'Menu'),
-        (FreeRoam, 'FreeRoam'),
-        (Credits, 'Credits'),
-    ]).run()
+
+    game.use_plugins(
+        tleng_base_plugin
+    )
+
+    game.load_scenes(
+        start_with='Menu',
+        FreeRoam=FreeRoam,
+        Credits=Credits,
+    )
+
+    game.run()
+
+    # LoadingScene([
+    #     (Menu, 'Menu'),
+    #     (FreeRoam, 'FreeRoam'),
+    #     (Credits, 'Credits'),
+    # ]).run()
+
     # updating the scene to menu
-    SceneManagerMethods.start_with_scene("Menu")
+    # SceneManagerMethods.start_with_scene("Menu")
     
     # running the game engine to run the game
-    game.run_old()
+    # game.run_old()
 
 """
 PERF TODO:

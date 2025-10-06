@@ -26,6 +26,30 @@ def state(i: int, alts: int, layers: int) -> bool:
     segment_index = int(i // segment_length)
     return segment_index % 2 == 0
 
+def balcony_layer_spans(layers: int, levels: int, base_fraction: float = 0.1) -> list[tuple[int, int, int]]:
+    """
+    Returns a list of (start_layer, base_end_layer, end_layer, balcony) for each balcony.
+    - start_layer: first layer of the balcony span
+    - base_end_layer: last layer for the base (first base_fraction of the span)
+    - end_layer: last layer of the balcony span (railings go up to here)
+    """
+    spans = []
+
+    for i in range(levels):
+        span_length = layers // levels
+        start_layer = i * span_length
+        end_layer = (i + 1) * span_length if i < levels - 1 else layers
+        base_end_layer = start_layer + int((end_layer - start_layer) * base_fraction)
+        if base_end_layer == start_layer:
+            base_end_layer += 1
+        
+        balcony = start_layer + (span_length // 2)
+
+        spans.append((start_layer, base_end_layer, end_layer, balcony))
+
+    return spans
+
+
 def generate_spritestack_polygon(points: list[tuple], layers: int = 40, bpe: int = 4) -> list[pygame.Surface]:
     """
     bpe: means Balconies Per Edge (side of the polygon).
@@ -55,10 +79,11 @@ def generate_spritestack_polygon(points: list[tuple], layers: int = 40, bpe: int
     balcony_threshold = 50
 
     balconies: list[list[Vector2]] = []
+    railings: list[list[Vector2]] = []
     for i, vector in enumerate(vectors):
         l = vector.length()
         v = vector.normalize()  # Direction along the edge
-        scalar = 10
+        scalar = 15
 
         # Perpendicular direction
         if cw:
@@ -84,9 +109,9 @@ def generate_spritestack_polygon(points: list[tuple], layers: int = 40, bpe: int
             p1 = start + v * (l * t1)
             balcony_poly = [
                 p0,
-                p1,
+                p0 + v1,
                 p1 + v1,
-                p0 + v1
+                p1
             ]
             balconies.append(balcony_poly)
 
@@ -113,25 +138,63 @@ def generate_spritestack_polygon(points: list[tuple], layers: int = 40, bpe: int
     temp_balconies = []
     for balcony in balconies:
         temp_balconies.append([Vector2(v.x - min_x, v.y - min_y) for v in balcony])
-    balconies = temp_balconies
+    balconies = temp_balconies.copy()
 
     image = pygame.Surface((round(width), round(height)), pygame.SRCALPHA)
 
     pygame.draw.polygon(image, (100, 100, 200), points)
-    pygame.draw.rect(image, "RED", (0,0,width,height), 1)
+    pygame.draw.rect(image, "RED", (0,0,width,height), 1) # DEBUG
 
     # print(len(points), len(vectors))
     images = [image]
-
     levels = 5
-    for i in range(1,layers):
+    spans = balcony_layer_spans(layers, levels)
+    print(spans)
+    for i in range(layers):
         temp_image = pygame.Surface((width, height), pygame.SRCALPHA)
         # pygame.draw.polygon(temp_image, (0+i*3, 0+i*3, 0+i*3), points)
-        if state(i, levels, layers):
-            for balcony in balconies:
-                pygame.draw.polygon(temp_image, (100-i*2, 100-i*2, 100-i*2), balcony)
-                pygame.draw.polygon(temp_image, "RED", balcony,1)
+        current_level = int(i/(layers/levels))
+        if i in range(spans[current_level][0], spans[current_level][3]): # if we are in range of the balcony
+            if i in range(spans[current_level][0],spans[current_level][1]): # in the range of the base
+                for balcony in balconies:
+                    pygame.draw.polygon(temp_image, (100-i*2, 100-i*2, 100-i*2), balcony)
+                    pygame.draw.polygon(temp_image, "RED", balcony, 1) # DEBUG
 
+            if i in range(spans[current_level][1],spans[current_level][3]-1): # in the range of the railings
+                for balcony in balconies:
+                    print(len(balcony), balcony)
+                    railing_color = (180, 180, 180)
+                    p0_outer = balcony[2]
+                    p1_outer = balcony[1]
+                    l = p0_outer.distance_to(p1_outer)
+                    railing_count = int(l/4)  # Number of railings per balcony
+                    for r in range(1,railing_count):
+                        t = r / railing_count
+                        railing_start = p0_outer.lerp(p1_outer, t)
+                        railing_end = railing_start - (balcony[1] - balcony[0]) * 0.5  # Halfway down to the inner edge
+                        railing_point = railing_start - (balcony[1] - balcony[0]) * 0.2  # Halfway down to the inner edge
+                        # pygame.draw.line(temp_image, railing_color, railing_start, railing_end, 2)
+                        pygame.draw.circle(temp_image, railing_color, railing_point, 1)
+
+            print(range(spans[current_level][3]-1,spans[current_level][3]), i)
+
+            if i in range(spans[current_level][3]-1,spans[current_level][3]):
+                for balcony in balconies:
+                    ...
+                    # p1 = balcony[0].copy()
+                    # p2 = balcony[1].copy()
+
+                    # m = (p2 - p1)*0.5
+
+
+                    # b = balcony.copy()
+                    # pygame.draw.polygon(temp_image, (100,100,100), )
+                    
+                    # for poing in balcony:
+                    # pygame.draw.circle(temp_image, (50*j,50*j,50*j), (point.x, point.y), 2) # DEBUG
+                    # print((50*j,50*j,50*j))
+                    
+                        
         images += [temp_image]
         
     images[::-1]

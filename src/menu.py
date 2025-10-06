@@ -21,10 +21,11 @@ import os
 import pygame
 import json
 
+from .components import Transform, Button
+
 from .tleng2 import *
 
 pygame.init()
-
 
 def play_callback():
     SceneManagerMethods.change_current_scene('FreeRoam')
@@ -51,11 +52,40 @@ CREDITS_BUTTON_IMG = (
     os.path.join(GAME_DIR, 'assets',"buttons",'credits','credits_0003.png'),    
 )
 
+img = [
+    LOGO,
+    PLAY_BUTTON_IMG,
+    CREDITS_BUTTON_IMG,
+]
+
+temp_logo = []
+temp_play_button_img = []
+temp_credits_button_img = []
+
+temp = [
+    temp_logo,
+    temp_play_button_img,
+    temp_credits_button_img,
+]
+
+for i in range(len(img)):
+    for image in img[i]:
+        temp[i].append(pygame.image.load(image).convert_alpha())
+
+
+LOGO = tuple(temp[0])
+PLAY_BUTTON_IMG = tuple(temp[1])
+CREDITS_BUTTON_IMG = tuple(temp[2])
+
+del img, temp
+
+
 BG_MUSIC = pygame.mixer.Sound(
     os.path.join(GAME_DIR,'assets','music','bg_music.wav')
 )
 
 MUSIC_VOLUME = 0.2
+
 try:
     with open(os.path.join(GAME_DIR, "assets", 'settings.json'),'r') as settings:
         print(settings)
@@ -64,6 +94,45 @@ except Exception as error:
     print(error)
     print("MUSIC ERROR FILE/TAG NOT FOUND")
     MUSIC_VOLUME = 0.2
+
+
+menu = ecs.World()
+
+play_button = menu.spawn(
+    Transform(0,0,0,100),
+    RenderableComp(),
+    Button(*PLAY_BUTTON_IMG),
+)
+
+credits_button = menu.spawn(
+    Transform(0,0,0,100),
+    RenderableComp(),
+    Button(*CREDITS_BUTTON_IMG),
+)
+
+class UI_Button_System(ecs.System):
+    def params(self, World: ecs.World, Events: ecs.Events) -> None:
+        self.world = World
+        self.events = Events
+
+    def update(self) -> None:
+        buttons = self.world.single_fast_query(Button)
+
+        for e, button in buttons:
+            # EngineProperties._events
+            events = self.events.read(LeftMouseClick)
+            if events:
+                for event in events:
+                    if event.x
+            ...
+
+
+menu_scheduler = ecs.Scheduler()
+menu_scheduler.add_systems(
+
+)
+
+menu_scene = ecs.SceneComp(menu,)
 
 
 class Menu(Scene):
