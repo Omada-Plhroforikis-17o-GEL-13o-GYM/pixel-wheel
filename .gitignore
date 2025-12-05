@@ -162,4 +162,4 @@ cython_debug/
 test/
 test.py
 
-src/tleng2/
+/src/tleng2
