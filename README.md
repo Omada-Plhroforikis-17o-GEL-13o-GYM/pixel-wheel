@@ -89,8 +89,3 @@ Go to releases!
 - If you press `Play` you free roam with `WASD`
 - If you press `Credits` you can scroll with your `mouse-wheel`
 - to go back to the `Menu` you need to press `esc` 
-
-## TODO
-MASSIVE TODO
-- ECS re-write (for the v0.3.0-alpha update)
-- Abolishing display/window surfaces in RendererProperties [being worked on for ecs] 
